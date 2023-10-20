@@ -1,43 +1,51 @@
 import unicodedata
-from collections import deque
 from collections.abc import Iterable
 import typing as t
 
 _CT = t.TypeVar("_CT", str, bytes)
 
+#    ⇥       ⇥ ⇥        09
+#    ↵       ↵ ↵        0a
+#    ⤓       ⤓ ⤓        0b
+#    ↡       ↡ ↡        0c
+#    ⇤       ⇤ ⇤        0d
+#  ␣   ·     ␣ ·        20
+#    Ø       Ø Ø        00
+#    ←       ← ←        08
+#    →       → →        7f
+#    ∌       ∌ ∌        1b
+
 
 class Char(t.Generic[_CT]):
+    _SINGLE_CHAR_OVERRIDE = {
+        0x0A: "Line Feed",
+    }
+    _ASCII_C0 = [*range(0x00, 0x20), 0x7F]
+    _ASCII_C1 = [*range(0x80, 0xA0)]
+
     def __init__(self, c: _CT):
+        if isinstance(c, int):
+            c = bytes((c,))
         if len(c) > 1:
             raise ValueError(f"Char length must be exactly 1 (got {len(c)})")
         self._char: _CT = c
+        self._category = self._get_category_override()
+        self._name = self._get_name_override()
 
-        try:
-            self._category: str = unicodedata.category(c)
-        except:
-            self._category = None
+    def __eq__(self, other: "Char") -> bool:
+        if not isinstance(other, self.__class__):
+            return False
+        return self._char == other._char
 
-        try:
-            self._name = unicodedata.name(c)
-        except ValueError:
-            if self.is_surrogate:
-                self._name = "<UTF-16 SURROGATE>"
-            elif self.is_private_use:
-                self._name = "<PRIVATE USE>"
-            elif self.is_unassigned:
-                self._name = "<UNASSIGNED>"
-            else:
-                self._name = None
-        except TypeError:
-            self._name = "<NOT UTF-8>"
-            self._category = " ?"
+    def __hash__(self):
+        return hash((self._char, self.__class__.__name__))
 
     @property
     def char(self) -> str:
         return self._char
 
     @property
-    def name(self) -> str|None:
+    def name(self) -> str | None:
         return self._name
 
     @property
@@ -50,15 +58,15 @@ class Char(t.Generic[_CT]):
 
     @property
     def is_control(self) -> bool:
-        return self._category == 'Cc'
+        return self._category == "Cc"
 
     @property
     def is_private_use(self) -> bool:
-        return self._category == 'Co'
+        return self._category == "Co"
 
     @property
     def is_unassigned(self) -> bool:
-        return self._category == 'Cn'
+        return self._category == "Cn"
 
     @property
     def is_invalid(self) -> bool:
@@ -66,9 +74,45 @@ class Char(t.Generic[_CT]):
 
     @property
     def is_surrogate(self) -> bool:
-        return 0xd800 <= ord(self._char) <= 0xdfff
+        return 0xD800 <= ord(self._char) <= 0xDFFF
+
+    @property
+    def is_ascii_c0(self) -> bool:
+        return ord(self._char) in self._ASCII_C0
+
+    @property
+    def is_ascii_c1(self) -> bool:
+        return ord(self._char) in self._ASCII_C1
+
+    def _get_name_override(self) -> str | None:
+        if self.is_invalid:
+            return "BINARY/NOT UTF-8"
+        if self.is_surrogate:
+            return "UTF-16 SURROGATE"
+        if self.is_private_use:
+            return "PRIVATE USE"
+        if self.is_unassigned:
+            return "UNASSIGNED"
+        if self.is_ascii_c0:
+            return f"ASCII C0 CONTROL CODE {ord(self._char):02X}"
+        if self.is_ascii_c1:
+            return f"ASCII C1 CONTROL CODE {ord(self._char):02X}"
+
+        try:
+            return unicodedata.name(self._char)
+        except ValueError:
+            return None
+
+    def _get_category_override(self) -> str | None:
+        if self.is_invalid:
+            return "--"
+        try:
+            return unicodedata.category(self._char)
+        except ValueError:
+            return None
 
 
 def parse(string: Iterable[t.AnyStr]) -> Iterable[Char]:
     for c in string:
         yield Char(c)
+    yield None
