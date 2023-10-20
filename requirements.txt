@@ -1,0 +1,2 @@
+click==8.1.7
+pytermor @ git+ssh://git@github.com/delameter/pytermor.git@dev
