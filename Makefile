@@ -5,14 +5,10 @@
 .ONESHELL:
 .PHONY: help test
 
-HOST_DEFAULT_PYTHON ?= /usr/bin/python3.10
-VENV_DEV_PATH = venv
-OUT_BUILD_RELEASE_PATH = dist
-OUT_COVER_PATH = misc/coverage
-VERSION_FILE_PATH = h0lmes/_version.py
+HOST_DEFAULT_PYTHON ?= /usr/bin/python
 
-ENV_DIST_FILE_PATH = .env.build.dist
-ENV_LOCAL_FILE_PATH = .env.build
+ENV_DIST_FILE_PATH ?= .env.build.dist
+ENV_LOCAL_FILE_PATH ?= .env.build
 
 include $(ENV_DIST_FILE_PATH)
 -include $(ENV_LOCAL_FILE_PATH)
@@ -41,8 +37,7 @@ prepare:  ## Initialize local configuration file
 	@if [ ! -s $(ENV_LOCAL_FILE_PATH) ] ; then
 	  	sed -E < $(ENV_DIST_FILE_PATH) > $(ENV_LOCAL_FILE_PATH) \
 			-e "1i# This file has a higher priority than '$(ENV_DIST_FILE_PATH)'\n" \
-			-e "/^(#|$$)/d;" \
-			-e "$$s/$$/AAAAA/w/dev/stderr"
+			-e "/^(#|$$)/d"
 		echo "File created: $(ENV_LOCAL_FILE_PATH)"
 	else
 		echo "Skipping: $(ENV_LOCAL_FILE_PATH) already exists"

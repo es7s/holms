@@ -1,11 +1,16 @@
+# ------------------------------------------------------------------------------
+#  es7s/h0lmes
+#  (c) 2023 A. Shavykin <0.delameter@gmail.com>
+# ------------------------------------------------------------------------------
+
 import math
 import re
+import sys
 import unicodedata
 from collections import deque, OrderedDict
 from collections.abc import Iterable
 import typing as t
 from dataclasses import dataclass
-from threading import Thread, Event
 
 from .core import Char, Attribute
 import pytermor as pt
@@ -28,7 +33,7 @@ class Column:
 
 @dataclass
 class Row:
-    char: Char | None
+    char: Char|None
     offset: int
     dup_count: int = 0
 
@@ -40,10 +45,10 @@ class Table(OrderedDict[Attribute, Column]):
 @dataclass(frozen=True)
 class Format:
     render_fn: t.Callable[[Row], str]
-    fmt_val_fn: t.Callable[[int, Column | None], str] | None = None
+    fmt_val_fn: t.Callable[[int, Column|None], str] | None = None
 
 
-class CliWriter(Thread):
+class CliWriter:
     IDX_STYLE = pt.FrozenStyle(fg=pt.cv.GRAY_50, bg=pt.cv.BLACK)
     IDX_ZEROS_STYLE = pt.FrozenStyle(fg=pt.cv.GRAY_23, bg=pt.cv.BLACK)
     CPNUM_PFX_STYLE = pt.FrozenStyle(fg=pt.cv.GRAY_30)
@@ -52,22 +57,13 @@ class CliWriter(Thread):
 
     def __init__(
         self,
-        io: t.IO,
-        ic: Iterable[Char | None],
-        read_next: Event,
-        read_end: Event,
-        unbuffered: bool,
         format: list[Attribute],
         decimal: bool,
         squash: bool,
+        io=sys.stdout,
         **kwargs,
     ):
         self._io = io
-        self._ic = ic
-
-        self._read_next = read_next
-        self._read_end = read_end
-
         pt.RendererManager.set_default(pt.SgrRenderer(pt.OutputMode.XTERM_256))
 
         self._attributes = format
@@ -76,13 +72,11 @@ class CliWriter(Thread):
         self._squash = squash
 
         self._offset = 0
-        self._unbuffered = unbuffered
+        self._buffered = False
         self._buffer = deque[Row]()
         self._styles = CategoryStyles()
 
         self._table = Table({a: Column(a) for a in self._attributes})
-
-        super().__init__(target=self.write)
 
     def _get_formatters(self, attr: Attribute) -> Format:
         match attr:
@@ -101,23 +95,16 @@ class CliWriter(Thread):
             case _:
                 raise RuntimeError(f"Invalid attribute: {attr}")
 
-    def write(self):
+    def write(self, chars: Iterable[Char | None]):
         prev_char: Char | None = None
         dup_count = 0
-        if self._unbuffered:
+        if isinstance(chars, t.Sized):
+            self._buffered = True
+        else:
             self._update_column(Attribute.OFFSET, width=4)
             self._update_column(Attribute.COUNT, width=4)
 
-        while True:
-            if not self._ic:
-                if self._read_end.is_set():
-                    break
-            if not self._read_next.wait(0.1):
-                continue
-            char = self._ic.popleft()
-            if not self._ic:
-                self._read_next.clear()
-
+        for char in chars:
             if not self._squash:
                 self._make_row(char)
                 continue
@@ -129,7 +116,7 @@ class CliWriter(Thread):
                 dup_count += 1
             prev_char = char
 
-        if not self._unbuffered:
+        if self._buffered:
             self._update_columns()
             for row in self._buffer:
                 self._print_row(row)
@@ -139,10 +126,10 @@ class CliWriter(Thread):
         self._update_columns(row)
         self._offset += 1 + dup_count
 
-        if self._unbuffered:
-            self._print_row(row)
-        else:
+        if self._buffered:
             self._buffer.append(row)
+        else:
+            self._print_row(row)
 
     def _print_row(self, row: Row):
         if row.char is None:
@@ -166,7 +153,8 @@ class CliWriter(Thread):
         self._update_column(Attribute.COUNT, val=row.dup_count if row else None)
 
     def _update_column(self, attr: Attribute, *, val: int = None, width: int = None):
-        col = self._table.get(attr)
+        if not (col := self._table.get(attr)):
+            return
 
         if val is not None:
             col.update_val(val)
@@ -211,7 +199,7 @@ class CliWriter(Thread):
         if val == 0:
             result = ""
         else:
-            result = str(val + 1) + "×"
+            result = str(val + 1)+"×"
 
         if col is None:
             return result
@@ -234,17 +222,14 @@ class CliWriter(Thread):
         if self._single_char_mode:
             if row.char.is_ascii_c0:
                 return value
+            if isinstance(value, str):
+                value = value.encode(errors='surrogateescape').decode(errors='replace')
             return pt.render(value, cat_st)
 
         st = pt.merge_styles(self.CHAR_STYLE, overwrites=[self._styles._BASE, cat_st])
         pad = ""
 
-        if (
-            row.char.is_control
-            or row.char.is_surrogate
-            or row.char.is_unassigned
-            or row.char.is_invalid
-        ):
+        if row.char.is_control or row.char.is_surrogate or row.char.is_unassigned or row.char.is_invalid:
             val_len = 1
             value = "▯"
         else:

@@ -1,12 +1,13 @@
+# ------------------------------------------------------------------------------
+#  es7s/h0lmes
+#  (c) 2023 A. Shavykin <0.delameter@gmail.com>
+# ------------------------------------------------------------------------------
+
 import io
 import sys
 import typing
 from codecs import BufferedIncrementalDecoder
-from collections import deque
 from collections.abc import Iterable
-from threading import Thread, Event
-
-from h0lmes import Char
 
 
 class SurrogateAwareDecoder(BufferedIncrementalDecoder):
@@ -24,27 +25,18 @@ class SurrogateAwareDecoder(BufferedIncrementalDecoder):
 
 
 class CliReader:
-    _BUF_SIZE = 16
+    _BUF_SIZE = 4
 
-    def __init__(self, io_: io.TextIOWrapper, ic: deque[Char | None], read_next: Event, read_end: Event):
+    def __init__(self, io_: io.TextIOWrapper = sys.stdin):
         self._io = io_
-        self._ic = ic
-        self._read_next = read_next
-        self._read_end = read_end
 
-    def read(self):
+    def read(self) -> Iterable[typing.AnyStr]:
         buf = SurrogateAwareDecoder()
 
-        def _loop():
-            while buf.getstate()[0] or not self._io.closed:
-                if self._io.closed:
-                    yield from buf.decode(b"", True)
-                elif b := self._io.buffer.read(self._BUF_SIZE):
-                    yield from buf.decode(b)
-                else:
-                    self._io.close()
-
-        for c in _loop():
-            self._ic.append(Char(c))
-            self._read_next.set()
-        self._read_end.set()
+        while buf.getstate()[0] or not self._io.closed:
+            if self._io.closed:
+                yield from buf.decode(b"", True)
+            elif b := self._io.buffer.read(self._BUF_SIZE):
+                yield from buf.decode(b)
+            else:
+                self._io.close()

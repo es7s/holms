@@ -1,3 +1,8 @@
+# ------------------------------------------------------------------------------
+#  es7s/h0lmes
+#  (c) 2023 A. Shavykin <0.delameter@gmail.com>
+# ------------------------------------------------------------------------------
+
 import unicodedata
 from collections.abc import Iterable
 import typing as t
