@@ -1,6 +1,7 @@
 import unicodedata
 from collections.abc import Iterable
 import typing as t
+import pytermor as pt
 
 _CT = t.TypeVar("_CT", str, bytes)
 
@@ -16,6 +17,15 @@ _CT = t.TypeVar("_CT", str, bytes)
 #    ∌       ∌ ∌        1b
 
 
+class Attribute(str, pt.ExtendedEnum):
+    OFFSET = "offset"
+    NUMBER = "number"
+    CHAR = "char"
+    COUNT = "count"
+    CATEGORY = "category"
+    NAME = "name"
+
+
 class Char(t.Generic[_CT]):
     _SINGLE_CHAR_OVERRIDE = {
         0x0A: "Line Feed",
@@ -28,21 +38,21 @@ class Char(t.Generic[_CT]):
             c = bytes((c,))
         if len(c) > 1:
             raise ValueError(f"Char length must be exactly 1 (got {len(c)})")
-        self._char: _CT = c
+        self._value: _CT = c
         self._category = self._get_category_override()
         self._name = self._get_name_override()
 
     def __eq__(self, other: "Char") -> bool:
         if not isinstance(other, self.__class__):
             return False
-        return self._char == other._char
+        return self._value == other._value
 
     def __hash__(self):
-        return hash((self._char, self.__class__.__name__))
+        return hash((self._value, self.__class__.__name__))
 
     @property
-    def char(self) -> str:
-        return self._char
+    def value(self) -> str:
+        return self._value
 
     @property
     def name(self) -> str | None:
@@ -50,7 +60,7 @@ class Char(t.Generic[_CT]):
 
     @property
     def cpnum(self) -> int:
-        return ord(self._char)
+        return ord(self._value)
 
     @property
     def category(self) -> str:
@@ -70,19 +80,19 @@ class Char(t.Generic[_CT]):
 
     @property
     def is_invalid(self) -> bool:
-        return isinstance(self._char, bytes)
+        return isinstance(self._value, bytes)
 
     @property
     def is_surrogate(self) -> bool:
-        return 0xD800 <= ord(self._char) <= 0xDFFF
+        return 0xD800 <= ord(self._value) <= 0xDFFF
 
     @property
     def is_ascii_c0(self) -> bool:
-        return ord(self._char) in self._ASCII_C0
+        return ord(self._value) in self._ASCII_C0
 
     @property
     def is_ascii_c1(self) -> bool:
-        return ord(self._char) in self._ASCII_C1
+        return ord(self._value) in self._ASCII_C1
 
     def _get_name_override(self) -> str | None:
         if self.is_invalid:
@@ -94,12 +104,12 @@ class Char(t.Generic[_CT]):
         if self.is_unassigned:
             return "UNASSIGNED"
         if self.is_ascii_c0:
-            return f"ASCII C0 CONTROL CODE {ord(self._char):02X}"
+            return f"ASCII C0 CONTROL CODE {ord(self._value):02X}"
         if self.is_ascii_c1:
-            return f"ASCII C1 CONTROL CODE {ord(self._char):02X}"
+            return f"ASCII C1 CONTROL CODE {ord(self._value):02X}"
 
         try:
-            return unicodedata.name(self._char)
+            return unicodedata.name(self._value)
         except ValueError:
             return None
 
@@ -107,12 +117,12 @@ class Char(t.Generic[_CT]):
         if self.is_invalid:
             return "--"
         try:
-            return unicodedata.category(self._char)
+            return unicodedata.category(self._value)
         except ValueError:
             return None
 
 
-def parse(string: Iterable[t.AnyStr]) -> Iterable[Char]:
+def parse(string: Iterable[t.AnyStr]) -> Iterable[Char|None]:
     for c in string:
         yield Char(c)
     yield None

@@ -1,5 +1,130 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
+name = "h0lmes"
+dynamic = ["version"]
+description = "Text to Unicode code points breakdown"
+readme = "README.md"
+license = "LGPL-3.0"
+requires-python = ">=3.10"
+platforms = ["linux"]
+keywords = ["unicode", "text", "breakdown", "console", "terminal", "analyzer"]
+authors = [
+    { name = "Aleksandr Shavykin", email = "0.delameter@gmail.com" },
+]
+classifiers = [
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Development Status :: 5 - Production/Stable",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: System Administrators",
+    "Environment :: Console",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Text Processing :: General",
+    "Topic :: Utilities",
+]
 dependencies = [
     "click=~8.1",
-    "pytermor=~2"
+    "pytermor @ git+https://gitlab.com/dp3.dl/pytermor.git@dev",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/es7s/h0lmes"
+"Bug Tracker" = "https://github.com/es7s/h0lmes/issues"
+"Changelog" = "https://github.com/es7s/h0lmes/blob/master/CHANGES.md"
+
+# ---------------------------------------------------------
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.pytest.ini_options]
+testpaths = [
+    "h0lmes",
+    "tests",
+]
+addopts = [
+    "--strict-config",
+    "--maxfail", "5",
+    "--durations", "5",
+]
+xfail_strict = true
+
+[tool.coverage.run]
+source = ["h0lmes"]
+branch = true
+omit = [
+    "*/__init__.py",
+    "*/__main__.py",
+    "*/_version.py",
+]
+relative_files = true
+dynamic_context = "test_function"
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if __debug__",
+    "if self.debug",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "raise LogicError",
+    "if __name__ == .__main__.:",
+    "def repr_attrs\\(.+",
+]
+ignore_errors = true
+
+[tool.coverage.html]
+directory = "coverage-report"
+title = "h0lmes coverage report"
+
+# ---------------------------------------------------------
+
+[tool.hatch.publish.index]
+disable = true
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/h0lmes",
+    "/tests",
+]
+
+[tool.hatch.version]
+path = "h0lmes/_version.py"
+
+[tool.hatch.envs.default.scripts]
+version = "python -m h0lmes --version"
+
+[tool.hatch.envs.test]
+detached = true
+extra-dependencies = [
+    "coverage[toml]~=6.4",
+    "coveralls~=3.3",
+    "pytest~=7.1",
+    "pytest-cov~=4.1",
+    "typing-extensions~=4.6",
+]
+
+[tool.hatch.envs.test.scripts]
+test = "pytest"
+
+[tool.hatch.envs.build]
+detached = false
+extra-dependencies = [
+    "build~=0.8",
+    "twine~=4.0",
+]
+
+[tool.hatch.envs.dev]
+detached = false
+extra-dependencies = [
+    "pydeps~=1.10",
 ]

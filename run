@@ -4,4 +4,4 @@
 # (c) 2023 A. Shavykin <0.delameter@gmail.com>
 #-------------------------------------------------------------------------------
 
-PYTHONPATH=. "$(source .locate-venv.sh)" -m holmes "$@"
+PYTHONPATH=. "$(source .locate-venv.sh)" -m h0lmes "$@"
