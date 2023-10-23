@@ -1,4 +1,4 @@
-## es7s/h0lmes          ## [text to unicode code points breakdown]
+## es7s/holms          ## [text to unicode code points breakdown]
 ## (c) 2023             ## A. Shavykin <<0.delameter@gmail.com>>
 ##----------------------##-------------------------------------------------------------
 
@@ -102,7 +102,7 @@ next-version-major: ## Increase version by 1
 _freeze = (	echo "${BSEP}\e[34mFreezing \e[1;94m$1\e[22;34m:\e[m\n${BSEP}"; \
 			hatch -e $1 run pip freeze -q --exclude-editable | \
 				sed --unbuffered -E -e '/^(Checking|Syncing|Creating|Installing)/d' | \
-				fgrep -e h0lmes -v | \
+				fgrep -e holms -v | \
 				tee requirements-$1.txt | \
 				sed --unbuffered -E -e 's/^([a-zA-Z0-9_-]+)/\x1b[32m\1\x1b[m/' \
 									-e 's/([0-9.]+|@[a-zA-Z0-9_-]+)$$/\x1b[33m\1\x1b[m/'; \

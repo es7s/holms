@@ -1,9 +1,12 @@
 # ------------------------------------------------------------------------------
-#  es7s/h0lmes
+#  es7s/holms
 #  (c) 2023 A. Shavykin <0.delameter@gmail.com>
 # ------------------------------------------------------------------------------
 
-from .cli import entrypoint
+from .core import Char as Char
 
-if __name__ == '__main__':
-    entrypoint()
+from ._version import __version__, __updated__
+
+APP_NAME = "holms"
+APP_VERSION = __version__
+APP_UPDATED = __updated__

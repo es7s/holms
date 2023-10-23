@@ -1,9 +1,10 @@
 # ------------------------------------------------------------------------------
-#  es7s/h0lmes
+#  es7s/holms
 #  (c) 2023 A. Shavykin <0.delameter@gmail.com>
 # ------------------------------------------------------------------------------
 
 import io
+import re
 
 import pytermor as pt
 import click
@@ -18,8 +19,32 @@ from .reader import CliReader
 from .writer import CliWriter
 
 
+class Context(click.Context):
+    def __init__(self, *args, **kwargs) -> None:
+        kwargs.setdefault("terminal_width", min(120, pt.get_terminal_width()))
+        super().__init__(*args, **kwargs)
+
+
+class Command(click.Command):
+    context_class = Context
+    pass
+
+
 class VersionOption(click.Option):
     def __init__(self, *args, **kwargs):
+        # fmt: off
+        """
+              ███████                                                                   
+   ₑₛ₇ₛ    ║███╔═══╗███║                  
+   ═┏━┓┏━┓═╣███║ ║█████╠═┏━┓════┏━┓═┏━┓════════┏━━━━┓
+    ┃ ┗┛ ┃ ║███║ ╚═╗███║ ┃ ┃    ┃ ┗┳┛ ┃ ╎ -┬-╵ ┃ ━━━┫
+    ┃ ┏┓ ┃ ║█████║ ║███║ ┃ ┗━━┓ ┃ ┣━┫ ┃ ╎ -┴-┐ ┣━━━ ┃
+    ┗━┛┗━┛ ║███╔═╝ ║███║ ┗━━━━┛ ┗━┛ ┗━┛ '╌╌╌╌╵ ┗━━━━┛
+           ╚═╗███████╔═╝                                                                
+             ╚═══════╝
+        """
+        # fmt: on
+
         kwargs.setdefault("count", True)
         kwargs.setdefault("expose_value", False)
         kwargs.setdefault("is_eager", True)
@@ -31,7 +56,24 @@ class VersionOption(click.Option):
             return
         vfmt = lambda s: pt.Fragment(s, "green")
         ufmt = lambda s: pt.Fragment(s, "gray")
-
+        pt.echo(
+            re.sub(
+                "(█+)|([┃━┏┳┓┣╋┫┗┻┛]+)|([╎╌└╵╴╷┘,'┐┴┬-]+)|(.+?)",
+                lambda m: "".join(
+                    pt.render(g or "", st)
+                    for g, st in zip(
+                        m.groups(),
+                        [
+                            pt.cv.DARK_RED,
+                            pt.NOOP_COLOR,
+                            pt.cv.GRAY,
+                            pt.cv.DARK_GOLDENROD,
+                        ],
+                    )
+                ),
+                VersionOption.__init__.__doc__,
+            )
+        )
         pt.echo(f"{APP_NAME:>12s}  {vfmt(APP_VERSION):<14s}  {ufmt(APP_UPDATED)}")
         pt.echo(f"{'pytermor':>12s}  {vfmt(pt.__version__):<14s}  {ufmt(pt.__updated__)}")
         # pt.echo(f"{'es7s-commons':>12s}  {vfmt((ec := util.find_spec('es7s_commons._version').loader.load_module('es7s_commons._version')).__version__):<14s}  {ufmt(ec.__updated__)}")
@@ -45,13 +87,14 @@ class VersionOption(click.Option):
     def _echo_path(self, label: str, path: str):
         pt.echo(
             pt.Composite(
-                pt.Text(label+":", width=17),
+                pt.Text(label + ":", width=17),
                 format_path(path, color=True, repr=False),
             )
-            )
+        )
 
 
 @click.command(
+    cls=Command,
     no_args_is_help=True,
     help="Read data from FILE, find all valid UTF-8 byte sequences, decode them and display as separate Unicode code "
     "points. Use '-' as FILE to read from stdin instead.\n\n"

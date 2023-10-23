@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-#  es7s/h0lmes
+#  es7s/holms
 #  (c) 2023 A. Shavykin <0.delameter@gmail.com>
 # ------------------------------------------------------------------------------
 
@@ -222,9 +222,12 @@ class CliWriter:
         if self._single_char_mode:
             if row.char.is_ascii_c0:
                 return value
-            if isinstance(value, str):
-                value = value.encode(errors='surrogateescape').decode(errors='replace')
-            return pt.render(value, cat_st)
+            if row.char.is_surrogate or row.char.is_invalid:
+                return "▯"
+            pad = ""
+            if unicodedata.combining(value):
+                pad = " "
+            return pt.render(pad +value, cat_st)
 
         st = pt.merge_styles(self.CHAR_STYLE, overwrites=[self._styles._BASE, cat_st])
         pad = ""

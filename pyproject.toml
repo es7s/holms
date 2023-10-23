@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "h0lmes"
+name = "holms"
 dynamic = ["version"]
 description = "Text to Unicode code points breakdown"
 readme = "README.md"
@@ -36,15 +36,12 @@ dependencies = [
 ]
 
 [project.scripts]
-h0lmes = "h0lmes.cli.__main__:main"
-es7s-daemon = "es7s.d.__main__:main"
-es7s-indicators = "es7s.gtk.__main__:main"
-es7s-edit-image = "es7s.cli.__main__:edit_image"  # @TODO выпилить к черту
+holms = "holms.__main__:main"
 
 [project.urls]
-"Homepage" = "https://github.com/es7s/h0lmes"
-"Bug Tracker" = "https://github.com/es7s/h0lmes/issues"
-"Changelog" = "https://github.com/es7s/h0lmes/blob/master/CHANGES.md"
+"Homepage" = "https://github.com/es7s/holms"
+"Bug Tracker" = "https://github.com/es7s/holms/issues"
+"Changelog" = "https://github.com/es7s/holms/blob/master/CHANGES.md"
 
 # ---------------------------------------------------------
 
@@ -54,7 +51,7 @@ target-version = ['py310']
 
 [tool.pytest.ini_options]
 testpaths = [
-    "h0lmes",
+    "holms",
     "tests",
 ]
 addopts = [
@@ -65,7 +62,7 @@ addopts = [
 xfail_strict = true
 
 [tool.coverage.run]
-source = ["h0lmes"]
+source = ["holms"]
 branch = true
 omit = [
     "*/__init__.py",
@@ -91,7 +88,7 @@ ignore_errors = true
 
 [tool.coverage.html]
 directory = "coverage-report"
-title = "h0lmes coverage report"
+title = "holms coverage report"
 
 # ---------------------------------------------------------
 
@@ -103,15 +100,15 @@ disable = true
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "/h0lmes",
+    "/holms",
     "/tests",
 ]
 
 [tool.hatch.version]
-path = "h0lmes/_version.py"
+path = "holms/_version.py"
 
 [tool.hatch.envs.default.scripts]
-version = "python -m h0lmes --version"
+version = "python -m holms --version"
 
 [tool.hatch.envs.test]
 detached = true
