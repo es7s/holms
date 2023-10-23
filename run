@@ -4,4 +4,10 @@
 # (c) 2023 A. Shavykin <0.delameter@gmail.com>
 #-------------------------------------------------------------------------------
 
-PYTHONPATH=. "$(source .locate-venv.sh)" -m holms "$@"
+srcpath=$(dirname "$(realpath "$0")")
+python=
+if ! python=$(source "$srcpath/.locate-venv.sh") ; then
+    echo "Installed application not found, run 'make reinit-manual-venv'"
+    exit 1
+fi
+PYTHONPATH=. "$python" -m holms "$@"

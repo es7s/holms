@@ -59,12 +59,12 @@ reinit-hatch:  ## Demolish and install auto environments <hatch>
 
 reinit-manual-venv:  ## Prepare manual environment  <venv>
 	${HOST_DEFAULT_PYTHON} -m pip install hatch
-	${HOST_DEFAULT_PYTHON} -m venv --prompt es7s:ml --upgrade-deps --clear ${VENV_DEV_PATH}
+	${HOST_DEFAULT_PYTHON} -m venv --prompt manual-venv --upgrade-deps --clear ${VENV_DEV_PATH}
 	${VENV_DEV_PATH}/bin/pip install -e .
 	${VENV_DEV_PATH}/bin/pip install -r requirements.txt
 	${VENV_DEV_PATH}/bin/pip install -r requirements-dev.txt
-	$(call _inject_venv_dev_pytermor)
-	${VENV_DEV_PATH}/bin/python -m es7s.cli --version
+	# $(call _inject_venv_dev_pytermor)
+	${VENV_DEV_PATH}/bin/python -m $(PACKAGE_NAME) --version
 
 ## Packaging
 

@@ -34,13 +34,13 @@ class VersionOption(click.Option):
     def __init__(self, *args, **kwargs):
         # fmt: off
         """
-              ███████                                                                   
-   ₑₛ₇ₛ    ║███╔═══╗███║                  
+              ███████
+   ₑₛ₇ₛ    ║███╔═══╗███║
    ═┏━┓┏━┓═╣███║ ║█████╠═┏━┓════┏━┓═┏━┓════════┏━━━━┓
     ┃ ┗┛ ┃ ║███║ ╚═╗███║ ┃ ┃    ┃ ┗┳┛ ┃ ╎ -┬-╵ ┃ ━━━┫
     ┃ ┏┓ ┃ ║█████║ ║███║ ┃ ┗━━┓ ┃ ┣━┫ ┃ ╎ -┴-┐ ┣━━━ ┃
     ┗━┛┗━┛ ║███╔═╝ ║███║ ┗━━━━┛ ┗━┛ ┗━┛ '╌╌╌╌╵ ┗━━━━┛
-           ╚═╗███████╔═╝                                                                
+           ╚═╗███████╔═╝
              ╚═══════╝
         """
         # fmt: on
@@ -98,6 +98,11 @@ class VersionOption(click.Option):
     no_args_is_help=True,
     help="Read data from FILE, find all valid UTF-8 byte sequences, decode them and display as separate Unicode code "
     "points. Use '-' as FILE to read from stdin instead.\n\n"
+    "\b\bColumns\n\n"
+    "The results are formatted as a table with following columns (the names listed below are all valid identifiers for '--format' option):\n\n"
+    f"   \b {'   '.join(Attribute)}"
+    "\n\n"
+    "\n\n"
     "\b\bBuffering\n\n"
     "The application works in two modes: buffered (the default) and unbuffered. In buffered "
     "mode the result begins to appear only after EOF is encountered. This is suitable for relatively short and "

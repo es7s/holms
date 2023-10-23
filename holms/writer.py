@@ -37,6 +37,10 @@ class Row:
     offset: int
     dup_count: int = 0
 
+    @property
+    def has_cpnum(self) -> bool:
+        return self.char and not self.char.is_invalid
+
 
 class Totals(t.Dict[Char, int]):
     def sorted(self) -> list[tuple[Char, int]]:
@@ -93,7 +97,7 @@ class CliWriter:
             case Attribute.COUNT:
                 return Format(self._render_dup_count, self._format_dup_count_val)
             case Attribute.NUMBER:
-                return Format(self._render_cpnum)
+                return Format(self._render_cpnum, self._format_cpnum_val)
             case Attribute.CHAR:
                 return Format(self._render_char)
             case Attribute.CATEGORY:
@@ -109,8 +113,8 @@ class CliWriter:
         if isinstance(chars, t.Sized):
             self._buffered = True
         else:
-            self._update_column(Attribute.OFFSET, width=4)
-            self._update_column(Attribute.COUNT, width=4)
+            self._table.get(Attribute.OFFSET).update_width(4),
+            self._table.get(Attribute.COUNT).update_width(4)
 
         for char in chars:
             if self._count:
@@ -130,14 +134,16 @@ class CliWriter:
                 dup_count += 1
             prev_char = char
 
+        if not self._buffered:
+            return
+
         if self._count:
             for char, count in self._totals.sorted():
                 self._make_row(char, count - 1)
 
-        if self._buffered:
-            self._update_columns()
-            for row in self._buffer:
-                self._print_row(row)
+        self._update_columns()
+        for row in self._buffer:
+            self._print_row(row)
 
     def _make_row(self, char: Char | None, dup_count: int = 0):
         row = Row(char, self._offset, dup_count)
@@ -189,7 +195,7 @@ class CliWriter:
         if self._count:
             return ""
         col = self._table.get(Attribute.OFFSET)
-        o_str = self._format_offset_val(row.offset, col)
+        o_str = self._format_offset_val(row, col)
         o_st = self.IDX_STYLE
 
         prefix = " "
@@ -199,7 +205,8 @@ class CliWriter:
         text = pt.Text(prefix + zeros, self.IDX_ZEROS_STYLE, nonzeros + suffix, o_st)
         return pt.render(text)
 
-    def _format_offset_val(self, val: int, col: Column = None) -> str:
+    def _format_offset_val(self, row:Row, col: Column = None) -> str:
+        val = row.offset
         fmt = "xd"[self._decimal_offset]
 
         if col is None:
@@ -214,9 +221,10 @@ class CliWriter:
         if not self._squash:
             return ""
         col = self._table.get(Attribute.COUNT)
-        return self._format_dup_count_val(row.dup_count, col)
+        return self._format_dup_count_val(row, col)
 
-    def _format_dup_count_val(self, val: int, col: Column = None) -> str:
+    def _format_dup_count_val(self, row: Row, col: Column = None) -> str:
+        val = row.dup_count
         if val == 0 and not self._count:
             result = ""
         else:
@@ -227,14 +235,21 @@ class CliWriter:
         return pt.fit(result, col.max_width, ">")
 
     def _render_cpnum(self, row: Row) -> str:
+        prefix = "U+"
+        result_st = pt.NOOP_STYLE
         if row.char.is_invalid:
             prefix = "0x"
-            result = f"{row.char.cpnum:>4X}"
-        else:
-            prefix = "U+"
-            result = f"{row.char.cpnum:04X}"
+            result_st = self.INVALID_STYLE
+
+        result = self.format_cpnum_val(row, self._table.get(Attribute.NUMBER))
         prefix = pt.fit(prefix, 7 - len(result), "<", overflow="")
-        return pt.render(pt.Text(prefix, self.CPNUM_PFX_STYLE, result))
+        return pt.render(pt.Text(prefix, self.CPNUM_PFX_STYLE, result, result_st))
+
+    def format_cpnum_val(self, row: Row, col: Column = None) -> str:
+        max_width = col.max_width if col else [2, 4][row.has_cpnum]
+        if row.char.is_invalid:
+            result = f"{row.char.cpnum:>{max_width}X}"
+        result = f"{row.char.cpnum:0{max_width}X}"
 
     def _render_char(self, row: Row) -> str:
         cat_st = self._styles.get(row.char.category, pt.NOOP_STYLE)

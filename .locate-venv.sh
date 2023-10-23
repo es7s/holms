@@ -5,11 +5,12 @@
 #-------------------------------------------------------------------------------
 
 __main() {
+  srcpath=$(dirname "$(realpath "$BASH_SOURCE[0]/")")
   PATHS=(
-    "./.hatch/dev/bin"
-    "./venv/bin"
+    ".hatch/dev/bin"
+    "venv/bin"
   )
-  for file in "${PATHS[@]/%//python}" ; do
+  for file in "$srcpath/${PATHS[@]/%//python}" ; do
       [[ -x $file ]] && echo "$file" && return 0
   done
   return 1
