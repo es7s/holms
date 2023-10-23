@@ -37,18 +37,6 @@
       Read data from FILE, find all valid UTF-8 byte sequences, decode them and display as separate Unicode code points.
       Use '-' as FILE to read from stdin instead.
     
-    Buffering
-    
-      The application works in two modes: buffered (the default) and unbuffered. In buffered mode the result begins to
-      appear only after EOF is encountered. This is suitable for relatively short and predictable inputs (e.g. from a
-      file) and allows to produce the most compact output (because all the column sizes are known from the start). When
-      input is not a file and can proceed infinitely (e.g. a piped stream), the unbuffered mode comes in handy: the
-      application prints the results in real time, as soon as the type of each byte sequence is determined. Despite the
-      name, it actually uses a tiny input buffer (size is 4 bytes), but it's the only way to handle UTF-8 stream and
-      distinguish valid sequences from broken ones; in truly unbuffered mode the output would consist of ASCII-7
-      characters (0x00-0x7F) and unrecogniesed binary data (0x80-0xFF) only, which is not something the application was
-      made for.
-    
     Options:
       -f, --format [offset|number|char|count|category|name]
                                       Comma-separated list of columns to show. The order of items determines the order of
@@ -61,10 +49,21 @@
                                       followed by a length of the sequence.
       --decimal                       Use decimal offsets instead of hexadecimal.
       -V, --version                   Show the version and exit.
-      --help                          Show this message and exit.   
+      --help                          Show this message and exit.
 
 ## Examples
 
+
+
+## Buffering
+
+The application works in two modes: buffered (the default) and unbuffered. 
+
+In **buffered** mode the result begins to appear only after EOF is encountered. This is suitable for relatively short and predictable inputs (e.g. from a file) and allows to produce the most compact output (because all the column sizes are known from the start).
+
+When input is not a file and can proceed infinitely (e.g. a piped stream), the **unbuffered** mode comes in handy: the application prints the results in real time, as soon as the type of each byte sequence is determined. 
+
+> Despite the name, it actually uses a tiny input buffer (size is 4 bytes), but it's the only way to handle UTF-8 stream and distinguish valid sequences from broken ones; in truly unbuffered mode the output would consist of ASCII-7 characters (0x00-0x7F) and unrecogniesed binary data (0x80-0xFF) only, which is not something the application was made for.
 
 
 ## Changelog

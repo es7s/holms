@@ -33,7 +33,7 @@ class Column:
 
 @dataclass
 class Row:
-    char: Char|None
+    char: Char | None
     offset: int
     dup_count: int = 0
 
@@ -45,7 +45,7 @@ class Table(OrderedDict[Attribute, Column]):
 @dataclass(frozen=True)
 class Format:
     render_fn: t.Callable[[Row], str]
-    fmt_val_fn: t.Callable[[int, Column|None], str] | None = None
+    fmt_val_fn: t.Callable[[int, Column | None], str] | None = None
 
 
 class CliWriter:
@@ -187,7 +187,8 @@ class CliWriter:
             if self._decimal_offset:
                 return result
             return pt.fit(result, 2 * math.ceil(len(result) / 2), fill="0")
-        return f"{val:0{col.max_width}{fmt}}"
+        fill = ["0", ""][self._decimal_offset]
+        return f"{val:{fill}{col.max_width}{fmt}}"
 
     def _render_dup_count(self, row: Row) -> str:
         if not self._squash:
@@ -199,7 +200,7 @@ class CliWriter:
         if val == 0:
             result = ""
         else:
-            result = str(val + 1)+"×"
+            result = str(val + 1) + "×"
 
         if col is None:
             return result
@@ -227,12 +228,17 @@ class CliWriter:
             pad = ""
             if unicodedata.combining(value):
                 pad = " "
-            return pt.render(pad +value, cat_st)
+            return pt.render(pad + value, cat_st)
 
         st = pt.merge_styles(self.CHAR_STYLE, overwrites=[self._styles._BASE, cat_st])
         pad = ""
 
-        if row.char.is_control or row.char.is_surrogate or row.char.is_unassigned or row.char.is_invalid:
+        if (
+            row.char.is_control
+            or row.char.is_surrogate
+            or row.char.is_unassigned
+            or row.char.is_invalid
+        ):
             val_len = 1
             value = "▯"
         else:
