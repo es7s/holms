@@ -107,7 +107,7 @@ class VersionOption(click.Option):
     "as the type of each byte sequence is determined. Despite the name, it actually uses a tiny input buffer "
     "(size is 4 bytes), but it's the only way to handle UTF-8 stream and distinguish valid sequences from "
     "broken ones; in truly unbuffered mode the output would consist of ASCII-7 characters (0x00-0x7F) and "
-    "unrecogniesed binary data (0x80-0xFF) only, which is not something the application was made for.",
+    "unrecognized binary data (0x80-0xFF) only, which is not something the application was made for.",
 )
 @click.argument("file", type=click.File("rb"), nargs=1, required=True)
 @click.option(
@@ -116,8 +116,10 @@ class VersionOption(click.Option):
     type=MultiChoice(Attribute.list()),
     default=",".join(Attribute),
     help="Comma-separated list of columns to show. The order of items determines the order of columns in the "
-    "output. Default is to show all columns in the order specified above. Note that 'count' column is visible "
-    "only when '-s' is specified. 'number' is the ID of code point (U+xxxx).",
+    "output. Default is to show all columns in the order specified above, one code point per line. Note that 'count' "
+    "column requires '--squash' or '--count' mode, while 'offset' column is hidden when '--count' is active. "
+    "'number' is the ID of code point (U+xxxx). Newline separators are disabled if the format specified as a single "
+    "'char' column.",
 )
 @click.option(
     "-u",
@@ -133,9 +135,22 @@ class VersionOption(click.Option):
     help="Replace all sequences of repeating characters with the first character from each, followed by a length of "
     "the sequence.",
 )
+@click.option(
+    "-c",
+    "--count",
+    is_flag=True,
+    help="Count unique code points, sort ascending and display totals instead of normal output. Disables unbuffered "
+         "mode. Implies '--squash'.",
+)
 @click.option("--decimal", is_flag=True, help="Use decimal offsets instead of hexadecimal.")
 @click.option("--version", "-V", cls=VersionOption, help="Show the version and exit.")
 def entrypoint(file: io.BufferedReader, unbuffered: bool, **kwargs):
+    if kwargs.get("count", None):
+        kwargs.update({
+            "squash": True,
+        })
+        unbuffered = False
+
     r = CliReader(io.TextIOWrapper(file))
     w = CliWriter(**kwargs)
     if unbuffered:

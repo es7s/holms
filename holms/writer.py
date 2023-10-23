@@ -38,6 +38,11 @@ class Row:
     dup_count: int = 0
 
 
+class Totals(t.Dict[Char, int]):
+    def sorted(self) -> list[tuple[Char, int]]:
+        return sorted(self.items(), key=lambda kv: kv[1])
+
+
 class Table(OrderedDict[Attribute, Column]):
     pass
 
@@ -58,8 +63,9 @@ class CliWriter:
     def __init__(
         self,
         format: list[Attribute],
-        decimal: bool,
+        count: bool,
         squash: bool,
+        decimal: bool,
         io=sys.stdout,
         **kwargs,
     ):
@@ -68,8 +74,9 @@ class CliWriter:
 
         self._attributes = format
         self._single_char_mode = {*self._attributes} == {Attribute.CHAR}
-        self._decimal_offset = decimal
+        self._count = count
         self._squash = squash
+        self._decimal_offset = decimal
 
         self._offset = 0
         self._buffered = False
@@ -77,6 +84,7 @@ class CliWriter:
         self._styles = CategoryStyles()
 
         self._table = Table({a: Column(a) for a in self._attributes})
+        self._totals = Totals()
 
     def _get_formatters(self, attr: Attribute) -> Format:
         match attr:
@@ -105,6 +113,12 @@ class CliWriter:
             self._update_column(Attribute.COUNT, width=4)
 
         for char in chars:
+            if self._count:
+                if char not in self._totals.keys():
+                    self._totals[char] = 0
+                self._totals[char] += 1
+                continue
+
             if not self._squash:
                 self._make_row(char)
                 continue
@@ -115,6 +129,10 @@ class CliWriter:
             if prev_char == char:
                 dup_count += 1
             prev_char = char
+
+        if self._count:
+            for char, count in self._totals.sorted():
+                self._make_row(char, count - 1)
 
         if self._buffered:
             self._update_columns()
@@ -168,6 +186,8 @@ class CliWriter:
             col.update_width(width)
 
     def _render_offset(self, row: Row) -> str:
+        if self._count:
+            return ""
         col = self._table.get(Attribute.OFFSET)
         o_str = self._format_offset_val(row.offset, col)
         o_st = self.IDX_STYLE
@@ -197,7 +217,7 @@ class CliWriter:
         return self._format_dup_count_val(row.dup_count, col)
 
     def _format_dup_count_val(self, val: int, col: Column = None) -> str:
-        if val == 0:
+        if val == 0 and not self._count:
             result = ""
         else:
             result = str(val + 1) + "×"
