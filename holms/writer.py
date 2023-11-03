@@ -12,6 +12,8 @@ from collections.abc import Iterable
 import typing as t
 from dataclasses import dataclass
 
+from es7s_commons.pt_ import joincoal
+
 from .core import Char, Attribute
 import pytermor as pt
 
@@ -35,7 +37,18 @@ class Column:
 class Row:
     char: Char | None
     offset: int
+    index: int
     dup_count: int = 0
+
+    @property
+    def has_cpnum(self) -> bool:
+        return self.char and not self.char.is_invalid
+
+    @property
+    def cpnum_or_byte(self) -> int | None:
+        if not self.char:
+            return None
+        return self.char.cpnum
 
 
 class Totals(t.Dict[Char, int]):
@@ -44,13 +57,28 @@ class Totals(t.Dict[Char, int]):
 
 
 class Table(OrderedDict[Attribute, Column]):
-    pass
+    DEFAULT_WIDTH = {
+        Attribute.OFFSET: 4,
+        Attribute.INDEX: 4,
+        Attribute.COUNT: 4,
+        Attribute.NUMBER: 6,
+        Attribute.NAME: 16,
+    }
+
+    def __init__(self, data):
+        super().__init__(data)
+        self.index = 0
+        self.offset = 0
+
+    def setdefaults(self):
+        for attr, col in self.items():
+            col.update_width(self.DEFAULT_WIDTH.get(attr, 0))
 
 
 @dataclass(frozen=True)
 class Format:
     render_fn: t.Callable[[Row], str]
-    fmt_val_fn: t.Callable[[int, Column | None], str] | None = None
+    fmt_val_fn: t.Callable[[Row, Column | None], str] | None = None
 
 
 class CliWriter:
@@ -60,60 +88,74 @@ class CliWriter:
     CHAR_STYLE = pt.FrozenStyle(fg=0xFFFFFF, bg=0)
     INVALID_STYLE = pt.FrozenStyle(fg=pt.cv.GRAY_30)
 
+    _OVERRIDE_CHARS = dict[int, str](
+        {
+            0x00: "Ø",
+            0x08: "←",
+            0x09: "⇥",
+            0x0A: "↵",
+            0x0B: "⤓",
+            0x0C: "↡",
+            0x0D: "⇤",
+            0x1B: "ə",
+            0x20: "␣",
+            0x7F: "→",
+        }
+    )
+
     def __init__(
         self,
         format: list[Attribute],
-        count: bool,
         squash: bool,
+        total: bool,
+        output_mode: str | None,
         decimal: bool,
         io=sys.stdout,
         **kwargs,
     ):
         self._io = io
-        pt.RendererManager.set_default(pt.SgrRenderer(pt.OutputMode.XTERM_256))
+        pt.RendererManager.set_default(pt.SgrRenderer(output_mode or pt.OutputMode.AUTO))
 
         self._attributes = format
         self._single_char_mode = {*self._attributes} == {Attribute.CHAR}
-        self._count = count
         self._squash = squash
+        self._total = total
         self._decimal_offset = decimal
 
-        self._offset = 0
-        self._buffered = False
         self._buffer = deque[Row]()
         self._styles = CategoryStyles()
 
         self._table = Table({a: Column(a) for a in self._attributes})
         self._totals = Totals()
 
-    def _get_formatters(self, attr: Attribute) -> Format:
+    def _get_format(self, attr: Attribute) -> Format:
         match attr:
             case Attribute.OFFSET:
                 return Format(self._render_offset, self._format_offset_val)
+            case Attribute.INDEX:
+                return Format(self._render_index, self._format_index_val)
+            case Attribute.NUMBER:
+                return Format(self._render_cpnum, self._format_cpnum_val)
             case Attribute.COUNT:
                 return Format(self._render_dup_count, self._format_dup_count_val)
-            case Attribute.NUMBER:
-                return Format(self._render_cpnum)
             case Attribute.CHAR:
                 return Format(self._render_char)
-            case Attribute.CATEGORY:
-                return Format(self._render_category)
+            case Attribute.TYPE:
+                return Format(self._render_type)
             case Attribute.NAME:
-                return Format(self._render_name)
+                return Format(self._render_name, self._format_name)
             case _:
                 raise RuntimeError(f"Invalid attribute: {attr}")
 
     def write(self, chars: Iterable[Char | None]):
         prev_char: Char | None = None
         dup_count = 0
-        if isinstance(chars, t.Sized):
-            self._buffered = True
-        else:
-            self._update_column(Attribute.OFFSET, width=4)
-            self._update_column(Attribute.COUNT, width=4)
+        self._buffered = isinstance(chars, t.Sized)
+        if not self._buffered:
+            self._table.setdefaults()
 
         for char in chars:
-            if self._count:
+            if self._total:
                 if char not in self._totals.keys():
                     self._totals[char] = 0
                 self._totals[char] += 1
@@ -130,19 +172,25 @@ class CliWriter:
                 dup_count += 1
             prev_char = char
 
-        if self._count:
+        if not self._buffered:
+            return
+
+        if self._total:
             for char, count in self._totals.sorted():
                 self._make_row(char, count - 1)
 
-        if self._buffered:
-            self._update_columns()
-            for row in self._buffer:
-                self._print_row(row)
+        self._update_columns()
+        for row in self._buffer:
+            self._print_row(row)
 
     def _make_row(self, char: Char | None, dup_count: int = 0):
-        row = Row(char, self._offset, dup_count)
+        if char is None:
+            return
+        row = Row(char, self._table.offset, self._table.index, dup_count)
         self._update_columns(row)
-        self._offset += 1 + dup_count
+        char_count = 1 + dup_count
+        self._table.offset += char_count * char.bytelen
+        self._table.index += char_count
 
         if self._buffered:
             self._buffer.append(row)
@@ -152,55 +200,45 @@ class CliWriter:
     def _print_row(self, row: Row):
         if row.char is None:
             return
+        pt.echo(self._render_row(row), nl=(not self._single_char_mode), file=self._io)
 
-        line = pt.Text("".join(self._iter_attributes(row)))
-        pt.echo(line, nl=(not self._single_char_mode), file=self._io)
+    def _render_row(self, row: Row):
+        return joincoal(*[f.render_fn(row) for f in self._iter_formats()])
 
-    def _iter_attributes(self, row: Row):
+    def _iter_formats(self) -> Iterable[Format]:
         for attr in self._attributes:
-            if render_fn := self._get_formatters(attr).render_fn:
-                if rendered := render_fn(row):
-                    yield rendered
+            yield self._get_format(attr)
 
     @property
     def _base(self) -> int:
         return [0x10, 10][self._decimal_offset]
 
     def _update_columns(self, row: Row = None):
-        self._update_column(Attribute.OFFSET, val=row.offset if row else None)
-        self._update_column(Attribute.COUNT, val=row.dup_count if row else None)
-
-    def _update_column(self, attr: Attribute, *, val: int = None, width: int = None):
-        if not (col := self._table.get(attr)):
-            return
-
-        if val is not None:
-            col.update_val(val)
-
-        if width is None:
-            if val_fmt_fn := self._get_formatters(attr).fmt_val_fn:
-                val_str = val_fmt_fn(col.max_val, None)
-                width = len(val_str)
-
-        if width is not None:
+        for attr in self._attributes:
+            if not (col := self._table.get(attr)):
+                continue
+            if not (val_fmt_fn := self._get_format(attr).fmt_val_fn):
+                continue
+            val_str = val_fmt_fn(row, col)
+            width = len(val_str)
             col.update_width(width)
 
     def _render_offset(self, row: Row) -> str:
-        if self._count:
+        if self._total:
             return ""
         col = self._table.get(Attribute.OFFSET)
-        o_str = self._format_offset_val(row.offset, col)
+        o_str = self._format_offset_val(row, col)
         o_st = self.IDX_STYLE
-
-        prefix = " "
-        suffix = [" ", ":"][row.dup_count > 0]
+        prefix = ["0x", "@"][self._decimal_offset]
+        suffix = [" ", "‥"][row.dup_count > 0]
 
         _, zeros, nonzeros = re.split("^([0 ]*)(?=.)", o_str)
         text = pt.Text(prefix + zeros, self.IDX_ZEROS_STYLE, nonzeros + suffix, o_st)
-        return pt.render(text)
+        return pt.render(text) + " "
 
-    def _format_offset_val(self, val: int, col: Column = None) -> str:
-        fmt = "xd"[self._decimal_offset]
+    def _format_offset_val(self, row: Row, col: Column = None) -> str:
+        val = row.offset if row else col.max_val
+        fmt = ["x", "d"][self._decimal_offset]
 
         if col is None:
             result = f"{val:{fmt}}"
@@ -210,34 +248,67 @@ class CliWriter:
         fill = ["0", ""][self._decimal_offset]
         return f"{val:{fill}{col.max_width}{fmt}}"
 
+    def _render_index(self, row: Row) -> str:
+        if self._total:
+            return ""
+        col = self._table.get(Attribute.INDEX)
+        o_str = self._format_index_val(row, col)
+        o_st = self.IDX_STYLE
+        prefix = "#"
+        suffix = " "
+
+        _, zeros, nonzeros = re.split("^([0 ]*)(?=.)", o_str)
+        text = pt.Text(prefix + zeros, self.IDX_ZEROS_STYLE, nonzeros + suffix, o_st)
+        return pt.render(text) + " "
+
+    def _format_index_val(self, row: Row, col: Column = None) -> str:
+        val = row.index if row else col.max_val
+
+        if col is None:
+            result = f"{val:d}"
+            if self._decimal_offset:
+                return result
+            return pt.fit(result, 2 * math.ceil(len(result) / 2), fill="0")
+        return f"{val:{col.max_width}d}"
+
     def _render_dup_count(self, row: Row) -> str:
         if not self._squash:
             return ""
         col = self._table.get(Attribute.COUNT)
-        return self._format_dup_count_val(row.dup_count, col)
+        return pt.render(pt.highlight(self._format_dup_count_val(row, col)))
 
-    def _format_dup_count_val(self, val: int, col: Column = None) -> str:
-        if val == 0 and not self._count:
+    def _format_dup_count_val(self, row: Row, col: Column = None) -> str:
+        val = max((row.dup_count if row else 0), col.max_val)
+        if val == 0 and not self._total:
             result = ""
         else:
-            result = str(val + 1) + "×"
+            result = str(val + 1) + "x"
 
         if col is None:
             return result
-        return pt.fit(result, col.max_width, ">")
+        return pt.fit(result, max(len(result), col.max_width), ">")
 
     def _render_cpnum(self, row: Row) -> str:
+        prefix = "U+"
+        result_st = pt.NOOP_STYLE
         if row.char.is_invalid:
             prefix = "0x"
-            result = f"{row.char.cpnum:>4X}"
-        else:
-            prefix = "U+"
-            result = f"{row.char.cpnum:04X}"
-        prefix = pt.fit(prefix, 7 - len(result), "<", overflow="")
-        return pt.render(pt.Text(prefix, self.CPNUM_PFX_STYLE, result))
+            result_st = self.INVALID_STYLE
+
+        col = self._table.get(Attribute.NUMBER)
+        result = self._format_cpnum_val(row, col).strip()
+        max_col_width = min(7, col.max_width + 2)
+        prefix = pt.fit(prefix, max_col_width - len(result), "<", overflow="")
+        return pt.render(pt.Text(prefix, self.CPNUM_PFX_STYLE, result, result_st))
+
+    def _format_cpnum_val(self, row: Row, col: Column = None) -> str:
+        if not row or not row.char:
+            return ""
+        max_width = max((col.max_width if col else 0), 2)
+        return f"{row.cpnum_or_byte:>{max_width}X}"
 
     def _render_char(self, row: Row) -> str:
-        cat_st = self._styles.get(row.char.category, pt.NOOP_STYLE)
+        cat_st = self._styles.get(row.char.type, pt.NOOP_STYLE)
         value = row.char.value
 
         if self._single_char_mode:
@@ -245,15 +316,16 @@ class CliWriter:
                 return value
             if row.char.is_surrogate or row.char.is_invalid:
                 return "▯"
-            pad = ""
-            if unicodedata.combining(value):
-                pad = " "
+            pad = " " * bool(unicodedata.combining(value))
             return pt.render(pad + value, cat_st)
 
         st = pt.merge_styles(self.CHAR_STYLE, overwrites=[self._styles._BASE, cat_st])
         pad = ""
 
-        if (
+        if override := self._OVERRIDE_CHARS.get(ord(value), None):
+            val_len = 1
+            value = override
+        elif (
             row.char.is_control
             or row.char.is_surrogate
             or row.char.is_unassigned
@@ -271,18 +343,25 @@ class CliWriter:
         suffix = pt.render(" ", self.CHAR_STYLE) + "▏"
         return prefix + pt.render(pad + value, st) + suffix
 
-    def _render_category(self, row: Row) -> str:
+    def _render_type(self, row: Row) -> str:
         prefix = " "
-        cat = row.char.category
-        if not cat:
+        type = row.char.type
+        if not type:
             return prefix
-        st = self._styles.get(cat, self._styles._BASE)
-        return prefix + pt.render(cat, st)
+        st = self._styles.get(type, self._styles._BASE)
+        return prefix + pt.render(type, st)
 
     def _render_name(self, row: Row) -> str:
         prefix = " "
         st: pt.Style = [pt.NOOP_STYLE, self.INVALID_STYLE][row.char.is_invalid]
-        return prefix + pt.render(row.char.name or "", st)
+        col = self._table.get(Attribute.NAME)
+        return prefix + pt.render(self._format_name(row, col), st)
+
+    def _format_name(self, row: Row, col: Column = None) -> str:
+        if not row or not row.char:
+            return ""
+        max_width = max((col.max_width if col else 0), 16)
+        return f"{row.char.name:{max_width}s}"
 
 
 class CategoryStyles(dict[str, dict[str, pt.FrozenStyle]]):
