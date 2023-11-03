@@ -21,7 +21,8 @@ from .writer import CliWriter
 
 class Context(click.Context):
     def __init__(self, *args, **kwargs) -> None:
-        kwargs.setdefault("terminal_width", min(120, pt.get_terminal_width()))
+        kwargs.setdefault("terminal_width", min(100, pt.get_terminal_width()))
+        kwargs.setdefault("help_option_names", ["-?", "--help"])
         super().__init__(*args, **kwargs)
 
 
@@ -99,9 +100,15 @@ class VersionOption(click.Option):
     help="Read data from FILE, find all valid UTF-8 byte sequences, decode them and display as separate Unicode code "
     "points. Use '-' as FILE to read from stdin instead.\n\n"
     "\b\bColumns\n\n"
-    "The results are formatted as a table with following columns (the names listed below are all valid identifiers for '--format' option):\n\n"
-    f"   \b {'   '.join(Attribute)}"
+    "List of valid column names for '--format' option and example output string:\n\n"
+    "  \b  0x0aa‥ # 190 U+2588 ▕ █ ▏1218x So FULL BLOCK\n\n"
+    "  \b  offset index number char count type name\n\n"
+    "By default each code point is printed on a new line and formatted as a set of fields from the list above, in that "
+    "exact order. Note that '--squash' mode is required for 'count' column to appear, while '--total' mode hides "
+    "'offset' and 'index' columns. 'number' is the ID of code point (U+xxxx). Newline separators are disabled if the "
+    f"format is a single 'char' column.\n\nDefault: '--format={','.join(Attribute)}'.\n\n"
     "\n\n"
+    "@TODO: typename utf8\n\n"
     "\n\n"
     "\b\bBuffering\n\n"
     "The application works in two modes: buffered (the default) and unbuffered. In buffered "
@@ -116,44 +123,55 @@ class VersionOption(click.Option):
 )
 @click.argument("file", type=click.File("rb"), nargs=1, required=True)
 @click.option(
-    "-f",
-    "--format",
-    type=MultiChoice(Attribute.list()),
-    default=",".join(Attribute),
-    help="Comma-separated list of columns to show. The order of items determines the order of columns in the "
-    "output. Default is to show all columns in the order specified above, one code point per line. Note that 'count' "
-    "column requires '--squash' or '--count' mode, while 'offset' column is hidden when '--count' is active. "
-    "'number' is the ID of code point (U+xxxx). Newline separators are disabled if the format specified as a single "
-    "'char' column.",
-)
-@click.option(
     "-u",
     "--unbuffered",
     is_flag=True,
-    help="Start streaming the result as soon as possible, do not read the whole input preemptively. See BUFFERING "
-    "paragraph above for the details.",
+    help="Do not wait for EOF, start to stream the results as soon as possible. See BUFFERING section above "
+    "for the details.",
 )
 @click.option(
     "-s",
     "--squash",
     is_flag=True,
-    help="Replace all sequences of repeating characters with the first character from each, followed by a length of "
+    help="Replace all sequences of repeating characters with one of each, together with initial length of "
     "the sequence.",
 )
 @click.option(
-    "-c",
-    "--count",
+    "-t",
+    "--total",
     is_flag=True,
-    help="Count unique code points, sort ascending and display totals instead of normal output. Disables unbuffered "
-         "mode. Implies '--squash'.",
+    help="Count unique code points, sort ascending and display totals instead of normal output. Implies '--squash' "
+    " and forces buffered mode.",
+)
+@click.option(
+    "-f",
+    "--format",
+    type=MultiChoice(Attribute.list(), hide_choices=True),
+    default=",".join(Attribute),
+    help="Comma-separated list of columns to show (order is preserved). See COLUMNS section above.",
+)
+@click.option(
+    "-c",
+    "--color",
+    "output_mode",
+    flag_value=pt.OutputMode.XTERM_256.value,
+    help="Explicitly turn on colored results; usually this is applied by the app automatically, when output/receiving "
+    "device is a terminal emulator with corresponding capabilities.",
+)
+@click.option(
+    "-C",
+    "--no-color",
+    "output_mode",
+    flag_value=pt.OutputMode.NO_ANSI.value,
+    help="Explicitly turn off colored results; usually this is applied by the app automatically, when the output "
+    "is being piped or redirected elsewhere.",
 )
 @click.option("--decimal", is_flag=True, help="Use decimal offsets instead of hexadecimal.")
+@click.option("--legend", "-L", cls=VersionOption, help="@TODO")
 @click.option("--version", "-V", cls=VersionOption, help="Show the version and exit.")
 def entrypoint(file: io.BufferedReader, unbuffered: bool, **kwargs):
-    if kwargs.get("count", None):
-        kwargs.update({
-            "squash": True,
-        })
+    if kwargs.get("total", None):
+        kwargs.update({"squash": True})
         unbuffered = False
 
     r = CliReader(io.TextIOWrapper(file))

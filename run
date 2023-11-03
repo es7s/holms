@@ -4,10 +4,28 @@
 # (c) 2023 A. Shavykin <0.delameter@gmail.com>
 #-------------------------------------------------------------------------------
 
-srcpath=$(dirname "$(realpath "$0")")
-python=
-if ! python=$(source "$srcpath/.locate-venv.sh") ; then
-    echo "Installed application not found, run 'make reinit-manual-venv'"
-    exit 1
-fi
-PYTHONPATH=. "$python" -m holms "$@"
+PATHS=(
+  ".hatch/dev/bin"
+  "venv/bin"
+)
+
+__locate_venv() {
+  local srcpath="$1"
+  for file in "${PATHS[@]/%//python}" ; do
+      file="$srcpath/$file"
+      [[ -x $file ]] && echo "$file" && return 0
+  done
+  return 1
+}
+
+__main() {
+    local srcpath=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
+    local python=
+    if ! python=$(__locate_venv "$srcpath") ; then
+        echo "Installed application not found, run 'make reinit-manual-venv'"
+        exit 1
+    fi
+    PYTHONPATH="$srcpath" "$python" -m holms "$@"
+}
+
+__main "$@"
