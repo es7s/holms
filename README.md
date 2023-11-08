@@ -1,8 +1,8 @@
 <h1 align="center">
    <!-- es7s/holms -->
-   <a href="##"><img align="left" src="https://github.com/es7s/holms/assets/50381946/3d543be1-4ca3-47a2-b7a6-d33fe861b5d5" width="160" height="64"></a>
+   <a href="##"><img align="left" src="https://s3.eu-north-1.amazonaws.com/dp2.dl/readme/es7s/holms/logo.png?v=2" width="160" height="64"></a>
    <a href="##"><img src="https://s3.eu-north-1.amazonaws.com/dp2.dl/readme/es7s/holms/label.png" width="200" height="64"></a>
-   <a href="##"><img align="right" src="https://github.com/es7s/holms/assets/50381946/3d814d6e-924f-40d6-9848-08ef4a96c41f" width="160" height="64"></a>
+   <a href="##"><img align="right" src="https://s3.eu-north-1.amazonaws.com/dp2.dl/readme/empty.png" width="160" height="64"></a>
 </h1>
 <div align="right">
  <a href="##"><img src="https://img.shields.io/badge/python-3.10-3776AB?logo=python&logoColor=white&labelColor=333333"></a>
@@ -40,10 +40,10 @@ Basic usage
       separate Unicode code points. Use '-' as INPUT to read from stdin instead.
 
 <div align="center">
-  <img alt="example001" width="49%" src="https://github.com/es7s/holms/assets/50381946/f6290d8a-bb79-4105-8843-c383231d5b4e">
-  <img alt="example004" width="49%" src="https://github.com/es7s/holms/assets/50381946/881252e6-56a7-4eef-be13-c4cbc1da2889">
-  <img alt="example002" width="49%" src="https://github.com/es7s/holms/assets/50381946/6c43353f-64ed-4c78-9aa1-b97724a9aaa5">
-  <img alt="example003" width="49%" src="https://github.com/es7s/holms/assets/50381946/a48ad759-59ea-4857-b329-1c1372ab5856">
+  <img alt="example001" width="49%" src="https://github.com/es7s/holms/assets/50381946/df486162-bd47-4a33-ba10-f9a5c932977c">
+  <img alt="example004" width="49%" src="https://github.com/es7s/holms/assets/50381946/872a0a88-f09c-41c7-9950-11d77b6eef10">
+  <img alt="example002" width="49%" src="https://github.com/es7s/holms/assets/50381946/7d3c899b-bc1a-4731-9680-35acd8c79b31">
+  <img alt="example003" width="49%" src="https://github.com/es7s/holms/assets/50381946/cdf8766d-a0ae-430c-8737-fa19b5678589">
 </div>
 
 <details>
@@ -109,7 +109,7 @@ explicitly override output mode regardless of the default setting.
 In **buffered** mode the result begins to appear only after EOF is encountered
 (i.e., the WHOLE file has been read to the buffer). This is suitable for short
 and predictable inputs and produces the most compact output with fixed column
-sizes. 
+sizes.
 
 The **unbuffered** mode comes in handy when input is an endless piped stream:
 the results will be displayed in real time, as soon as the type of each byte
@@ -160,14 +160,14 @@ Examples
 ### Output column selection
 
 Option `-f`/`--filter` can be used to specify what columns to display. As an
-alternative, there is an `-F`/`--full` option that enables displaying of all 
+alternative, there is an `-F`/`--full` option that enables displaying of all
 currently available columns.
 
 <details>
   <summary><b>Column availability depending on operating mode</b></summary>
 
   <div align="center">
-    <img alt="example010" src="https://github.com/es7s/holms/assets/50381946/d7dbb1c2-e556-49fa-a40b-570a1fd10c13">
+    <img alt="example010" src="https://github.com/es7s/holms/assets/50381946/64222b0d-c01f-4481-a513-531796612e63">
   </div>
 </details>
 
@@ -175,7 +175,7 @@ Also `-m`/`--merge` option is demonstrated, which tells the app to collapse
 repetitive characters into one line of the output while counting them:
 
 <div align="center">
-  <img alt="example005" src="https://github.com/es7s/holms/assets/50381946/fd2df149-8fe9-4b58-9f61-c6512edfc083">
+  <img alt="example005" src="https://github.com/es7s/holms/assets/50381946/2de147ad-751f-4e68-a7ab-615db7bce9c8">
 </div>
 
 <details>
@@ -206,7 +206,7 @@ and feed the result to the application. The result demonstrates various Unicode
 dot/bullet code points:
 
 <div align="center">
-    <img alt="example006" src="https://github.com/es7s/holms/assets/50381946/ec2569bf-eadf-4d5f-b1c5-a0d2f3cb0452">
+    <img alt="example006" src="https://github.com/es7s/holms/assets/50381946/54f6127e-0796-4531-9840-f6fddb11efce">
 </div>
 
 <details>
@@ -234,7 +234,7 @@ dot/bullet code points:
 the occurrence rate of each one:
 
 <div align="center">
-  <img alt="example008" src="https://github.com/es7s/holms/assets/50381946/6f88bffd-92df-4832-80e1-cd58fa68ce1c">
+  <img alt="example008" src="https://github.com/es7s/holms/assets/50381946/b7d5b1d2-a78f-4597-8ebb-38b99f733ea1">
 </div>
 
 <details>
@@ -261,8 +261,8 @@ code point category or code point super category, respectively, which can be use
 e.g. for frequency domain analysis:
 
 <div align="center">
-  <img alt="example011" src="https://github.com/es7s/holms/assets/50381946/879b78a8-5b57-44f9-b185-4f7680166fbc">
-  <img alt="example012" src="https://github.com/es7s/holms/assets/50381946/353997ba-8420-497b-a282-566ee8151964">
+  <img alt="example011" src="https://github.com/es7s/holms/assets/50381946/0859b908-58d3-4f02-85d3-583fd78d3d68">
+  <img alt="example012" src="https://github.com/es7s/holms/assets/50381946/0a15f532-bbe1-488b-bea5-384326a3eff4">
 </div>
 
 <details>
@@ -303,7 +303,7 @@ category. Note that ASCII control codes, as well as Unicode ones, are kept
 untouched and invisible.
 
 <div align="center">
-  <img alt="example007" src="https://github.com/es7s/holms/assets/50381946/87979506-2925-40fc-97aa-b7c7b97cf02d">
+  <img alt="example007" src="https://github.com/es7s/holms/assets/50381946/a29053d9-7da4-4050-a2e8-c8c943a32a2b">
 </div>
 
 <details>
@@ -347,8 +347,8 @@ However, C1 control codes are represented by `0x80`-`0x9F` bytes, which also are
 valid bytes for multibyte UTF-8 sequences. In order to distinguish the first
 type from the second UTF-8 encodes them as two-byte sequences instead (`0x80` →
 `0xC280`, etc.); also this applies not only to control codes, but to all other
-[ISO/IEC 8859](https://www.iso.org/standard/28245.html) code points starting 
-from `0x80`. 
+[ISO/IEC 8859](https://www.iso.org/standard/28245.html) code points starting
+from `0x80`.
 
 With this in mind, let's see how the application reflects these differences.
 First command produces several 8-bit ASCII C1 control codes, which are
@@ -358,7 +358,7 @@ Python's full transparent Unicode support, we don't even need to bother much
 about the encodings and such):
 
 <div align="center">
-  <img alt="example013" src="https://github.com/es7s/holms/assets/50381946/2f32f0bf-c986-4607-bbad-10cae95ed30b">
+  <img alt="example013" src="https://github.com/es7s/holms/assets/50381946/b8448375-552f-443f-a347-8e9741ec7cf6">
 </div>
 
 <details>
@@ -384,7 +384,7 @@ The image below illustrates the color scheme developed for the app specifically,
 to simplify distinguishing code points of one category from others.
 
 <div align="center">
-  <img alt="example009" src="https://github.com/es7s/holms/assets/50381946/3b3a257f-4066-44fa-859f-f4bbf805c205">
+  <img alt="example009" src="https://github.com/es7s/holms/assets/50381946/6d7f9372-fe20-4e04-a9ab-9018f60648df">
 </div>
 
 Most frequently encountering control codes also have a unique character
@@ -392,7 +392,7 @@ replacements, which allows to recognize them without reading the label or
 memorizing code point identifiers:
 
 <div align="center">
-  <img alt="example009" src="https://github.com/es7s/holms/assets/50381946/ebb05d89-917c-40f4-8315-8bf513e99cf4">
+  <img alt="example014" src="https://github.com/es7s/holms/assets/50381946/609e4c3b-3aad-42b4-91d1-8007dd15bb1b">
 </div>
 
 Changelog
