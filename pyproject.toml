@@ -41,7 +41,7 @@ holms = "holms.__main__:main"
 [project.urls]
 "Homepage" = "https://github.com/es7s/holms"
 "Bug Tracker" = "https://github.com/es7s/holms/issues"
-"Changelog" = "https://github.com/es7s/holms/blob/master/CHANGES.md"
+"Changelog" = "https://github.com/es7s/holms/blob/master/CHANGES.rst"
 
 # ---------------------------------------------------------
 

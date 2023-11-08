@@ -1,7 +1,7 @@
 <h1 align="center">
    <!-- es7s/holms -->
    <a href="##"><img align="left" src="https://s3.eu-north-1.amazonaws.com/dp2.dl/readme/es7s/holms/logo.png?v=2" width="160" height="64"></a>
-   <a href="##"><img src="https://s3.eu-north-1.amazonaws.com/dp2.dl/readme/es7s/holms/label.png" width="200" height="64"></a>
+   <a href="##"><img align="center" src="https://s3.eu-north-1.amazonaws.com/dp2.dl/readme/es7s/holms/label.png" width="200" height="64"></a>
    <a href="##"><img align="right" src="https://s3.eu-north-1.amazonaws.com/dp2.dl/readme/empty.png" width="160" height="64"></a>
 </h1>
 <div align="right">
