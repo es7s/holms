@@ -5,7 +5,6 @@
 
 import click
 import pytermor as pt
-from click import IntRange
 
 from .cmd import invoke_defualt, invoke_legend, invoke_version
 from .common import Attribute, HiddenIntRange

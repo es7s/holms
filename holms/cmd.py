@@ -83,7 +83,7 @@ def invoke_version(ctx: click.Context, value: int, **kwargs):
 
     pt.echo(f"{APP_NAME:>12s}  {vfmt(APP_VERSION):<14s}  {ufmt(APP_UPDATED)}")
     pt.echo(f"{'pytermor':>12s}  {vfmt(pt.__version__):<14s}  {ufmt(pt.__updated__)}")
-    pt.echo(f"{'es7s-commons':>12s}  {vfmt(es7s_commons.PK):<14s}  {ufmt(ec.__updated__)}")
+    pt.echo(f"{'es7s-commons':>12s}  {vfmt(es7s_commons.PKG_VERSION):<14s}  {ufmt(es7s_commons.PKG_UPDATED)}")
 
     def _echo_path(label: str, path: str):
         pt.echo(
