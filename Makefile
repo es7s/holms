@@ -54,7 +54,7 @@ reinit-hatch:  ## Demolish and install auto environments <hatch>
   		if test $$envname = default ; then continue ; fi ; \
   		echo ------------ $$envname --------------- ;  \
         hatch env remove $$envname ; \
-        hatch run $$envname:version ; \
+        hatch run $$envname:version || hatch run $$envname:pip list ; \
     done
 
 reinit-manual-venv:  ## Prepare manual environment  <venv>

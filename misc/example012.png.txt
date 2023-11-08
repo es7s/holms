@@ -1,0 +1,9 @@
+  > holms -ggg -S ./tests/data/confusables.txt
+   
+    57% █████▋     284074× L Letter      
+    14% █▍          69853× C Other       
+    13% █▎          62750× Z Separator   
+   8.5% ▊           42796× N Number      
+   5.9% ▌           29571× P Punctuation 
+   2.2% ▏           11072× S Symbol      
+   0.2%               965× M Mark        

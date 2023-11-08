@@ -1,0 +1,16 @@
+  > holms -S ./tests/data/specials
+   
+  0  U+ 0 ▕ Ø ▏Cc ASCII C0 [NUL] NULL                 
+  1  U+ 8 ▕ ← ▏Cc ASCII C0 [BS] BACKSPACE             
+  2  U+ 9 ▕ ⇥ ▏Cc ASCII C0 [HT] HORIZONTAL TABULATION 
+  3  U+ A ▕ ↵ ▏Cc ASCII C0 [LF] LINE FEED             
+  4  U+ B ▕ ⤓ ▏Cc ASCII C0 [VT] VERTICAL TABULATION   
+  5  U+ C ▕ ↡ ▏Cc ASCII C0 [FF] FORM FEED             
+  6  U+ D ▕ ⇤ ▏Cc ASCII C0 [CR] CARRIAGE RETURN       
+  7  U+1B ▕ ə ▏Cc ASCII C0 [ESC] ESCAPE               
+  8  U+1C ▕ ⁜ ▏Cc ASCII C0 [FS] FILE SEPARATOR        
+  9  U+1D ▕ ⋮ ▏Cc ASCII C0 [GS] GROUP SEPARATOR       
+  a  U+1E ▕ ∻ ▏Cc ASCII C0 [RS] RECORD SEPARATOR      
+  b  U+1F ▕ · ▏Cc ASCII C0 [US] UNIT SEPARATOR        
+  c  U+20 ▕ ␣ ▏Zs SPACE                               
+  d  U+7F ▕ → ▏Cc ASCII C0 [DEL] DELETE               

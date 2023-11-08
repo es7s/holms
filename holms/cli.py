@@ -3,26 +3,25 @@
 #  (c) 2023 A. Shavykin <0.delameter@gmail.com>
 # ------------------------------------------------------------------------------
 
-import io
-import re
-
-import pytermor as pt
 import click
-import sys
+import pytermor as pt
+from click import IntRange
 
-from es7s_commons import format_path
-
-from . import APP_NAME, APP_VERSION, APP_UPDATED
+from .cmd import invoke_defualt, invoke_legend, invoke_version
+from .common import Attribute, HiddenIntRange
 from .common import MultiChoice
-from .core import parse, Attribute
-from .reader import CliReader
-from .writer import CliWriter
+
+
+class AppMode(pt.ExtendedEnum):
+    DEFAULT = "default"
+    VERSION = "version"
+    LEGEND = "legend"
 
 
 class Context(click.Context):
     def __init__(self, *args, **kwargs) -> None:
         kwargs.setdefault("terminal_width", min(100, pt.get_terminal_width()))
-        kwargs.setdefault("help_option_names", ["-?", "--help"])
+        kwargs.setdefault("help_option_names", ["--help", "-?"])
         super().__init__(*args, **kwargs)
 
 
@@ -31,152 +30,110 @@ class Command(click.Command):
     pass
 
 
-class VersionOption(click.Option):
-    def __init__(self, *args, **kwargs):
-        # fmt: off
-        """
-              ███████
-   ₑₛ₇ₛ    ║███╔═══╗███║
-   ═┏━┓┏━┓═╣███║ ║█████╠═┏━┓════┏━┓═┏━┓════════┏━━━━┓
-    ┃ ┗┛ ┃ ║███║ ╚═╗███║ ┃ ┃    ┃ ┗┳┛ ┃ ╎ -┬-╵ ┃ ━━━┫
-    ┃ ┏┓ ┃ ║█████║ ║███║ ┃ ┗━━┓ ┃ ┣━┫ ┃ ╎ -┴-┐ ┣━━━ ┃
-    ┗━┛┗━┛ ║███╔═╝ ║███║ ┗━━━━┛ ┗━┛ ┗━┛ '╌╌╌╌╵ ┗━━━━┛
-           ╚═╗███████╔═╝
-             ╚═══════╝
-        """
-        # fmt: on
-
-        kwargs.setdefault("count", True)
-        kwargs.setdefault("expose_value", False)
-        kwargs.setdefault("is_eager", True)
-        kwargs["callback"] = self.callback
-        super().__init__(*args, **kwargs)
-
-    def callback(self, ctx: click.Context, param: click.Parameter, value: int):
-        if not value or ctx.resilient_parsing:
-            return
-        vfmt = lambda s: pt.Fragment(s, "green")
-        ufmt = lambda s: pt.Fragment(s, "gray")
-        pt.echo(
-            re.sub(
-                "(█+)|([┃━┏┳┓┣╋┫┗┻┛]+)|([╎╌└╵╴╷┘,'┐┴┬-]+)|(.+?)",
-                lambda m: "".join(
-                    pt.render(g or "", st)
-                    for g, st in zip(
-                        m.groups(),
-                        [
-                            pt.cv.DARK_RED,
-                            pt.NOOP_COLOR,
-                            pt.cv.GRAY,
-                            pt.cv.DARK_GOLDENROD,
-                        ],
-                    )
-                ),
-                VersionOption.__init__.__doc__,
-            )
-        )
-        pt.echo(f"{APP_NAME:>12s}  {vfmt(APP_VERSION):<14s}  {ufmt(APP_UPDATED)}")
-        pt.echo(f"{'pytermor':>12s}  {vfmt(pt.__version__):<14s}  {ufmt(pt.__updated__)}")
-        # pt.echo(f"{'es7s-commons':>12s}  {vfmt((ec := util.find_spec('es7s_commons._version').loader.load_module('es7s_commons._version')).__version__):<14s}  {ufmt(ec.__updated__)}")
-
-        if value > 1:
-            pt.echo()
-            self._echo_path("Executable", sys.executable)
-            self._echo_path("Entrypoint", __file__)
-        ctx.exit()
-
-    def _echo_path(self, label: str, path: str):
-        pt.echo(
-            pt.Composite(
-                pt.Text(label + ":", width=17),
-                format_path(path, color=True, repr=False),
-            )
-        )
-
-
 @click.command(
     cls=Command,
     no_args_is_help=True,
-    help="Read data from FILE, find all valid UTF-8 byte sequences, decode them and display as separate Unicode code "
-    "points. Use '-' as FILE to read from stdin instead.\n\n"
-    "\b\bColumns\n\n"
-    "List of valid column names for '--format' option and example output string:\n\n"
-    "  \b  0x0aa‥ # 190 U+2588 ▕ █ ▏1218x So FULL BLOCK\n\n"
-    "  \b  offset index number char count type name\n\n"
-    "By default each code point is printed on a new line and formatted as a set of fields from the list above, in that "
-    "exact order. Note that '--squash' mode is required for 'count' column to appear, while '--total' mode hides "
-    "'offset' and 'index' columns. 'number' is the ID of code point (U+xxxx). Newline separators are disabled if the "
-    f"format is a single 'char' column.\n\nDefault: '--format={','.join(Attribute)}'.\n\n"
+    help="Read data from INPUT file, find all valid UTF-8 byte sequences, decode them and display as separate "
+    "Unicode code points. Use '-' as INPUT to read from stdin instead."
+    "\n\n\n\n"
+    "\b\bBuffering"
     "\n\n"
-    "@TODO: typename utf8\n\n"
+    "The application works in two modes: buffered (the default if INPUT is a file) and unbuffered (default when "
+    "reading from stdin). Options '-b'/'-u' explicitly override output mode regardless of the default setting."
     "\n\n"
-    "\b\bBuffering\n\n"
-    "The application works in two modes: buffered (the default) and unbuffered. In buffered "
-    "mode the result begins to appear only after EOF is encountered. This is suitable for relatively short and "
-    "predictable inputs (e.g. from a file) and allows to produce the most compact output (because all the "
-    "column sizes are known from the start). When input is not a file and can proceed infinitely (e.g. a piped "
-    "stream), the unbuffered mode comes in handy: the application prints the results in real time, as soon "
-    "as the type of each byte sequence is determined. Despite the name, it actually uses a tiny input buffer "
-    "(size is 4 bytes), but it's the only way to handle UTF-8 stream and distinguish valid sequences from "
-    "broken ones; in truly unbuffered mode the output would consist of ASCII-7 characters (0x00-0x7F) and "
-    "unrecognized binary data (0x80-0xFF) only, which is not something the application was made for.",
+    "In buffered mode the result begins to appear only after EOF is encountered (i.e., the WHOLE file has been read "
+    "to the buffer). This is suitable for short and predictable inputs and produces the most compact output with fixed "
+    "column sizes."
+    "\n\n"
+    "The unbuffered mode comes in handy when input is an endless piped stream: the results will be displayed in "
+    "real time, as soon as the type of each byte sequence is determined, but the output column widths are not fixed "
+    "and can vary as the process goes further.",
 )
-@click.argument("file", type=click.File("rb"), nargs=1, required=True)
+@click.argument("input", type=click.File("rb"), nargs=1, required=False)
 @click.option(
-    "-u",
-    "--unbuffered",
-    is_flag=True,
-    help="Do not wait for EOF, start to stream the results as soon as possible. See BUFFERING section above "
-    "for the details.",
+    "-b/-u",
+    "--buffered/--unbuffered",
+    default=None,
+    help="Explicitly set to wait for EOF before processing the output (buffered), or to stream the results in parallel "
+    "with reading, as soon as possible (unbuffered). See BUFFERING section above for the details.",
 )
 @click.option(
-    "-s",
-    "--squash",
+    "-m",
+    "--merge",
     is_flag=True,
     help="Replace all sequences of repeating characters with one of each, together with initial length of "
     "the sequence.",
 )
 @click.option(
-    "-t",
-    "--total",
-    is_flag=True,
-    help="Count unique code points, sort ascending and display totals instead of normal output. Implies '--squash' "
-    " and forces buffered mode.",
+    "-g",
+    "--group",
+    count=True,
+    type=HiddenIntRange(0, 3, clamp=True),
+    help="Group the input by code points (=count unique), sort descending and display counts instead of "
+    "normal output. Implies '--merge' and forces buffered mode. Specifying the option twice ('-gg') "
+    "results in grouping by code point category instead, while doing it thrice ('-ggg') makes the app "
+    "group the input by super categories.",
 )
 @click.option(
     "-f",
     "--format",
+    "_columns",
     type=MultiChoice(Attribute.list(), hide_choices=True),
-    default=",".join(Attribute),
-    help="Comma-separated list of columns to show (order is preserved). See COLUMNS section above.",
+    help="Comma-separated list of columns to show (order is preserved). Run 'holms --legend' to see the details.",
 )
 @click.option(
-    "-c",
-    "--color",
-    "output_mode",
-    flag_value=pt.OutputMode.XTERM_256.value,
-    help="Explicitly turn on colored results; usually this is applied by the app automatically, when output/receiving "
-    "device is a terminal emulator with corresponding capabilities.",
+    "-F",
+    "--full",
+    "_all_columns",
+    is_flag=True,
+    help="Display ALL columns.",
 )
 @click.option(
-    "-C",
-    "--no-color",
-    "output_mode",
-    flag_value=pt.OutputMode.NO_ANSI.value,
-    help="Explicitly turn off colored results; usually this is applied by the app automatically, when the output "
-    "is being piped or redirected elsewhere.",
+    "-S",
+    "--static",
+    is_flag=True,
+    help="Do not shrink columns by collapsing the prefix when possible.",
 )
-@click.option("--decimal", is_flag=True, help="Use decimal offsets instead of hexadecimal.")
-@click.option("--legend", "-L", cls=VersionOption, help="@TODO")
-@click.option("--version", "-V", cls=VersionOption, help="Show the version and exit.")
-def entrypoint(file: io.BufferedReader, unbuffered: bool, **kwargs):
-    if kwargs.get("total", None):
-        kwargs.update({"squash": True})
-        unbuffered = False
+@click.option(
+    "-c/-C",
+    "--color/--no-color",
+    default=None,
+    help="Explicitly turn colored results on or off; if not specified, will be selected automatically "
+    "depending on the type and capabilities of receiving device (e.g. colors will be enabled for a terminal "
+    "emulator and disabled for piped/redirected output).",
+)
+@click.option(
+    "--decimal",
+    "decimal_offset",
+    is_flag=True,
+    help="Use decimal byte offsets instead of hexadecimal.",
+)
+@click.option(
+    "--legend",
+    "-L",
+    "mode_legend",
+    is_flag=True,
+    help="Show detailed info on an output format and code point category chromacoding, and exit.",
+)
+@click.option(
+    "--version",
+    "-V",
+    "mode_version",
+    count=True,
+    is_eager=True,
+    help="Show the version and exit.",
+)
+def entrypoint(color: bool|None, mode_legend: bool, mode_version: bool, **kwargs):
+    output_mode = pt.OutputMode.AUTO
+    if color is not None:
+        output_mode = [pt.OutputMode.NO_ANSI, pt.OutputMode.XTERM_256][color]
+    pt.RendererManager.set_default(pt.SgrRenderer(output_mode))
 
-    r = CliReader(io.TextIOWrapper(file))
-    w = CliWriter(**kwargs)
-    if unbuffered:
-        w.write(parse(r.read()))
-    else:
-        w.write([*parse(r.read())])
+    if mode_legend:
+        invoke_legend(**kwargs)
+        return
+    if mode_version:
+        invoke_version(value=mode_version, **kwargs)
+        return
+
+    invoke_defualt(**kwargs)

@@ -1,0 +1,13 @@
+  > holms -m -S phpstan.txt
+   
+  000  U+2B ▕ + ▏    Sm PLUS SIGN               
+  001+ U+2D ▕ - ▏27× Pd HYPHEN-MINUS            
+  01c  U+2B ▕ + ▏    Sm PLUS SIGN               
+  01d  U+20 ▕ ␣ ▏    Zs SPACE                   
+  01e  U+2B ▕ + ▏    Sm PLUS SIGN               
+  01f+ U+2D ▕ - ▏27× Pd HYPHEN-MINUS            
+  03a  U+2B ▕ + ▏    Sm PLUS SIGN               
+  03b  U+ A ▕ ↵ ▏    Cc ASCII C0 [LF] LINE FEED 
+  03c  U+7C ▕ | ▏    Sm VERTICAL LINE           
+  03d+ U+20 ▕ ␣ ▏27× Zs SPACE                   
+ ...

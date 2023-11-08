@@ -1,0 +1,18 @@
+  > holms -L
+   
+...
+
+    example output line          00bf8+ # 190 U+  B1 0x c2 b1 ▏±▕  355×  Sm PLUS-MI… Math_Sy…
+   ┌───────────────────────────┬ ────── ───── ────── ──────── ─── ───── ─── ──────── ──────── ┐  
+   │column names               │ offset index number   raw   char count type  name   typename │
+   ├─┬─────────────────────────┼──────────────────────────────────────────────────────────────┤
+   │M│no grouping/merging      │   ⏺      ○     ⏺       ○      ⏺    ×     ⏺     ⏺       ○     │
+   │O│group by code point    -g│   ×      ×     ⏺       ○      ⏺    ⏺     ⏺     ⏺       ○     │
+   │D│..by CP category      -gg│   ×      ×     ×       ×      ×    ⏺     ⏺     ×       ⏺     │
+   │E│..by super category  -ggg│   ×      ×     ×       ×      ×    ⏺     ±     ×       ±     │
+   └─┴─────────────────────────┴──────────────────────────────────────────────────────────────┘
+                                                     ⏺ shown  by default, opt. hide with -f
+   Trailing '+' in offset and index indicates        ○ hidden by default, opt. show with -f/-F
+   that the value is a start of the range.           × hidden and disabled, inaccessible
+
+...

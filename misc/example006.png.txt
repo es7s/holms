@@ -1,0 +1,13 @@
+  > sed confusables.txt -Ee 'sg' -e '3620!d' |
+    holms -S -
+  00  U+   B7 ▕ · ▏Po MIDDLE DOT                          
+  02  U+ 1427 ▕ ᐧ ▏Lo CANADIAN SYLLABICS FINAL MIDDLE DOT 
+  05  U+  387 ▕ · ▏Po GREEK ANO TELEIA                    
+  07  U+ 2022 ▕ • ▏Po BULLET                              
+  0a  U+ 2027 ▕ ‧ ▏Po HYPHENATION POINT                   
+  0d  U+ 2219 ▕ ∙ ▏Sm BULLET OPERATOR                     
+  10  U+ 22C5 ▕ ⋅ ▏Sm DOT OPERATOR                        
+  13  U+ 30FB ▕・ ▏Po KATAKANA MIDDLE DOT                 
+  16  U+10101 ▕ 𐄁 ▏Po AEGEAN WORD SEPARATOR DOT           
+  1a  U+ FF65 ▕ ･ ▏Po HALFWIDTH KATAKANA MIDDLE DOT       
+  1d  U+    A ▕ ↵ ▏Cc ASCII C0 [LF] LINE FEED             
