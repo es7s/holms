@@ -8,9 +8,11 @@ This project uses Semantic Versioning -- https://semver.org
 Version list
 ===============
 
-(current)
----------
-- ...
+1.0.0 (Nov 23)
+---------------
+- 🌱 NEW: `raw`, `type`, `typename` columns
+- 🌱 NEW: `--legend` option
+- 🌱 NEW: add readme img generating script
 
 0.5.0 (Nov 23)
 ----------------
