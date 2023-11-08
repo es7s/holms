@@ -1,0 +1,13 @@
+  > holms -g -S ./tests/data/confusables.txt
+   
+ U+   20 ▕ ␣ ▏   13% ▍   62732× Zs SPACE                                                                               
+ U+    9 ▕ ⇥ ▏  7.3% ▏   36745× Cc ASCII C0 [HT] HORIZONTAL TABULATION                                                 
+ U+   41 ▕ A ▏  6.1% ▏   30555× Lu LATIN CAPITAL LETTER A                                                              
+ U+   49 ▕ I ▏  5.2% ▏   26063× Lu LATIN CAPITAL LETTER I                                                              
+ U+   45 ▕ E ▏  5.0% ▏   24992× Lu LATIN CAPITAL LETTER E                                                              
+ U+   54 ▕ T ▏  3.7%     18776× Lu LATIN CAPITAL LETTER T                                                              
+ U+   4C ▕ L ▏  3.7%     18763× Lu LATIN CAPITAL LETTER L                                                              
+ U+ 200E ▕   ▏  3.7%     18494× Cf LEFT-TO-RIGHT MARK                                                                  
+ U+    A ▕ ↵ ▏  2.9%     14609× Cc ASCII C0 [LF] LINE FEED                                                             
+ U+   43 ▕ C ▏  2.9%     14450× Lu LATIN CAPITAL LETTER C                                                              
+ ...

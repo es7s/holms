@@ -1,0 +1,32 @@
+#[pytermor template format] @h:[fg=yellow bold] @c:[blue] @p:[red] @o:[bold] @a:[green] @d:[gray30]
+:[|h]OUTPUT FORMAT:[-]
+
+  · Column names suitable for use in :[o]-f:[-] are formatted like this: :[c]offset:[-].
+  
+  · Each CP (code point) is printed on a new line and formatted as a set of fields. However,
+    the case when the format defined as one single :[c]char:[-] column, implemented differently --
+    the output is kept as close to the input as possible, except the characters being
+    displayed in corresponding category colors.
+
+  · CP names for ASCII C0/C1 codes are extended with names from ECMA-48.
+
+  · Note that enabling :[o]--static:[-] option does not guarantee fixed column widths; the only
+    possible way to achieve that is to operate in :[o]--buffered:[-] mode (what's more, it will
+    work as expected regardless of :[o]--static:[-] presence).
+
+:[|h]COLUMN VISIBILITY IN DIFFERENT MODES:[-]
+
+   example output line    #[ ]    #[ ]  #[     ]:[d]00:[-]bf8+ :[d]#:[-] 190 :[d]U+:[-]  B1 :[d]0x:[-] c2 b1 ▏:[a]±:[-]▕  355×  :[a]Sm:[-] PLUS-MI… :[a]Math_Sy…:[-]#[ ]
+  ┌───────────────────────#[ ]────#[ ]┬ :[dim  ]────── ───── ────── ──────── ─── ───── ─── ──────── ────────:[-] ┐  #[for padding]
+  │column names           #[ ]    #[ ]│ :[c    ]offset index number   raw   char count type  name   typename:[-] │
+  ├─┬─────────────────────#[ ]────#[ ]┼─#[     ]────────────────────────────────────────────────────────────#[ ]─┤
+  │M│no grouping/merging  #[ ]    #[ ]│ #[     ]  :[a]⏺:[-]      :[h]○:[-]     :[a]⏺:[-]       :[h]○:[-]      :[a]⏺:[-]    :[p]×:[-]     :[a]⏺:[-]     :[a]⏺:[-]       :[h]○:[-]     │
+  │O│group by code point  :[o]  -g:[-]│ #[     ]  :[p]×:[-]      :[p]×:[-]     :[a]⏺:[-]       :[h]○:[-]      :[a]⏺:[-]    :[a]⏺:[-]     :[a]⏺:[-]     :[a]⏺:[-]       :[h]○:[-]     │
+  │D│..by CP category     :[o] -gg:[-]│ #[     ]  :[p]×:[-]      :[p]×:[-]     :[p]×:[-]       :[p]×:[-]      :[p]×:[-]    :[a]⏺:[-]     :[a]⏺:[-]     :[p]×:[-]       :[a]⏺:[-]     │
+  │E│..by super category  :[o]-ggg:[-]│ #[     ]  :[p]×:[-]      :[p]×:[-]     :[p]×:[-]       :[p]×:[-]      :[p]×:[-]    :[a]⏺:[-]     :[a]±:[-]     :[p]×:[-]       :[a]±:[-]     │
+  └─┴─────────────────────#[ ]────#[ ]┴─#[     ]────────────────────────────────────────────────────────────#[ ]─┘
+                                                    :[a]⏺:[-] shown  by default, opt. hide with :[o]-f:[-]
+  Trailing '+' in :[c]offset:[-] and :[c]index:[-] indicates        :[h]○:[-] hidden by default, opt. show with :[o]-f/-F:[-]
+  that the value is a start of the range.           :[p]×:[-] hidden and disabled, inaccessible
+
+:[|h]CODE POINT CATEGORY EXAMPLES:[-]   #[generated dynamically]

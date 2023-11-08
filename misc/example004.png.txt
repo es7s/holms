@@ -1,0 +1,8 @@
+  > holms -S -u -
+  🌯👄🤡🎈🐳🐍
+  00  U+1F32F ▕🌯 ▏So BURRITO          
+  04  U+1F444 ▕👄 ▏So MOUTH            
+  08  U+1F921 ▕🤡 ▏So CLOWN FACE       
+  0c  U+1F388 ▕🎈 ▏So BALLOON          
+  10  U+1F433 ▕🐳 ▏So SPOUTING WHALE   
+  14  U+1F40D ▕🐍 ▏So SNAKE            

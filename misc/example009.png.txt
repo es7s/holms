@@ -1,0 +1,35 @@
+  > holms -L
+   
+...
+   Cc Control               ▕ ▯ ▏U+     1 ASCII C0 [SOH] START OF HEADING             
+   Cf Format                ▕  ‍ ▏U+  200D ZERO WIDTH JOINER                           
+   Cs Surrogate             ▕ ▯ ▏U+  D800 UTF-16 SURROGATE                            
+   Co Private_Use           ▕  ▏U+  E0B0 PRIVATE USE                                 
+   Cn Unassigned            ▕ ▯ ▏U+10FFFE UNASSIGNED                                  
+   Lu Uppercase_Letter      ▕ A ▏U+    41 LATIN CAPITAL LETTER A                      
+   Ll Lowercase_Letter      ▕ a ▏U+    61 LATIN SMALL LETTER A                        
+   Lt Titlecase_Letter      ▕ ǲ ▏U+   1F2 LATIN CAPITAL LETTER D WITH SMALL LETTER Z  
+   Lo Other_Letter          ▕怍 ▏U+  600D CJK UNIFIED IDEOGRAPH-600D                  
+   Lm Modifier_Letter       ▕ ᵃ ▏U+  1D43 MODIFIER LETTER SMALL A                     
+   Nd Decimal_Number        ▕ 0 ▏U+    30 DIGIT ZERO                                  
+   Nl Letter_Number         ▕ Ⅶ ▏U+  2166 ROMAN NUMERAL SEVEN                         
+   No Other_Number          ▕ ² ▏U+    B2 SUPERSCRIPT TWO                             
+   Mn Nonspacing_Mark       ▕  ̀ ▏U+   300 COMBINING GRAVE ACCENT                      
+   Mc Spacing_Mark          ▕ ऻ ▏U+   93B DEVANAGARI VOWEL SIGN OOE                   
+   Me Enclosing_Mark        ▕  ҈ ▏U+   488 COMBINING CYRILLIC HUNDRED THOUSANDS SIGN   
+   Pc Connector_Punctuation ▕ _ ▏U+    5F LOW LINE                                    
+   Pd Dash_Punctuation      ▕ — ▏U+  2014 EM DASH                                     
+   Ps Open_Punctuation      ▕ ( ▏U+    28 LEFT PARENTHESIS                            
+   Pe Close_Punctuation     ▕ ) ▏U+    29 RIGHT PARENTHESIS                           
+   Pi Initial_Punctuation   ▕ « ▏U+    AB LEFT-POINTING DOUBLE ANGLE QUOTATION MARK   
+   Pf Final_Punctuation     ▕ » ▏U+    BB RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK  
+   Po Other_Punctuation     ▕ ! ▏U+    21 EXCLAMATION MARK                            
+   Sm Math_Symbol           ▕ + ▏U+    2B PLUS SIGN                                   
+   Sc Currency_Symbol       ▕ $ ▏U+    24 DOLLAR SIGN                                 
+   Sk Modifier_Symbol       ▕ ^ ▏U+    5E CIRCUMFLEX ACCENT                           
+   So Other_Symbol          ▕ ¦ ▏U+    A6 BROKEN BAR                                  
+   Zs Space_Separator       ▕   ▏U+    A0 NO-BREAK SPACE                              
+   Zl Line_Separator        ▕    ▏U+  2028 LINE SEPARATOR                              
+   Zp Paragraph_Separator   ▕    ▏U+  2029 PARAGRAPH SEPARATOR                         
+   -- Binary                ▕ ▯ ▏     --  NON UTF-8 BYTE 0xA6                         
+    
