@@ -42,7 +42,7 @@ Basic usage
 <div align="center">
   <img alt="example001" width="49%" src="https://github.com/es7s/holms/assets/50381946/df486162-bd47-4a33-ba10-f9a5c932977c">
   <img alt="example004" width="49%" src="https://github.com/es7s/holms/assets/50381946/872a0a88-f09c-41c7-9950-11d77b6eef10">
-  <img alt="example002" width="49%" src="https://github.com/es7s/holms/assets/50381946/7d3c899b-bc1a-4731-9680-35acd8c79b31">
+  <img alt="example002" width="49%" src="https://github.com/es7s/holms/assets/50381946/ef1e15b7-4652-475f-82a1-a546b425b41f">
   <img alt="example003" width="49%" src="https://github.com/es7s/holms/assets/50381946/cdf8766d-a0ae-430c-8737-fa19b5678589">
 </div>
 
@@ -234,7 +234,7 @@ dot/bullet code points:
 the occurrence rate of each one:
 
 <div align="center">
-  <img alt="example008" src="https://github.com/es7s/holms/assets/50381946/b7d5b1d2-a78f-4597-8ebb-38b99f733ea1">
+  <img alt="example008" src="https://github.com/es7s/holms/assets/50381946/20195bc3-115d-4eac-99dc-742ef74e5b88">
 </div>
 
 <details>
@@ -299,30 +299,51 @@ e.g. for frequency domain analysis:
 When `--format` is specified exactly as a single `char` column: `--format=char`,
 the application omits all the columns and prints the original file contents,
 while highligting each character with a color that indicates its' Unicode
-category. Note that ASCII control codes, as well as Unicode ones, are kept
+category. 
+
+> Note that ASCII control codes, as well as Unicode ones, are kept
 untouched and invisible.
 
 <div align="center">
-  <img alt="example007" src="https://github.com/es7s/holms/assets/50381946/a29053d9-7da4-4050-a2e8-c8c943a32a2b">
+  <img alt="example007" src="https://github.com/es7s/holms/assets/50381946/7e1532ac-b313-49c1-8051-9a78ebeefe7b">
 </div>
 
 <details>
    <summary>Plain text output</summary>
 
-    > sed chars.txt -nEe 150,159p |
-      holms --format=char -S -
-    ‰ ‱ ′ ″ ‴ ‵ ‶ ‷ ‸ ‹ › ※ ‼ ‽ ‾ ‿
-    ⁀ ⁁ ⁂ ⁃ ⁄ ⁅ ⁆ ⁇ ⁈ ⁉ ⁊ ⁋ ⁌ ⁍ ⁎ ⁏
-    ⁐ ⁑ ⁒ ⁓ ⁔ ⁕ ⁖ ⁗ ⁘ ⁙ ⁚ ⁛ ⁜ ⁝ ⁞
-    ⁰ ⁱ   ⁴ ⁵ ⁶ ⁷ ⁸ ⁹ ⁺ ⁻ ⁼ ⁽ ⁾ ⁿ
-    ₀ ₁ ₂ ₃ ₄ ₅ ₆ ₇ ₈ ₉ ₊ ₋ ₌ ₍ ₎
-    ₐ ₑ ₒ ₓ ₔ ₕ ₖ ₗ ₘ ₙ ₚ ₛ ₜ
-          ₣ ₤         ₩ ₪ ₫ €
-      ₱ ₲ ₳   ₵       ₹ ₺     ₽   ₿
-      ⃐   ⃑   ⃒   ⃓   ⃔   ⃕   ⃖   ⃗   ⃘   ⃙   ⃚   ⃛   ⃜  ⃝   ⃞   ⃟
-      ⃠   ⃡  ⃢   ⃣   ⃤   ⃥   ⃦   ⃧    ⃨   ⃩   ⃪   ⃫   ⃬   ⃭   ⃮   ⃯
+    > sed chars.txt -nEe 1,12p |
+        holms --format=char -S -
+    ! " # $ % & ' ( ) * + , - . /
+    0 1 2 3 4 5 6 7 8 9 : ; < = > ?
+    @ A B C D E F G H I J K L M N O
+    P Q R S T U V W X Y Z [ \ ] ^ _
+    ` a b c d e f g h i j k l m n o
+    p q r s t u v w x y z { | } ~
+    ¡ ¢ £ ¤ ¥ ¦ § ¨ © ª « ¬ ­ ® ¯
+    ° ± ² ³ ´ µ ¶ · ¸ ¹ º » ¼ ½ ¾ ¿
+    À Á Â Ã Ä Å Æ Ç È É Ê Ë Ì Í Î Ï
+    Ð Ñ Ò Ó Ô Õ Ö × Ø Ù Ú Û Ü Ý Þ ß
+    à á â ã ä å æ ç è é ê ë ì í î ï
+    ð ñ ò ó ô õ ö ÷ ø ù ú û ü ý þ ÿ
 
 </details>
+
+
+ASCII latin letters (`A-Za-z`) are colored in 50% gray color instead of regular
+white on purpose — this can be extremely helpful when the task is to find
+non-ASCII character(s) in an massive text of plain ASCII ones, or vice versa.
+
+Below is a real example of broken characters which are the result of two
+operations being applied in the wrong order: *UTF-8 decoding* and *URL %-based
+unescaping*. This error is different from incorrect codepage selection errors,
+which mess up the whole text or a part of it; all byte sequences are valid UTF-8
+encoded code points, but the result differs from the origin and is completely 
+unreadable nevertheless.
+
+<div align="center">
+  <img alt="example007" src="https://github.com/es7s/holms/assets/50381946/438e7f7a-4487-4a7c-98fb-bf269b4d0c96">
+</div>
+
 
 ### ASCII C0 / C1 details
 
@@ -358,7 +379,7 @@ Python's full transparent Unicode support, we don't even need to bother much
 about the encodings and such):
 
 <div align="center">
-  <img alt="example013" src="https://github.com/es7s/holms/assets/50381946/b8448375-552f-443f-a347-8e9741ec7cf6">
+  <img alt="example013" src="https://github.com/es7s/holms/assets/50381946/a6bdf9a2-fb19-4dbd-a507-f474c5c6a314">
 </div>
 
 <details>
@@ -384,7 +405,7 @@ The image below illustrates the color scheme developed for the app specifically,
 to simplify distinguishing code points of one category from others.
 
 <div align="center">
-  <img alt="example009" src="https://github.com/es7s/holms/assets/50381946/6d7f9372-fe20-4e04-a9ab-9018f60648df">
+  <img alt="example009" src="https://github.com/es7s/holms/assets/50381946/fd71430a-becb-4d9d-84e3-12900f4fc548">
 </div>
 
 Most frequently encountering control codes also have a unique character

@@ -26,9 +26,11 @@ function measure_width() {
 # ------------------
 __help() {
   __SELF="$(basename "$0" | sed -Ee 's/\..+$//')"
-  echo "USAGE: $__SELF [OUTPUT_DIR]"
+  echo "USAGE: $__SELF [OUTPUT_DIR] [EXEC_DIR]"
   echo
-  echo "  Readme images renderer."
+  echo "  Render readme images, place into OUTPUT_DIR. If specified,"
+  echo "  use EXEC_DIR as custom path to 'holms'. Both can be provided"
+  echo "  in a format relative to current working directory."
 }
 __holms() {
     local -ir MIN_RESULT_W_PX=500
@@ -37,7 +39,7 @@ __holms() {
     local -ir OFFSET_Y_PX=68
     local -ir PADDING_X_CH=1
 
-    local -ir PP=14
+    local -ir PP=15
 
     # shellcheck disable=SC2086
     function invoke() {
@@ -62,9 +64,8 @@ __holms() {
         hend+=$'\n '
       fi
 
-
       { [[ -n $input ]] && printf %s $input || "${@:4}" ; } |
-        ES7S_PADBOX_HEADER="${hstart}${hopts}${hend}" padbox holms "$file" -cbS $opts
+        ES7S_PADBOX_HEADER="${hstart}${hopts}${hend}" padbox "${execpath:-holms}" "$file" -cbS $opts
     }
     function invoke_simple() { invoke "" "" "${1:?}" ; }
     function invoke_cut() {
@@ -84,7 +85,7 @@ __holms() {
     function p4() { invoke_simple '🌯👄🤡🎈🐳🐍' ; }
     function p5() { invoke_limit -m ~/phpstan.txt ; }
     function p6() { invoke "" "" "" sed ./tests/data/confusables.txt -Ee 's/^.|\t//g' -e 3620!d ; }
-    function p7() { invoke --format=char "" "" sed ./tests/data/chars.txt -nEe '150,159p' ; }
+    function p7() { invoke --format=char "" "" sed ./tests/data/chars.txt -nEe '1,12p' ; }
     function p8() { invoke_limit -g ./tests/data/confusables.txt ; }
     function p11() { invoke_limit -gg ./tests/data/confusables.txt ; }
     function p12() { invoke_limit -ggg ./tests/data/confusables.txt ; }
@@ -93,6 +94,7 @@ __holms() {
     function p13() { _p13 printf '\x80\x90\x9f' ; _p13 python -c 'print("\x80\x90\x9f", end="")' ; }
     function _p13() { invoke "-u --format=raw,number,char,type,name" "" "" "$@" ; }
     function p14() { invoke ""  ./tests/data/specials ; }
+    function p15() { invoke_limit -fchar ./tests/data/broken-utf8.txt ; }
 
     function measure() {
       # arg: filepath
@@ -137,13 +139,16 @@ __holms() {
         gmic "${1:?}" "${cmds[@]}"
     }
 
-    local wd="${1:-.}"
+    local outdir=$(realpath "${1:-.}")
+    local execpath=$(realpath "${2:-./run}")
+
     local tmpout=/tmp/pbc-out
     local tmpimg=/tmp/pbc.png
     local tmpimgpp=/tmp/pbcpp.png
     local promptyn=$'\x1b[m Save? \x1b[34m[y/N/^C]\x1b[94m>\x1b[m '
 
-    [[ -n $wd ]] && { pushd "$wd" || exit 1 ; }
+    [[ -d "$outdir" ]] || { echo "ERROR: Dir does not exist: ${outdir@Q}" && exit 1 ; }
+    [[ -x "$execpath" ]] || execpath=
 
     export ES7S_PADBOX_PAD_Y=0
     export ES7S_PADBOX_PAD_X=$PADDING_X_CH
@@ -151,7 +156,7 @@ __holms() {
     export PAGER=
 
     for fn in $(seq $PP) ; do
-        local imgout="./example$(printf %03d $fn).png"
+        local imgout="$outdir/example$(printf %03d $fn).png"
         local txtout="$imgout.txt"
         local prompt=$(printf '\x1b[33m[\x1b[93;1m%2d\x1b[;33m/\x1b[1m%2d\x1b[;33m]\x1b[m' "$fn" $PP)
 
@@ -176,8 +181,6 @@ __holms() {
             fstat "$imgout" "$txtout"
         fi
     done
-
-    [[ -n $wd ]] && { popd || exit 1 ; }
 }
 
 [[ ${*/ /s} =~ (^| )-{,2}h(elp)?( |$) ]] && __help && exit

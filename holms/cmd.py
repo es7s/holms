@@ -55,21 +55,21 @@ def invoke_legend(ctx: click.Context, **kwargs):
 def invoke_version(ctx: click.Context, value: int, **kwargs):
     # fmt: off
     """
-           ███████
-  ₑₛ₇ₛ  ║███╔═══╗███║
- ┏━┓┏━┓═╣███║ ║█████╠═┏━┓════┏━┓═┏━┓════════┏━━━━┓
- ┃ ┗┛ ┃ ║███║ ╚═╗███║ ┃ ┃    ┃ ┗┳┛ ┃ ╎ -┬-╵ ┃ ━━━┫
- ┃ ┏┓ ┃ ║█████║ ║███║ ┃ ┗━━┓ ┃ ┣━┫ ┃ ╎ -┴-┐ ┣━━━ ┃
- ┗━┛┗━┛ ║███╔═╝ ║███║ ┗━━━━┛ ┗━┛ ┗━┛ '╌╌╌╌╵ ┗━━━━┛
-        ╚═╗███████╔═╝
-          ╚═══════╝
+             ███████
+    ₑₛ₇ₛ  ║███╔═══╗███║
+   ┏━┓┏━┓═╣███║ ║█████╠═┏━┓════┏━┓═┏━┓════════┏━━━━┓
+   ┃ ┗┛ ┃ ║███║▐█▌╗███║ ┃ ┃    ┃ ┗┳┛ ┃ ╎ -┬-╵ ┃ ━━━┫
+   ┃ ┏┓ ┃ ║█████╔╝║███║ ┃ ┗━━┓ ┃ ┣━┫ ┃ ╎ -┴-┐ ┣━━━ ┃
+   ┗━┛┗━┛ ║███╔═╝ ║███║ ┗━━━━┛ ┗━┛ ┗━┛ '╌╌╌╌╵ ┗━━━━┛
+          ╚═╗███████╔═╝
+            ╚═══════╝
     """
     # fmt: on
     if not value or ctx.resilient_parsing:
         return
     vfmt = lambda s: pt.Fragment(s, "green")
     ufmt = lambda s: pt.Fragment(s, "gray")
-    regex = re.compile("(█+)|([┃━┏┳┓┣╋┫┗┻┛]+)|([╎╌└╵╴╷┘,'┐┴┬-]+)|(.+?)")
+    regex = re.compile("([▐█▌]+)|([┃━┏┳┓┣╋┫┗┻┛]+)|([╎╌└╵╴╷┘,'┐┴┬-]+)|(.+?)")
     group_colors = [pt.cv.DARK_RED, pt.NOOP_COLOR, pt.cv.GRAY, pt.cv.DARK_GOLDENROD]
 
     def replace(m: re.Match) -> str:

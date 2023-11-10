@@ -36,9 +36,11 @@ _FORMAT_ALL = [
     Attribute.TYPE_NAME,
 ]
 
+
 class Char(t.Generic[_CT]):
     _ASCII_C0 = [*range(0x00, 0x20), 0x7F]
     _ASCII_C1 = [*range(0x80, 0xA0)]
+    _ASCII_LETTERS = [*pt.char_range('A', 'Z'), *pt.char_range('a', 'z')]
 
     def __init__(self, c: _CT):
         if isinstance(c, int):
@@ -126,6 +128,10 @@ class Char(t.Generic[_CT]):
     @property
     def is_ascii_cc(self) -> bool:
         return self.is_ascii_c0 or self.is_ascii_c1
+
+    @property
+    def is_ascii_letter(self) -> bool:
+        return self._value in self._ASCII_LETTERS
 
     def _get_name(self) -> str:
         if self.is_surrogate:
