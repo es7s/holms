@@ -1,0 +1,11 @@
+<path d="M4 12.5L9.5 18.5L20 6.5" stroke="#000" stroke-width="3" stroke-linecap
+="round" stroke-linejoin="round"></path></svg></div></div><div class="CheckboxC
+aptcha-Label"><span class="Text Text_weight_regular Text_typography_control-xxl
+CheckboxCaptcha-LabelText">Ð¯ Ð½Ðµ ÑÐ¾Ð±Ð¾Ñ</span><span class="Text Text_color_
+control-secondary Text_weight_regular Text_typography_control-l CheckboxCaptcha
+-SecondaryText">ÐÐ°Ð¶Ð¼Ð¸ÑÐµ, ÑÑÐ¾Ð±Ñ Ð¿ÑÐ¾Ð´Ð¾Ð»Ð¶Ð¸ÑÑ</span></div></div><div
+class="Text Text_color_ghost Text_weight_regular Text_typography_control-s Capt
+chaLinks CheckboxCaptcha-Links"><div class="CaptchaLinks-Links"><a color="secon
+dary" target="_blank" href="https://cloud.yandex.ru/services/smartcaptcha" aria
+-describedby="service-link-description" class="Link Link_color_secondary Link_v
+iew_captcha">SmartCaptcha by Yandex Cloud</a></div><button type="button" class=

@@ -201,6 +201,7 @@ class CliWriter:
     CPNUM_PFX_STYLE = pt.FrozenStyle(fg=pt.cv.GRAY_30)
     CHAR_STYLE = pt.FrozenStyle(fg=0xFFFFFF, bg=0)
     INVALID_STYLE = pt.FrozenStyle(fg=pt.cv.GRAY_30)
+    PLAIN_STYLE = pt.FrozenStyle(fg=pt.cv.GRAY_50)
 
     COLUMN_SEPARATOR = " "
     LTR_CHAR = "\u200e"  # to normalize the output after possible RTL switch
@@ -490,19 +491,21 @@ class CliWriter:
         override = self._OVERRIDE_CHARS.get(ord(value), None)
         if override:
             chr_st = override.style
+        if row.char.is_ascii_letter:
+            chr_st = cat_st = self.PLAIN_STYLE
         chr_st = pt.merge_styles(self.CHAR_STYLE, overwrites=[self._styles._BASE, chr_st])
 
         if self._setup.highlight_only_mode:
             if row.char.is_ascii_c0:
                 return value
             if row.char.is_surrogate or row.char.is_invalid:
-                return "▯"
+                value = "▯"
             pad = " " * bool(unicodedata.combining(value))
             return pt.render(pad + value, cat_st)
 
         pad = ""
 
-        if override := self._OVERRIDE_CHARS.get(ord(value), None):
+        if override:
             val_len = 1
             value = override.char
         elif (

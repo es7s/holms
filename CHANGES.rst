@@ -8,6 +8,12 @@ This project uses Semantic Versioning -- https://semver.org
 Version list
 ===============
 
+1.1.0 (Nov 23)
+---------------
+- 🌱 NEW: basic latin letters different look
+- 🐞 FIX: `--version` option
+- 🐞 FIX: `dev` environment initializing
+
 1.0.0 (Nov 23)
 ---------------
 - 🌱 NEW: `raw`, `type`, `typename` columns
