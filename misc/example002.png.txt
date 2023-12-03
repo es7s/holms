@@ -1,4 +1,4 @@
-  > holms -S -u -
+  > holms -s -u -
   aаͣāãâȧäåₐᵃａ
   00  U+  61 ▕ a ▏Ll LATIN SMALL LETTER A                 
   01  U+ 430 ▕ а ▏Ll CYRILLIC SMALL LETTER A              

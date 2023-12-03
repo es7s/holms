@@ -76,19 +76,19 @@ class Command(click.Command):
 @click.option(
     "-f",
     "--format",
-    "_columns",
+    "columns",
     type=MultiChoice(Attribute.list(), hide_choices=True),
     help="Comma-separated list of columns to show (order is preserved). Run 'holms --legend' to see the details.",
 )
 @click.option(
-    "-F",
-    "--full",
-    "_all_columns",
+    "-a",
+    "--all",
+    "all_columns",
     is_flag=True,
     help="Display ALL columns.",
 )
 @click.option(
-    "-S",
+    "-s",
     "--static",
     is_flag=True,
     help="Do not shrink columns by collapsing the prefix when possible.",
@@ -123,10 +123,7 @@ class Command(click.Command):
     help="Show the version and exit.",
 )
 def entrypoint(color: bool|None, mode_legend: bool, mode_version: bool, **kwargs):
-    output_mode = pt.OutputMode.AUTO
-    if color is not None:
-        output_mode = [pt.OutputMode.NO_ANSI, pt.OutputMode.XTERM_256][color]
-    pt.RendererManager.set_default(pt.SgrRenderer(output_mode))
+    setup_renderer(color)
 
     if mode_legend:
         invoke_legend(**kwargs)
@@ -136,3 +133,10 @@ def entrypoint(color: bool|None, mode_legend: bool, mode_version: bool, **kwargs
         return
 
     invoke_defualt(**kwargs)
+
+
+def setup_renderer(color: bool|None):
+    output_mode = pt.OutputMode.AUTO
+    if color is not None:
+        output_mode = [pt.OutputMode.NO_ANSI, pt.OutputMode.XTERM_256][color]
+    pt.RendererManager.set_default(pt.SgrRenderer(output_mode))

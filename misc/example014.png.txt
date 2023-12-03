@@ -1,4 +1,4 @@
-  > holms -S ./tests/data/specials
+  > holms -s ./tests/data/specials
    
   0  U+ 0 ▕ Ø ▏Cc ASCII C0 [NUL] NULL                 
   1  U+ 8 ▕ ← ▏Cc ASCII C0 [BS] BACKSPACE             

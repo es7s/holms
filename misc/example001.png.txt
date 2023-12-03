@@ -1,4 +1,4 @@
-  > holms -S -u -
+  > holms -s -u -
   1₂³⅘↉⏨
   0  U+  31 ▕ 1 ▏Nd DIGIT ONE                   
   1  U+2082 ▕ ₂ ▏No SUBSCRIPT TWO               

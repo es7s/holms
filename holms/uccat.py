@@ -59,3 +59,7 @@ def resolve_category(abbr: str) -> UnicodeCategory:
 
 def get_longest_name_length() -> int:
     return max(len(cat.name) for cat in _CATEGORY_LIST)
+
+
+def get_categories() -> set[UnicodeCategory]:
+    return _CATEGORY_LIST

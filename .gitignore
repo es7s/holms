@@ -1,4 +1,6 @@
 .env.build
 dist
 .hatch
-venv
+venv*
+.coverage
+coverage.json

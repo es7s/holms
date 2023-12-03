@@ -2,12 +2,12 @@
 #  es7s/holms
 #  (c) 2023 A. Shavykin <0.delameter@gmail.com>
 # ------------------------------------------------------------------------------
-from importlib.resources import read_text, open_binary
 import io
 import re
 import sys
-import typing as t
-from collections.abc import Iterable
+from functools import partial
+from importlib.resources import read_text, open_binary
+from io import UnsupportedOperation
 from pty import STDIN_FILENO
 
 import click
@@ -24,9 +24,11 @@ from holms.writer import CliWriter, Setup
 
 @pass_context
 def invoke_legend(ctx: click.Context, **kwargs):
+    echo = partial(pt.echo, file=sys.stdout)
+
     raw = read_text(f"{__package__}.data", "legend.ptpl")
     rendered = pt.template.render(raw, pt.RendererManager.get_default())
-    pt.echo(rendered)
+    echo(rendered)
 
     cats_input = open_binary(f"{__package__}.data", "all-cats.bin")
     cats_output = io.StringIO()
@@ -35,8 +37,8 @@ def invoke_legend(ctx: click.Context, **kwargs):
         "buffered": True,
         "input": cats_input,
         "output": cats_output,
-        "_columns": [Attribute.TYPE, Attribute.TYPE_NAME, Attribute.CHAR, Attribute.NUMBER, Attribute.NAME],
-        "_all_columns": False,
+        "columns": [Attribute.TYPE, Attribute.TYPE_NAME, Attribute.CHAR, Attribute.NUMBER, Attribute.NAME],
+        "all_columns": False,
         "merge": False,
         "group": 0,
         "static": True,
@@ -46,7 +48,7 @@ def invoke_legend(ctx: click.Context, **kwargs):
 
     cats_output.seek(0)
     for line in cats_output.read().split("\n"):
-        pt.echo("  " + line + " ")  # padding
+        echo("  " + line + " ")  # padding
 
     # @TODO add special cps overrides
 
@@ -67,6 +69,8 @@ def invoke_version(ctx: click.Context, value: int, **kwargs):
     # fmt: on
     if not value or ctx.resilient_parsing:
         return
+    echo = partial(pt.echo, file=sys.stdout)
+
     vfmt = lambda s: pt.Fragment(s, "green")
     ufmt = lambda s: pt.Fragment(s, "gray")
     regex = re.compile("([▐█▌]+)|([┃━┏┳┓┣╋┫┗┻┛]+)|([╎╌└╵╴╷┘,'┐┴┬-]+)|(.+?)")
@@ -79,14 +83,14 @@ def invoke_version(ctx: click.Context, value: int, **kwargs):
 
         return "".join(_iter(m))
 
-    pt.echo(regex.sub(replace, invoke_version.__doc__))
+    echo(regex.sub(replace, invoke_version.__doc__))
 
-    pt.echo(f"{APP_NAME:>12s}  {vfmt(APP_VERSION):<14s}  {ufmt(APP_UPDATED)}")
-    pt.echo(f"{'pytermor':>12s}  {vfmt(pt.__version__):<14s}  {ufmt(pt.__updated__)}")
-    pt.echo(f"{'es7s-commons':>12s}  {vfmt(es7s_commons.PKG_VERSION):<14s}  {ufmt(es7s_commons.PKG_UPDATED)}")
+    echo(f"{APP_NAME:>12s}  {vfmt(APP_VERSION):<14s}  {ufmt(APP_UPDATED)}")
+    echo(f"{'pytermor':>12s}  {vfmt(pt.__version__):<14s}  {ufmt(pt.__updated__)}")
+    echo(f"{'es7s-commons':>12s}  {vfmt(es7s_commons.PKG_VERSION):<14s}  {ufmt(es7s_commons.PKG_UPDATED)}")
 
     def _echo_path(label: str, path: str):
-        pt.echo(
+        echo(
             pt.Composite(
                 pt.Text(label + ":", width=17),
                 format_path(path, color=True, repr=False),
@@ -94,7 +98,7 @@ def invoke_version(ctx: click.Context, value: int, **kwargs):
         )
 
     if value > 1:
-        pt.echo()
+        echo(file=io)
         _echo_path("Executable", sys.executable)
         _echo_path("Entrypoint", __file__)
     ctx.exit()
@@ -114,21 +118,17 @@ def invoke_defualt(
             "Specify a file or '-' to read from stdin."
         )
     if buffered is None:
-        buffered = input.fileno() != STDIN_FILENO
-
-    if kwargs.get("group", None):
-        kwargs.update({"merge": True})
-        buffered = True
+        try:
+            buffered = input.fileno() != STDIN_FILENO
+        except UnsupportedOperation:
+            pass  # looks like input is not a fp => testing environment
 
     setup = Setup(**kwargs)
+    if setup.group:
+        buffered = True
+
     r = CliReader(io.TextIOWrapper(input))
-    w = CliWriter(setup, output)
+    w = CliWriter(setup, buffered, output)
 
-    def parse(string: Iterable[t.AnyStr]) -> Iterable[Char | None]:
-        yield from map(Char, string)
-        yield None
-
-    if buffered:
-        w.write([*parse(r.read())])
-    else:
-        w.write(parse(r.read()))
+    chars = Char.parse(r.read())
+    w.write(chars)

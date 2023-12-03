@@ -3,8 +3,21 @@
 # es7s/holms
 # (c) 2023 A. Shavykin <0.delameter@gmail.com>
 #-------------------------------------------------------------------------------
+declare -ir PP=15
+
 declare -ir CHAR_W_PX=9
 declare -ir CHAR_H_PX=21
+declare -ir MIN_RESULT_W_PX=500
+declare -ir MAX_RESULT_H_PX=1000
+declare -ir OFFSET_X_PX=0
+declare -ir OFFSET_Y_PX=0
+declare -ir PADDING_X_CH=1
+# values are adjusted for:
+# -----------------------------------------
+# TERMINAL APP  GNOME Terminal / Terminator
+#    TEXT FONT  Iose7ka Terminal Medium 12
+#  WINDOW SIZE  fullscreen 1080p
+# -----------------------------------------
 
 function fstat() { stat -Lc $'%10s  %n' "$@" | es7s exec hilight - ; }
 function min() { [[ $(( ${1:?} )) -lt $(( ${2:?} )) ]] && echo $1 || echo $2 ; }
@@ -26,26 +39,46 @@ function measure_width() {
 # ------------------
 __help() {
   __SELF="$(basename "$0" | sed -Ee 's/\..+$//')"
-  echo "USAGE: $__SELF [OUTPUT_DIR] [EXEC_DIR]"
+  echo "USAGE: $__SELF [-a] [-y] [OUTPUT_DIR] [EXEC_DIR]"
   echo
   echo "  Render readme images, place into OUTPUT_DIR. If specified,"
   echo "  use EXEC_DIR as custom path to 'holms'. Both can be provided"
   echo "  in a format relative to current working directory."
+  echo
+  echo "Suggested invocation (non-interactive):"
+  echo "  make pre-build"
+  echo "Suggested invocation (manual control):"
+  echo "  ./scripts/make-readme-images.sh ./misc"
+  echo
+  echo "OPTIONS"
+  echo "  -a, --all    Do not skip already existing artifacts."
+  echo "  -y, --yes    Write artifacts without user confirmation."
 }
 __holms() {
-    local -ir MIN_RESULT_W_PX=500
-    local -ir MAX_RESULT_H_PX=1000
-    local -ir OFFSET_X_PX=0
-    local -ir OFFSET_Y_PX=68
-    local -ir PADDING_X_CH=1
+    local OPT_ALL=
+    local OPT_YES=
 
-    local -ir PP=15
+    while getopts ay-: OPT; do
+        if [ "$OPT" = "-" ]; then
+            OPT="${OPTARG%%=*}"
+            OPTARG="${OPTARG#$OPT}"
+            OPTARG="${OPTARG#=}"
+        fi
+        # shellcheck disable=SC2214
+        case "$OPT" in
+                 a|all) OPT_ALL=true ;;
+                 y|yes) OPT_YES=true ;;
+                  help) __help && return 0 ;;
+                 ??*|?) echo "Invalid option -${OPTARG:-"-"$OPT}" && __help && return 0 ;;
+        esac
+    done
+    shift $((OPTIND-1))
 
     # shellcheck disable=SC2086
     function invoke() {
       # args: opts [file] [input] [precmd preopts...]
-      local opts="-cSb $1" file="${2:--}" input="${3:-}"
-      local hopts=" $1${1:+ }-S"
+      local opts="-csb $1" file="${2:--}" input="${3:-}"
+      local hopts=" $1${1:+ }-s"
       local hstart="holms"
 
       local hfile="$file"
@@ -65,7 +98,7 @@ __holms() {
       fi
 
       { [[ -n $input ]] && printf %s $input || "${@:4}" ; } |
-        ES7S_PADBOX_HEADER="${hstart}${hopts}${hend}" padbox "${execpath:-holms}" "$file" -cbS $opts
+        ES7S_PADBOX_HEADER="${hstart}${hopts}${hend}" padbox "${execpath:-holms}" "$file" -cbs $opts
     }
     function invoke_simple() { invoke "" "" "${1:?}" ; }
     function invoke_cut() {
@@ -160,10 +193,12 @@ __holms() {
         local txtout="$imgout.txt"
         local prompt=$(printf '\x1b[33m[\x1b[93;1m%2d\x1b[;33m/\x1b[1m%2d\x1b[;33m]\x1b[m' "$fn" $PP)
 
-        # shellcheck disable=SC2046,SC2005
-        [[ -f "$imgout" && -f "$txtout" ]] \
-          && echo "$prompt Skipping existing: $(echo $(basename -a "$imgout" "$txtout"))" \
-          && continue
+        if [[ ! $OPT_ALL ]] ; then
+          # shellcheck disable=SC2046,SC2005
+          [[ -f "$imgout" && -f "$txtout" ]] \
+            && echo "$prompt Skipping existing: $(echo $(basename -a "$imgout" "$txtout"))" \
+            && continue
+        fi
 
         clear
         "p$fn" |& tee $tmpout
@@ -174,7 +209,9 @@ __holms() {
         # shellcheck disable=SC2046,SC2086
         pp "$tmpimg" "$tmpimgpp" $(get_extra_strokes $fn)
 
-        read -r -n1 -p"$prompt$promptyn" yn ; echo
+        if [[ ! $OPT_YES ]] ; then
+          read -r -n1 -p"$prompt$promptyn" yn ; echo
+        else yn=y ; fi
         if [[ $yn =~ [Yy] ]] ; then
             cp -v "$tmpimgpp" "$imgout"
             dcu < "$tmpout" > "$txtout"
@@ -183,7 +220,6 @@ __holms() {
     done
 }
 
-[[ ${*/ /s} =~ (^| )-{,2}h(elp)?( |$) ]] && __help && exit
 checkdep holms
 checkdep gmic
 checkdep padbox es7s

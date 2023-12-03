@@ -1,5 +1,5 @@
   > sed confusables.txt -Ee 'sg' -e '3620!d' |
-    holms -S -
+    holms -s -
   00  U+   B7 ▕ · ▏Po MIDDLE DOT                          
   02  U+ 1427 ▕ ᐧ ▏Lo CANADIAN SYLLABICS FINAL MIDDLE DOT 
   05  U+  387 ▕ · ▏Po GREEK ANO TELEIA                    

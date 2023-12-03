@@ -1,4 +1,4 @@
-## es7s/holms          ## [text to unicode code points breakdown]
+## es7s/holms           ## [text to unicode code points breakdown]
 ## (c) 2023             ## A. Shavykin <<0.delameter@gmail.com>>
 ##----------------------##-------------------------------------------------------------
 
@@ -30,6 +30,8 @@ RESET  := $(shell printf '\e[m')
 help:   ## Show this help
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v @fgrep | sed -Ee 's/^(##)\s?(\s*#?[^#]+)#*\s*(.*)/\1${YELLOW}\2${RESET}#\3/; s/(.+):(#|\s)+(.+)/##   ${GREEN}\1${RESET}#\3/; s/\*(\w+)\*/${BOLD}\1${RESET}/g; 2~1s/<([ )*<@>.A-Za-z0-9_(-]+)>/${DIM}\1${RESET}/gi' -e 's/(\x1b\[)33m#/\136m/' | column -ts# | sed -Ee 's/ {3}>/ >/'
 
+_ensure_x11 = ([ -n "${DISPLAY}" ] && return; echo 'ERROR: No $$DISPLAY'; return 1)
+
 .:
 ## Initialization
 
@@ -42,7 +44,7 @@ prepare:  ## Initialize local configuration file
 	else
 		echo "Skipping: $(ENV_LOCAL_FILE_PATH) already exists"
 	fi
-#			-e "t; /^(#|$$)/d"
+
 init-hatch:  ## Install build backend  <system>
 	pipx install hatch
 
@@ -63,6 +65,62 @@ reinit-manual-venv:  ## Prepare manual environment  <venv>
 	${VENV_DEV_PATH}/bin/pip install -e .
 	${VENV_DEV_PATH}/bin/pip install -r requirements-dev.txt
 	${VENV_DEV_PATH}/bin/python -m $(PACKAGE_NAME) --version
+
+.:
+## Testing
+
+test: ## Run pytest
+	hatch run test:pytest \
+		--quiet \
+		--tb=line
+
+test-verbose: ## Run pytest with detailed output
+	hatch run test:pytest -v \
+		--maxfail 1 \
+		--log-level=10
+
+test-trace: ## Run pytest with detailed output  <@last_test_trace.log>
+	hatch run test:pytest -v \
+		--maxfail 1 \
+		--log-file-level=1 \
+		--log-file=last_test_trace.log
+	@/usr/bin/ls --size --si last_test_trace.log
+
+.:
+## Coverage / dependencies
+
+cover: ## Run coverage and make a report
+	@rm -v $(OUT_COVER_PATH)/*
+	hatch run test:coverage run -m pytest -- --maxfail 100
+	hatch run test:coverage html -d $(OUT_COVER_PATH)
+	hatch run test:coverage json
+	hatch run test:coverage report
+
+open-coverage:  ## Open coverage report in browser
+	@$(call _ensure_x11) || return
+	xdg-open $(OUT_COVER_PATH)/index.html
+
+update-coveralls:  ## Manually send last coverage statistics  <coveralls.io>
+	hatch run test:coveralls
+
+depends:  ## Build module dependency graphs
+	@rm -vrf $(OUT_DEPENDS_PATH)
+	@mkdir -p $(OUT_DEPENDS_PATH)
+	hatch run dev:./pydeps.sh pydeps $(PACKAGE_NAME) $(OUT_DEPENDS_PATH)
+
+open-depends:  ## Open dependency graph output directory
+	@$(call _ensure_x11) || return
+	xdg-open $(OUT_DEPENDS_PATH)
+
+.:
+## Automation
+
+_ensure_x11 = ([ -n "${DISPLAY}" ] && return; echo 'ERROR: No $$DISPLAY'; return 1)
+
+pre-build:  ## Update auto-generated artifacts
+	@$(call _ensure_x11) || return
+	./scripts/make-readme-images.sh -ay ./misc
+	./scripts/update-readme-images-urls.sh ./README.md ./scripts/readme-images-urls.md
 
 ## Packaging
 
@@ -100,7 +158,7 @@ next-version-major: ## Increase version by 1
 _freeze = (	echo "${BSEP}\e[34mFreezing \e[1;94m$1\e[22;34m:\e[m\n${BSEP}"; \
 			hatch -e $1 run pip freeze -q --exclude-editable | \
 				sed --unbuffered -E -e '/^(Checking|Syncing|Creating|Installing)/d' | \
-				fgrep -e holms -v | \
+				fgrep -e $(PACKAGE_NAME) -v | \
 				tee requirements-$1.txt | \
 				sed --unbuffered -E -e 's/^([a-zA-Z0-9_-]+)/\x1b[32m\1\x1b[m/' \
 									-e 's/([0-9.]+|@[a-zA-Z0-9_-]+)$$/\x1b[33m\1\x1b[m/'; \

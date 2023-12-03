@@ -2,14 +2,14 @@
 #  es7s/holms
 #  (c) 2023 A. Shavykin <0.delameter@gmail.com>
 # ------------------------------------------------------------------------------
-
+import io
 import math
 import re
 import sys
 import typing as t
 import unicodedata
 from collections import deque, OrderedDict, namedtuple
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from functools import cached_property
 
@@ -21,14 +21,25 @@ from .common import Char, Attribute, _FORMAT_ALL
 from .uccat import resolve_category
 
 
-@dataclass(frozen=True)
 class Setup:
-    _columns: list[Attribute]
-    _all_columns: bool
-    merge: bool
-    group: int
-    decimal_offset: bool
-    static: bool
+    def __init__(
+        self,
+        columns: list[Attribute] = None,
+        all_columns=False,
+        merge=False,
+        group=0,
+        decimal_offset=False,
+        static=False,
+    ):
+        self._columns: list[Attribute] = columns or []
+        self._all_columns: bool = all_columns
+        self._merge: bool = merge
+        self._group: int = group
+        self._decimal_offset: bool = decimal_offset
+        self._static: bool = static
+
+        if self._group > 0:
+            self._merge = True
 
     @cached_property
     def columns(self) -> list[Attribute]:
@@ -45,17 +56,37 @@ class Setup:
             exclude_by_default.append(Attribute.TYPE_NAME)
         return [col for col in _FORMAT_ALL if col not in exclude_by_default]
 
-    @cached_property
-    def group_cats(self):
-        return self.group >= 2
+    @property
+    def merge(self) -> bool:
+        return self._merge
+
+    @property
+    def group_level(self) -> int:
+        return self._group
 
     @cached_property
-    def group_super_cats(self):
-        return self.group >= 3
+    def group(self) -> bool:
+        return self._group >= 1
+
+    @cached_property
+    def group_cats(self) -> bool:
+        return self._group >= 2
+
+    @cached_property
+    def group_super_cats(self) -> bool:
+        return self._group >= 3
 
     @cached_property
     def highlight_only_mode(self) -> bool:
         return len(self.columns) == 1 and self.columns[0] == Attribute.CHAR
+
+    @property
+    def decimal_offset(self) -> bool:
+        return self._decimal_offset
+
+    @property
+    def static(self) -> bool:
+        return self._static
 
 
 @dataclass
@@ -225,12 +256,15 @@ class CliWriter:
         }
     )
 
-    def __init__(self, setup: Setup, output=sys.stdout):
+    def __init__(self, setup: Setup, buffered: bool, output: io.IOBase = None):
         self._setup = setup
-        self._output = output
+        self._buffered = buffered
+        self._output = output or sys.stdout
 
         self._buffer = deque[Row]()
         self._table = Table({a: Column(a) for a in self._setup.columns})
+        if not self._buffered:
+            self._table.setdefaults()
         self._groups = Groups()
         self._cat_cache = CategorySampleCache()
 
@@ -259,25 +293,27 @@ class CliWriter:
             case _:
                 raise RuntimeError(f"Invalid attribute: {attr}")
 
-    def write(self, chars: Iterable[Char | None]):
+    def _get_group_key(self, char: Char):
+        match self._setup.group_level:
+            case 1:
+                return char
+            case 2:
+                return char.type
+            case 3:
+                return char.type[0]
+        raise RuntimeError(f"Invalid 'group' value: {self._setup.group}")
+
+    def write(self, chars: Iterator[Char | None]):
         prev_char: Char | None = None
         dup_count = 0
-        self._buffered = isinstance(chars, t.Sized)
-        if not self._buffered:
-            self._table.setdefaults()
+
+        if self._buffered:
+            chars = [*chars]
 
         for char in chars:
             if self._setup.group:
                 if char is not None:
-                    match self._setup.group:
-                        case 1:
-                            key = char
-                        case 2:
-                            key = char.type
-                        case 3:
-                            key = char.type[0]
-                        case _:
-                            raise RuntimeError(f"Invalid 'group' value: {self._setup.group}")
+                    key = self._get_group_key(char)
                     if key not in self._groups.keys():
                         self._groups[key] = 0
                         if not isinstance(key, Char):
@@ -422,7 +458,7 @@ class CliWriter:
     def _format_dup_count_val(self, row: Row, col: Column = None) -> str:
         val = max((row.dup_count if row else 0), col.max_val)
 
-        if val > 1 or self._setup.group:
+        if val > 0 or self._setup.group:
             result = str(val + 1)
         else:
             result = " "

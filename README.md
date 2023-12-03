@@ -40,16 +40,16 @@ Basic usage
       separate Unicode code points. Use '-' as INPUT to read from stdin instead.
 
 <div align="center">
-  <img alt="example001" width="49%" src="https://github.com/es7s/holms/assets/50381946/df486162-bd47-4a33-ba10-f9a5c932977c">
-  <img alt="example004" width="49%" src="https://github.com/es7s/holms/assets/50381946/872a0a88-f09c-41c7-9950-11d77b6eef10">
-  <img alt="example002" width="49%" src="https://github.com/es7s/holms/assets/50381946/ef1e15b7-4652-475f-82a1-a546b425b41f">
-  <img alt="example003" width="49%" src="https://github.com/es7s/holms/assets/50381946/cdf8766d-a0ae-430c-8737-fa19b5678589">
+  <img alt="example001" width="49%" src="https://github.com/es7s/holms/assets/50381946/8f3d1520-a6ee-4bba-a50f-0474a458a231">
+  <img alt="example004" width="49%" src="https://github.com/es7s/holms/assets/50381946/08ac1012-e9ca-4c57-8d9d-08b4d6ba7839">
+  <img alt="example002" width="49%" src="https://github.com/es7s/holms/assets/50381946/964c5d74-ef62-43f3-b4fe-9d459c0178f0">
+  <img alt="example003" width="49%" src="https://github.com/es7s/holms/assets/50381946/658665c8-2222-4f71-b5b1-79442b46cbbf">
 </div>
 
 <details>
    <summary>Plain text output</summary>
 
-    > holms -S -u -
+    > holms -s -u -
     1₂³⅘↉⏨
     0  U+  31 ▕ 1 ▏Nd DIGIT ONE                   
     1  U+2082 ▕ ₂ ▏No SUBSCRIPT TWO               
@@ -58,7 +58,7 @@ Basic usage
     9  U+2189 ▕ ↉ ▏No VULGAR FRACTION ZERO THIRDS
     c  U+23E8 ▕ ⏨ ▏So DECIMAL EXPONENT SYMBOL
 
-    > holms -S -u -
+    > holms -s -u -
     aаͣāãâȧäåₐᵃａ
     00  U+  61 ▕ a ▏Ll LATIN SMALL LETTER A                 
     01  U+ 430 ▕ а ▏Ll CYRILLIC SMALL LETTER A              
@@ -73,7 +73,7 @@ Basic usage
     14  U+1D43 ▕ ᵃ ▏Lm MODIFIER LETTER SMALL A              
     17  U+FF41 ▕ａ ▏Ll FULLWIDTH LATIN SMALL LETTER A
 
-    > holms -S -u -
+    > holms -s -u -
     🌯👄🤡🎈🐳🐍
     00  U+1F32F ▕🌯 ▏So BURRITO          
     04  U+1F444 ▕👄 ▏So MOUTH            
@@ -82,7 +82,7 @@ Basic usage
     10  U+1F433 ▕🐳 ▏So SPOUTING WHALE   
     14  U+1F40D ▕🐍 ▏So SNAKE
 
-    > holms -S -u -
+    > holms -s -u -
     %‰∞8᪲?¿‽⚠⚠️
     00  U+  25 ▕ % ▏Po PERCENT SIGN           
     01  U+2030 ▕ ‰ ▏Po PER MILLE SIGN         
@@ -141,8 +141,8 @@ Configuration / Advanced usage
                                       ('-ggg') makes the app group the input by super categories.
       -f, --format                    Comma-separated list of columns to show (order is preserved). Run
                                       'holms --legend' to see the details.
-      -F, --full                      Display ALL columns.
-      -S, --static                    Do not shrink columns by collapsing the prefix when possible.
+      -a, --all                       Display ALL columns.
+      -s, --static                    Do not shrink columns by collapsing the prefix when possible.
       -c, --color / -C, --no-color    Explicitly turn colored results on or off; if not specified, will
                                       be selected automatically depending on the type and capabilities
                                       of receiving device (e.g. colors will be enabled for a terminal
@@ -151,8 +151,7 @@ Configuration / Advanced usage
       -L, --legend                    Show detailed info on an output format and code point category
                                       chromacoding, and exit.
       -V, --version                   Show the version and exit.
-      -?, --help                      Show this message and exit. 
-
+      -?, --help                      Show this message and exit.    
 
 Examples
 --------------------------
@@ -160,14 +159,14 @@ Examples
 ### Output column selection
 
 Option `-f`/`--filter` can be used to specify what columns to display. As an
-alternative, there is an `-F`/`--full` option that enables displaying of all
+alternative, there is an `-a`/`--all` option that enables displaying of all
 currently available columns.
 
 <details>
   <summary><b>Column availability depending on operating mode</b></summary>
 
   <div align="center">
-    <img alt="example010" src="https://github.com/es7s/holms/assets/50381946/64222b0d-c01f-4481-a513-531796612e63">
+    <img alt="example010" src="https://github.com/es7s/holms/assets/50381946/9088d331-5871-4942-ad98-0b32dfa7652d">
   </div>
 </details>
 
@@ -175,13 +174,13 @@ Also `-m`/`--merge` option is demonstrated, which tells the app to collapse
 repetitive characters into one line of the output while counting them:
 
 <div align="center">
-  <img alt="example005" src="https://github.com/es7s/holms/assets/50381946/2de147ad-751f-4e68-a7ab-615db7bce9c8">
+  <img alt="example005" src="https://github.com/es7s/holms/assets/50381946/5da3c108-1046-4c49-9283-973357c62535">
 </div>
 
 <details>
    <summary>Plain text output</summary>
 
-    > holms -m -S phpstan.txt
+    > holms -m -s phpstan.txt
      
     000  U+2B ▕ + ▏    Sm PLUS SIGN               
     001+ U+2D ▕ - ▏27× Pd HYPHEN-MINUS            
@@ -206,14 +205,14 @@ and feed the result to the application. The result demonstrates various Unicode
 dot/bullet code points:
 
 <div align="center">
-    <img alt="example006" src="https://github.com/es7s/holms/assets/50381946/54f6127e-0796-4531-9840-f6fddb11efce">
+    <img alt="example006" src="https://github.com/es7s/holms/assets/50381946/761da38a-389e-4996-aef5-daaec6e59ef9">
 </div>
 
 <details>
    <summary>Plain text output</summary>
 
     > sed confusables.txt -Ee 'sg' -e '3620!d' |
-        holms -S -
+        holms -s -
     00  U+   B7 ▕ · ▏Po MIDDLE DOT                          
     02  U+ 1427 ▕ ᐧ ▏Lo CANADIAN SYLLABICS FINAL MIDDLE DOT
     05  U+  387 ▕ · ▏Po GREEK ANO TELEIA                    
@@ -234,13 +233,13 @@ dot/bullet code points:
 the occurrence rate of each one:
 
 <div align="center">
-  <img alt="example008" src="https://github.com/es7s/holms/assets/50381946/20195bc3-115d-4eac-99dc-742ef74e5b88">
+  <img alt="example008" src="https://github.com/es7s/holms/assets/50381946/0b53c8d4-3518-47bc-a55a-e4e82cd08edf">
 </div>
 
 <details>
    <summary>Plain text output</summary>
 
-    > holms -g -S ./tests/data/confusables.txt
+    > holms -g -s ./tests/data/confusables.txt
        
     U+   20 ▕ ␣ ▏   13% ▍   62732× Zs SPACE                                                                               
     U+    9 ▕ ⇥ ▏  7.3% ▏   36745× Cc ASCII C0 [HT] HORIZONTAL TABULATION                                                 
@@ -261,14 +260,14 @@ code point category or code point super category, respectively, which can be use
 e.g. for frequency domain analysis:
 
 <div align="center">
-  <img alt="example011" src="https://github.com/es7s/holms/assets/50381946/0859b908-58d3-4f02-85d3-583fd78d3d68">
-  <img alt="example012" src="https://github.com/es7s/holms/assets/50381946/0a15f532-bbe1-488b-bea5-384326a3eff4">
+  <img alt="example011" src="https://github.com/es7s/holms/assets/50381946/307b353e-c61d-42ee-85c3-e9a455cccc03">
+  <img alt="example012" src="https://github.com/es7s/holms/assets/50381946/b4887f4d-fd24-45d3-bf41-a8bb55628239">
 </div>
 
 <details>
    <summary>Plain text output</summary>
 
-    > holms -gg -S ./tests/data/confusables.txt
+    > holms -gg -s ./tests/data/confusables.txt
      
       53% █████▎     266233× Lu Uppercase_Letter      
       13% █▎          62748× Zs Space_Separator       
@@ -282,7 +281,7 @@ e.g. for frequency domain analysis:
      1.5% ▏            7525× Po Other_Punctuation     
     ...
 
-    > holms -ggg -S ./tests/data/confusables.txt
+    > holms -ggg -s ./tests/data/confusables.txt
      
       57% █████▋     284074× L Letter      
       14% █▍          69853× C Other       
@@ -305,14 +304,14 @@ category.
 untouched and invisible.
 
 <div align="center">
-  <img alt="example007" src="https://github.com/es7s/holms/assets/50381946/7e1532ac-b313-49c1-8051-9a78ebeefe7b">
+  <img alt="example007" src="https://github.com/es7s/holms/assets/50381946/fe41bf5d-b122-4972-9a2e-68d97fe5bd6b">
 </div>
 
 <details>
    <summary>Plain text output</summary>
 
     > sed chars.txt -nEe 1,12p |
-        holms --format=char -S -
+        holms --format=char -s -
     ! " # $ % & ' ( ) * + , - . /
     0 1 2 3 4 5 6 7 8 9 : ; < = > ?
     @ A B C D E F G H I J K L M N O
@@ -341,7 +340,7 @@ encoded code points, but the result differs from the origin and is completely
 unreadable nevertheless.
 
 <div align="center">
-  <img alt="example007" src="https://github.com/es7s/holms/assets/50381946/438e7f7a-4487-4a7c-98fb-bf269b4d0c96">
+  <img alt="example015" src="https://github.com/es7s/holms/assets/50381946/5b777ed2-c602-4b83-b646-bd0161f349b2">
 </div>
 
 
@@ -379,19 +378,19 @@ Python's full transparent Unicode support, we don't even need to bother much
 about the encodings and such):
 
 <div align="center">
-  <img alt="example013" src="https://github.com/es7s/holms/assets/50381946/a6bdf9a2-fb19-4dbd-a507-f474c5c6a314">
+  <img alt="example013" src="https://github.com/es7s/holms/assets/50381946/ed01b685-da5b-4def-a928-0a2a651ecf36">
 </div>
 
 <details>
    <summary>Plain text output</summary>
 
     > printf '\x80\x90\x9f' |
-    holms --format=raw,number,char,type,name -S -
+    holms --format=raw,number,char,type,name -s -
     0x       80      --  ▕ ▯ ▏-- NON UTF-8 BYTE 0x80
     0x       90      --  ▕ ▯ ▏-- NON UTF-8 BYTE 0x90
     0x       9f      --  ▕ ▯ ▏-- NON UTF-8 BYTE 0x9F
     > python -c 'print("\x80\x90\x9f", end="")' |
-        holms --format=raw,number,char,type,name -S -
+        holms --format=raw,number,char,type,name -s -
     0x    c2 80 U+    80 ▕ ▯ ▏Cc ASCII C1 [PC] PADDING CHARACTER
     0x    c2 90 U+    90 ▕ ▯ ▏Cc ASCII C1 [DCS] DEVICE CONTROL STRING
     0x    c2 9f U+    9F ▕ ▯ ▏Cc ASCII C1 [APC] APPLICATION PROGRAM COMMAND
@@ -405,7 +404,7 @@ The image below illustrates the color scheme developed for the app specifically,
 to simplify distinguishing code points of one category from others.
 
 <div align="center">
-  <img alt="example009" src="https://github.com/es7s/holms/assets/50381946/fd71430a-becb-4d9d-84e3-12900f4fc548">
+  <img alt="example009" src="https://github.com/es7s/holms/assets/50381946/84e687f6-d2be-4f0a-b6e1-d41a3777f8f1">
 </div>
 
 Most frequently encountering control codes also have a unique character
@@ -413,7 +412,7 @@ replacements, which allows to recognize them without reading the label or
 memorizing code point identifiers:
 
 <div align="center">
-  <img alt="example014" src="https://github.com/es7s/holms/assets/50381946/609e4c3b-3aad-42b4-91d1-8007dd15bb1b">
+  <img alt="example014" src="https://github.com/es7s/holms/assets/50381946/e1e14f05-0761-49b0-b08f-d4dffd198e30">
 </div>
 
 Changelog

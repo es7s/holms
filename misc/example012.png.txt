@@ -1,4 +1,4 @@
-  > holms -ggg -S ./tests/data/confusables.txt
+  > holms -ggg -s ./tests/data/confusables.txt
    
     57% █████▋     284074× L Letter      
     14% █▍          69853× C Other       
