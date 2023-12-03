@@ -1,4 +1,4 @@
-  > holms -g -S ./tests/data/confusables.txt
+  > holms -g -s ./tests/data/confusables.txt
    
  U+   20 ▕ ␣ ▏   13% ▍   62732× Zs SPACE                                                                               
  U+    9 ▕ ⇥ ▏  7.3% ▏   36745× Cc ASCII C0 [HT] HORIZONTAL TABULATION                                                 

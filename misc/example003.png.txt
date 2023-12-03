@@ -1,4 +1,4 @@
-  > holms -S -u -
+  > holms -s -u -
   %‰∞8᪲?¿‽⚠⚠️
   00  U+  25 ▕ % ▏Po PERCENT SIGN           
   01  U+2030 ▕ ‰ ▏Po PER MILLE SIGN         

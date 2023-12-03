@@ -1,4 +1,4 @@
-  > holms -gg -S ./tests/data/confusables.txt
+  > holms -gg -s ./tests/data/confusables.txt
    
     53% █████▎     266233× Lu Uppercase_Letter      
     13% █▎          62748× Zs Space_Separator       

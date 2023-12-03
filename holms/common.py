@@ -3,6 +3,8 @@
 #  (c) 2023 A. Shavykin <0.delameter@gmail.com>
 # ------------------------------------------------------------------------------
 import unicodedata
+from collections.abc import Iterable, Iterator
+
 import pytermor as pt
 import click
 import typing as t
@@ -40,7 +42,12 @@ _FORMAT_ALL = [
 class Char(t.Generic[_CT]):
     _ASCII_C0 = [*range(0x00, 0x20), 0x7F]
     _ASCII_C1 = [*range(0x80, 0xA0)]
-    _ASCII_LETTERS = [*pt.char_range('A', 'Z'), *pt.char_range('a', 'z')]
+    _ASCII_LETTERS = [*pt.char_range("A", "Z"), *pt.char_range("a", "z")]
+
+    @staticmethod
+    def parse(string: Iterable[t.AnyStr|int]) -> Iterator[t.Optional["Char"]]:
+        yield from map(Char, string)
+        yield None
 
     def __init__(self, c: _CT):
         if isinstance(c, int):
@@ -65,7 +72,7 @@ class Char(t.Generic[_CT]):
         return hash((self._value, self.__class__.__name__))
 
     def __repr__(self):
-        return f'<{pt.get_qname(self)}[U+{ord(self._value):X}][{self._value}]>'
+        return f"<{pt.get_qname(self)}[U+{ord(self._value):X}][{self._value}]>"
 
     @property
     def value(self) -> str:
@@ -142,7 +149,7 @@ class Char(t.Generic[_CT]):
             return "UNASSIGNED"
         if self.is_ascii_cc:
             cc = resolve_ascii_cc(self.cpnum)
-            ccpg = '01'[bool(self.is_ascii_c1)]
+            ccpg = "01"[bool(self.is_ascii_c1)]
             return f"ASCII C{ccpg} [{cc.abbr}] {cc.name}"
         if self.is_invalid:
             # printf '\x80'   0x 80         --  NON UTF-8 BYTE 0x80
@@ -163,7 +170,12 @@ class Char(t.Generic[_CT]):
 
 
 class MultiChoice(click.Choice):
-    def __init__(self, choices: t.Sequence[str], case_sensitive: bool = True, hide_choices: bool = False) -> None:
+    def __init__(
+        self,
+        choices: t.Sequence[str],
+        case_sensitive: bool = True,
+        hide_choices: bool = False,
+    ) -> None:
         self._hide_choices = hide_choices
         super().__init__(choices, case_sensitive)
 
@@ -174,6 +186,7 @@ class MultiChoice(click.Choice):
         if self._hide_choices:
             return ""
         return super().get_metavar(param)
+
 
 class HiddenIntRange(click.IntRange):
     def _describe_range(self) -> str:

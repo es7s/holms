@@ -1,4 +1,4 @@
-  > holms -S -u -
+  > holms -s -u -
   🌯👄🤡🎈🐳🐍
   00  U+1F32F ▕🌯 ▏So BURRITO          
   04  U+1F444 ▕👄 ▏So MOUTH            

@@ -1,10 +1,10 @@
   > printf '\x80\x90\x9f' |
-    holms --format=raw,number,char,type,name -S -
+    holms --format=raw,number,char,type,name -s -
   0x       80      --  ▕ ▯ ▏-- NON UTF-8 BYTE 0x80 
   0x       90      --  ▕ ▯ ▏-- NON UTF-8 BYTE 0x90 
   0x       9f      --  ▕ ▯ ▏-- NON UTF-8 BYTE 0x9F 
   > python -c 'print("\x80\x90\x9f", end="")' |
-    holms --format=raw,number,char,type,name -S -
+    holms --format=raw,number,char,type,name -s -
   0x    c2 80 U+    80 ▕ ▯ ▏Cc ASCII C1 [PC] PADDING CHARACTER 
   0x    c2 90 U+    90 ▕ ▯ ▏Cc ASCII C1 [DCS] DEVICE CONTROL STRING 
   0x    c2 9f U+    9F ▕ ▯ ▏Cc ASCII C1 [APC] APPLICATION PROGRAM COMMAND 

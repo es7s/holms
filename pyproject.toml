@@ -35,6 +35,15 @@ dependencies = [
     "pytermor==2.106.6.dev0",
 ]
 
+[project.optional-dependencies]
+test = [
+    "coverage[toml]~=6.4",
+    "coveralls~=3.3",
+    "pytest~=7.1",
+    "pytest-cov~=4.1",
+    "typing-extensions~=4.6",
+]
+
 [project.scripts]
 holms = "holms.__main__:main"
 
@@ -45,9 +54,59 @@ holms = "holms.__main__:main"
 
 # ---------------------------------------------------------
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.publish.index]
+disable = true
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/holms",
+    "/tests",
+]
+
+[tool.hatch.version]
+path = "holms/_version.py"
+
+###
+
+[tool.hatch.envs.default.scripts]
+version = "python -m holms --version"
+
+###
+
+[tool.hatch.envs.test]
+features = [
+    'test',
+]
+
+[tool.hatch.envs.test.scripts]
+test = "pytest"
+
+###
+
+[tool.hatch.envs.build]
+detached = true
+extra-dependencies = [
+    "build~=0.8",
+    "twine~=4.0",
+]
+
+###
+
+[tool.hatch.envs.dev]
+extra-dependencies = [
+    "pydeps~=1.10",
+]
+
+# ---------------------------------------------------------
+
 [tool.black]
 line-length = 100
 target-version = ['py310']
+
+###
 
 [tool.pytest.ini_options]
 testpaths = [
@@ -60,6 +119,11 @@ addopts = [
     "--durations", "5",
 ]
 xfail_strict = true
+markers = [
+    "setup(_columns, _all_columns, merge, group, decimal_offset, static): CLI writer setup",
+]
+
+###
 
 [tool.coverage.run]
 source = ["holms"]
@@ -87,51 +151,4 @@ exclude_lines = [
 ignore_errors = true
 
 [tool.coverage.html]
-directory = "coverage-report"
 title = "holms coverage report"
-
-# ---------------------------------------------------------
-
-[tool.hatch.metadata]
-allow-direct-references = true
-
-[tool.hatch.publish.index]
-disable = true
-
-[tool.hatch.build.targets.sdist]
-include = [
-    "/holms",
-    "/tests",
-]
-
-[tool.hatch.version]
-path = "holms/_version.py"
-
-[tool.hatch.envs.default.scripts]
-version = "python -m holms --version"
-
-[tool.hatch.envs.test]
-detached = true
-extra-dependencies = [
-    "coverage[toml]~=6.4",
-    "coveralls~=3.3",
-    "pytest~=7.1",
-    "pytest-cov~=4.1",
-    "typing-extensions~=4.6",
-]
-
-[tool.hatch.envs.test.scripts]
-test = "pytest"
-
-[tool.hatch.envs.build]
-detached = false
-extra-dependencies = [
-    "build~=0.8",
-    "twine~=4.0",
-]
-
-[tool.hatch.envs.dev]
-detached = false
-extra-dependencies = [
-    "pydeps~=1.10",
-]

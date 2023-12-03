@@ -1,4 +1,4 @@
-  > holms -m -S phpstan.txt
+  > holms -m -s phpstan.txt
    
   000  U+2B ▕ + ▏    Sm PLUS SIGN               
   001+ U+2D ▕ - ▏27× Pd HYPHEN-MINUS            

@@ -8,6 +8,15 @@ This project uses Semantic Versioning -- https://semver.org
 Version list
 ===============
 
+1.2.0 (Dec 23)
+---------------
+- 🐞 FIX: invoking main entrypoint in testing environment
+- 🐞 FIX: missing counts with `--merge` option, but without `--group`
+- 💎 REFACTOR: `-F|--full` -> `-a|--all`, `-S` -> `-s`
+- 🧪 TESTS: environment
+- 🧪 TESTS: `writer`
+- 🧪 TESTS: `cli` (WIP)
+
 1.1.0 (Nov 23)
 ---------------
 - 🌱 NEW: basic latin letters different look
