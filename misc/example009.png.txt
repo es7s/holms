@@ -1,35 +1,35 @@
-  > holms -L
+  > holms legend
    
 ...
-   Cc Control               ▕ ▯ ▏U+     1 ASCII C0 [SOH] START OF HEADING             
-   Cf Format                ▕  ‍ ▏U+  200D ZERO WIDTH JOINER                           
-   Cs Surrogate             ▕ ▯ ▏U+  D800 UTF-16 SURROGATE                            
-   Co Private_Use           ▕  ▏U+  E0B0 PRIVATE USE                                 
-   Cn Unassigned            ▕ ▯ ▏U+10FFFE UNASSIGNED                                  
-   Lu Uppercase_Letter      ▕ A ▏U+    41 LATIN CAPITAL LETTER A                      
-   Ll Lowercase_Letter      ▕ a ▏U+    61 LATIN SMALL LETTER A                        
-   Lt Titlecase_Letter      ▕ ǲ ▏U+   1F2 LATIN CAPITAL LETTER D WITH SMALL LETTER Z  
-   Lo Other_Letter          ▕怍 ▏U+  600D CJK UNIFIED IDEOGRAPH-600D                  
-   Lm Modifier_Letter       ▕ ᵃ ▏U+  1D43 MODIFIER LETTER SMALL A                     
-   Nd Decimal_Number        ▕ 0 ▏U+    30 DIGIT ZERO                                  
-   Nl Letter_Number         ▕ Ⅶ ▏U+  2166 ROMAN NUMERAL SEVEN                         
-   No Other_Number          ▕ ² ▏U+    B2 SUPERSCRIPT TWO                             
-   Mn Nonspacing_Mark       ▕  ̀ ▏U+   300 COMBINING GRAVE ACCENT                      
-   Mc Spacing_Mark          ▕ ऻ ▏U+   93B DEVANAGARI VOWEL SIGN OOE                   
-   Me Enclosing_Mark        ▕  ҈ ▏U+   488 COMBINING CYRILLIC HUNDRED THOUSANDS SIGN   
-   Pc Connector_Punctuation ▕ _ ▏U+    5F LOW LINE                                    
-   Pd Dash_Punctuation      ▕ — ▏U+  2014 EM DASH                                     
-   Ps Open_Punctuation      ▕ ( ▏U+    28 LEFT PARENTHESIS                            
-   Pe Close_Punctuation     ▕ ) ▏U+    29 RIGHT PARENTHESIS                           
-   Pi Initial_Punctuation   ▕ « ▏U+    AB LEFT-POINTING DOUBLE ANGLE QUOTATION MARK   
-   Pf Final_Punctuation     ▕ » ▏U+    BB RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK  
-   Po Other_Punctuation     ▕ ! ▏U+    21 EXCLAMATION MARK                            
-   Sm Math_Symbol           ▕ + ▏U+    2B PLUS SIGN                                   
-   Sc Currency_Symbol       ▕ $ ▏U+    24 DOLLAR SIGN                                 
-   Sk Modifier_Symbol       ▕ ^ ▏U+    5E CIRCUMFLEX ACCENT                           
-   So Other_Symbol          ▕ ¦ ▏U+    A6 BROKEN BAR                                  
-   Zs Space_Separator       ▕   ▏U+    A0 NO-BREAK SPACE                              
-   Zl Line_Separator        ▕    ▏U+  2028 LINE SEPARATOR                              
-   Zp Paragraph_Separator   ▕    ▏U+  2029 PARAGRAPH SEPARATOR                         
-   -- Binary                ▕ ▯ ▏     --  NON UTF-8 BYTE 0xA6                         
-    
+   Control               ▕ ▯ ▏ U+     1 ASCII C0 [SOH] START OF HEADING 
+   Format                ▕ ▯ ▏ U+  200D ZERO WIDTH JOINER 
+   Surrogate             ▕ ▯ ▏ U+  D800 UTF-16 SURROGATE 
+   Private_Use           ▕  ▏ U+  E0B0 PRIVATE USE 
+   Uppercase_Letter      ▕ A ▏ U+    41 LATIN CAPITAL LETTER A 
+   Lowercase_Letter      ▕ a ▏ U+    61 LATIN SMALL LETTER A 
+   Titlecase_Letter      ▕ ǲ ▏ U+   1F2 LATIN CAPITAL LETTER D WITH SMALL LETTER Z 
+   Other_Letter          ▕怍 ▏ U+  600D CJK UNIFIED IDEOGRAPH-600D 
+   Modifier_Letter       ▕ ᵃ ▏ U+  1D43 MODIFIER LETTER SMALL A 
+   Decimal_Number        ▕ 0 ▏ U+    30 DIGIT ZERO 
+   Letter_Number         ▕ Ⅶ ▏ U+  2166 ROMAN NUMERAL SEVEN 
+   Other_Number          ▕ ² ▏ U+    B2 SUPERSCRIPT TWO 
+   Nonspacing_Mark       ▕  ̀ ▏ U+   300 COMBINING GRAVE ACCENT 
+   Spacing_Mark          ▕ ऻ ▏ U+   93B DEVANAGARI VOWEL SIGN OOE 
+   Enclosing_Mark        ▕  ҈ ▏ U+   488 COMBINING CYRILLIC HUNDRED THOUSANDS SIGN 
+   Connector_Punctuation ▕ _ ▏ U+    5F LOW LINE 
+   Dash_Punctuation      ▕ — ▏ U+  2014 EM DASH 
+   Open_Punctuation      ▕ ( ▏ U+    28 LEFT PARENTHESIS 
+   Close_Punctuation     ▕ ) ▏ U+    29 RIGHT PARENTHESIS 
+   Initial_Punctuation   ▕ « ▏ U+    AB LEFT-POINTING DOUBLE ANGLE QUOTATION MARK 
+   Final_Punctuation     ▕ » ▏ U+    BB RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK 
+   Other_Punctuation     ▕ ! ▏ U+    21 EXCLAMATION MARK 
+   Math_Symbol           ▕ + ▏ U+    2B PLUS SIGN 
+   Currency_Symbol       ▕ $ ▏ U+    24 DOLLAR SIGN 
+   Modifier_Symbol       ▕ ^ ▏ U+    5E CIRCUMFLEX ACCENT 
+   Other_Symbol          ▕ ¦ ▏ U+    A6 BROKEN BAR 
+   Space_Separator       ▕ ▯ ▏ U+  2006 SIX-PER-EM SPACE 
+   Line_Separator        ▕ ▯ ▏ U+  2028 LINE SEPARATOR 
+   Paragraph_Separator   ▕ ▯ ▏ U+  2029 PARAGRAPH SEPARATOR 
+   Unassigned            ▕ ▯ ▏ U+10FFFE UNASSIGNED 
+   Binary                ▕ ▯ ▏      --  NON UTF-8 BYTE 0xA6                        
+

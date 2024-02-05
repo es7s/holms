@@ -1,4 +1,4 @@
-  > holms -fchar -s ./tests/data/broken-utf8.txt
+  > holms run -fchar  ./tests/data/broken-utf8.txt
    
  <path d="M4 12.5L9.5 18.5L20 6.5" stroke="#000" stroke-width="3" stroke-linecap
  ="round" stroke-linejoin="round"></path></svg></div></div><div class="CheckboxC

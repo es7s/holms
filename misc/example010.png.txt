@@ -1,18 +1,17 @@
-  > holms -L
-   
+> holms format
+ 
 ...
+      COLUMNS VISIBILITY      ║  01bf8 # 17 0xc2b1 U+B1  ▏±▕  La1ˢ Sm   62× PLUS-MI…
+         DEPENDING ON         ║    ╵     ╵     ╵     ╵    ╵    ╵    ╵    ╵    ╵    
+        OPERATING MODE        ║ offset index raw number char block cat count name  
+  ────────────────────────────║────────────────────────────────────────────────────
+  default linear mode    none ║    ⏺     ○     ○     ⏺    ⏺    ○    ⏺    ×    ⏺    
+  merge repeating chars    -m ║    ⏺     ○     ○     ⏺    ⏺    ○    ⏺    ⏺    ⏺    
+  group by code point      -g ║    ×     ×     ○     ⏺    ⏺    ○    ⏺    ⏺    ⏺    
+  group by CP category    -gg ║    ×     ×     ×     ×    ×    ×    ⏺    ⏺    ×    
+  group by supercateg.   -ggg ║    ×     ×     ×     ×    ×    ×    ⏺    ⏺    ×    
 
-    example output line          00bf8+ # 190 U+  B1 0x c2 b1 ▏±▕  355×  Sm PLUS-MI… Math_Sy…
-   ┌───────────────────────────┬ ────── ───── ────── ──────── ─── ───── ─── ──────── ──────── ┐  
-   │column names               │ offset index number   raw   char count type  name   typename │
-   ├─┬─────────────────────────┼──────────────────────────────────────────────────────────────┤
-   │M│no grouping/merging      │   ⏺      ○     ⏺       ○      ⏺    ×     ⏺     ⏺       ○     │
-   │O│group by code point    -g│   ×      ×     ⏺       ○      ⏺    ⏺     ⏺     ⏺       ○     │
-   │D│..by CP category      -gg│   ×      ×     ×       ×      ×    ⏺     ⏺     ×       ⏺     │
-   │E│..by super category  -ggg│   ×      ×     ×       ×      ×    ⏺     ±     ×       ±     │
-   └─┴─────────────────────────┴──────────────────────────────────────────────────────────────┘
-                                                     ⏺ shown  by default, opt. hide with -f
-   Trailing '+' in offset and index indicates        ○ hidden by default, opt. show with -f/-F
-   that the value is a start of the range.           × hidden and disabled, inaccessible
+                                          ⏺ shown  by default, opt. hide with -f
+  Trailing '…' in offset or index         ○ hidden by default, opt. show with -f/-a
+  indicates the start of the range.       × hidden and disabled (i.e. inaccessible)
 
-...

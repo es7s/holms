@@ -1,0 +1,32 @@
+#[pytermor template format] @h:[fg=yellow bold] @c:[blue] @p:[red] @o:[bold] @a:[green] @d:[gray30] @b:[gray50] @v:[overlined]
+:[|h]OUTPUT FORMAT:[-]
+
+  · Column names suitable for use in :[o]-f:[-] are formatted like this: :[c]offset:[-].
+  
+  · Each CP (code point) is printed on a new line and formatted as a set of fields. However,
+    the case when the format defined as one single :[c]char:[-] column, implemented differently --
+    the output is kept as close to the input as possible, except the characters being
+    displayed in corresponding category colors.
+
+  · CP names for ASCII C0/C1 codes are extended with names from ECMA-48.
+
+  · Note that enabling :[o]--rigid:[-] option does not guarantee fixed column widths; the only
+    possible way to achieve that is to operate in :[o]--buffered:[-] mode (what's more, it will
+    work as expected regardless of :[o]--rigid:[-] presence).
+
+  · Default column setup equivalent:  :[o]--format=:[,c]offset,number,char,cat,count,name:[-]
+
+
+  :[|h]    COLUMNS VISIBILITY      :[d]║:[$] :[d] 0:[-]1bf8 :[d]#:[-] 17 :[d]0x:[-]c2b1 :[d]U+:[-]B1  ▏#[ ]:[a]±:[-]▕  :[b]La1ˢ :[a]#[ ]Sm:[$]  #[ ] 62× #[     ]PLUS-MI…#[ ]
+  :[|h]       DEPENDING ON         :[d]║:[$] :[b] :[v]  ╵  :[-] :[v]  ╵ :[-] :[v]   ╵  :[-] :[v]  ╵ :[-] :[v]  ╵  :[-] :[v] ╵  :[-] :[v] ╵ :[-] :[v]  ╵ :[-] :[v]  ╵    :[$]
+  :[|h]      OPERATING MODE        :[d]║:[$] :[c]o#[  ]ffset#[     ] index #[     ]raw #[     ]number #[     ]char #[     ]block #[    ]cat #[      ]count #[    ]name  :[-]
+  :[d ]────────────────────────────#[ ]║─#[     ]─#[  ]─────#[     ]───────#[     ]────#[     ]───────#[     ]─────#[     ]──────#[    ]────#[      ]──────#[    ]──────:[$]
+  #[  ]default linear mode    :[d]none:[-] :[d]║:[-]    :[a]⏺:[-]     :[h]○:[-]     :[h]○:[-]     :[a]⏺:[-]    :[a]⏺:[-]    :[h]○:[-]    :[a]⏺:[-]    :[p]×:[-]    :[a]⏺:[-]    #[ ]
+  #[  ]merge repeating chars  :[o]  -m:[-] :[d]║:[-]    :[a]⏺:[-]     :[h]○:[-]     :[h]○:[-]     :[a]⏺:[-]    :[a]⏺:[-]    :[h]○:[-]    :[a]⏺:[-]    :[a]⏺:[-]    :[a]⏺:[-]    #[ ]
+  #[  ]group by code point    :[o]  -g:[-] :[d]║:[-]    :[p]×:[-]     :[p]×:[-]     :[h]○:[-]     :[a]⏺:[-]    :[a]⏺:[-]    :[h]○:[-]    :[a]⏺:[-]    :[a]⏺:[-]    :[a]⏺:[-]    #[ ]
+  #[  ]group by CP category   :[o] -gg:[-] :[d]║:[-]    :[p]×:[-]     :[p]×:[-]     :[p]×:[-]     :[p]×:[-]    :[p]×:[-]    :[p]×:[-]    :[a]⏺:[-]    :[a]⏺:[-]    :[p]×:[-]    #[ ]
+  #[  ]group by supercateg.   :[o]-ggg:[-] :[d]║:[-]    :[p]×:[-]     :[p]×:[-]     :[p]×:[-]     :[p]×:[-]    :[p]×:[-]    :[p]×:[-]    :[a]⏺:[-]    :[a]⏺:[-]    :[p]×:[-]    #[ ]
+
+                  #[ ]      #[ ]    #[ ]     #[ ]         :[a]⏺:[-] shown  by default, opt. hide with :[o]-f:[-]
+  Trailing '…' in :[c]offset:[-] or :[c]index:[-]         :[h]○:[-] hidden by default, opt. show with :[o]-f/-a:[-]
+  indicates the st#[ ]art of#[ ] the#[ ] rang#[ ]e.       :[p]×:[-] hidden and disabled (i.e. inaccessible)

@@ -119,8 +119,11 @@ _ensure_x11 = ([ -n "${DISPLAY}" ] && return; echo 'ERROR: No $$DISPLAY'; return
 
 pre-build:  ## Update auto-generated artifacts
 	@$(call _ensure_x11) || return
-	./scripts/make-readme-images.sh -ay ./misc
-	./scripts/update-readme-images-urls.sh ./README.md ./scripts/readme-images-urls.md
+	./scripts/all.sh
+
+pre-rebuild:  ## Rebuild auto-generated artifacts
+	@$(call _ensure_x11) || return
+	./scripts/all.sh --force
 
 ## Packaging
 

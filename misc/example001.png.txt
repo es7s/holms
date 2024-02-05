@@ -1,8 +1,8 @@
-  > holms -s -u -
-  1₂³⅘↉⏨
-  0  U+  31 ▕ 1 ▏Nd DIGIT ONE                   
-  1  U+2082 ▕ ₂ ▏No SUBSCRIPT TWO               
-  4  U+  B3 ▕ ³ ▏No SUPERSCRIPT THREE           
-  6  U+2158 ▕ ⅘ ▏No VULGAR FRACTION FOUR FIFTHS 
-  9  U+2189 ▕ ↉ ▏No VULGAR FRACTION ZERO THIRDS 
-  c  U+23E8 ▕ ⏨ ▏So DECIMAL EXPONENT SYMBOL     
+  > holms run  -u - <<<'1₂³⅘↉⏨'
+   
+  0  U+  31 ▕ 1 ▏ Nd DIGIT ONE                   
+  1  U+2082 ▕ ₂ ▏ No SUBSCRIPT TWO               
+  4  U+  B3 ▕ ³ ▏ No SUPERSCRIPT THREE           
+  6  U+2158 ▕ ⅘ ▏ No VULGAR FRACTION FOUR FIFTHS 
+  9  U+2189 ▕ ↉ ▏ No VULGAR FRACTION ZERO THIRDS 
+  c  U+23E8 ▕ ⏨ ▏ So DECIMAL EXPONENT SYMBOL     
