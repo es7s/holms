@@ -1,0 +1,33 @@
+Options:
+  -b, --buffered / -u, --unbuffered
+                        Explicitly set to wait for EOF before processing the
+                        output (buffered), or to stream the results in
+                        parallel with reading, as soon as possible
+                        (unbuffered). See BUFFERING section above for the
+                        details.
+  -m, --merge           Replace all sequences of repeating characters with one
+                        of each, together with initial length of the sequence.
+  -g, --group           Group the input by code points (=count unique), sort
+                        descending and display counts instead of normal
+                        output. Implies '--merge' and forces buffered ('-b')
+                        mode. Specifying the option twice ('-gg') results in
+                        grouping by code point category instead, while doing
+                        it thrice ('-ggg') makes the app group the input by
+                        super categories.
+  -o, --oneline         Remove all newline characters (0x0a LINE FEED) from
+                        the output.
+  -f, --format          Comma-separated list of columns to show (order is
+                        preserved). Run 'holms format' to see the details.
+  -n, --names           Display names instead of abbreviations. Affects `cat`
+                        and `block` columns, but only if column in question is
+                        already present on the screen. Note that these columns
+                        can still display only the beginning of the attribute,
+                        unless '-r' is provided.
+  -a, --all             Display ALL columns.
+  -r, --rigid           By default some columns can be compressed beyond the
+                        nominal width, if all current values fit and there is
+                        still space left. This option disables column
+                        shrinking (but they still will be expanded when
+                        needed).
+  --decimal             Use decimal byte offsets instead of hexadecimal.
+  -?, --help            Show this message and exit.

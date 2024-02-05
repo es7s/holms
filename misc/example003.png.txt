@@ -1,13 +1,13 @@
-  > holms -s -u -
-  %‰∞8᪲?¿‽⚠⚠️
-  00  U+  25 ▕ % ▏Po PERCENT SIGN           
-  01  U+2030 ▕ ‰ ▏Po PER MILLE SIGN         
-  04  U+221E ▕ ∞ ▏Sm INFINITY               
-  07  U+  38 ▕ 8 ▏Nd DIGIT EIGHT            
-  08  U+1AB2 ▕  ᪲ ▏Mn COMBINING INFINITY     
-  0b  U+  3F ▕ ? ▏Po QUESTION MARK          
-  0c  U+  BF ▕ ¿ ▏Po INVERTED QUESTION MARK 
-  0e  U+203D ▕ ‽ ▏Po INTERROBANG            
-  11  U+26A0 ▕ ⚠ ▏So WARNING SIGN           
-  14  U+26A0 ▕ ⚠ ▏So WARNING SIGN           
-  17  U+FE0F ▕  ️ ▏Mn VARIATION SELECTOR-16  
+  > holms run  -u - <<<'%‰∞8᪲?¿‽⚠⚠️'
+   
+  00  U+  25 ▕ % ▏ Po PERCENT SIGN           
+  01  U+2030 ▕ ‰ ▏ Po PER MILLE SIGN         
+  04  U+221E ▕ ∞ ▏ Sm INFINITY               
+  07  U+  38 ▕ 8 ▏ Nd DIGIT EIGHT            
+  08  U+1AB2 ▕  ᪲ ▏ Mn COMBINING INFINITY     
+  0b  U+  3F ▕ ? ▏ Po QUESTION MARK          
+  0c  U+  BF ▕ ¿ ▏ Po INVERTED QUESTION MARK 
+  0e  U+203D ▕ ‽ ▏ Po INTERROBANG            
+  11  U+26A0 ▕ ⚠ ▏ So WARNING SIGN           
+  14  U+26A0 ▕ ⚠ ▏ So WARNING SIGN           
+  17  U+FE0F ▕  ️ ▏ Mn VARIATION SELECTOR-16  

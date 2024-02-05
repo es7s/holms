@@ -3,12 +3,8 @@
 #  (c) 2023 A. Shavykin <0.delameter@gmail.com>
 # ------------------------------------------------------------------------------
 
-from .cli import entrypoint
-
-
-def main():
-    entrypoint()
+from .cli import entrypoint_fn
 
 
 if __name__ == "__main__":
-    main()
+    entrypoint_fn()

@@ -1,8 +1,7 @@
 # ------------------------------------------------------------------------------
 #  es7s/holms
-#  (c) 2023 A. Shavykin <0.delameter@gmail.com>
+#  (c) 2023-2024 A. Shavykin <0.delameter@gmail.com>
 # ------------------------------------------------------------------------------
-from __future__ import annotations
 
 from collections import namedtuple
 

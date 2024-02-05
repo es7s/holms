@@ -1,8 +1,8 @@
-  > holms -s -u -
-  🌯👄🤡🎈🐳🐍
-  00  U+1F32F ▕🌯 ▏So BURRITO          
-  04  U+1F444 ▕👄 ▏So MOUTH            
-  08  U+1F921 ▕🤡 ▏So CLOWN FACE       
-  0c  U+1F388 ▕🎈 ▏So BALLOON          
-  10  U+1F433 ▕🐳 ▏So SPOUTING WHALE   
-  14  U+1F40D ▕🐍 ▏So SNAKE            
+  > holms run  -u - <<<'🌯👄🤡🎈🐳🐍'
+   
+  00  U1F32F ▕🌯 ▏ So BURRITO          
+  04  U1F444 ▕👄 ▏ So MOUTH            
+  08  U1F921 ▕🤡 ▏ So CLOWN FACE       
+  0c  U1F388 ▕🎈 ▏ So BALLOON          
+  10  U1F433 ▕🐳 ▏ So SPOUTING WHALE   
+  14  U1F40D ▕🐍 ▏ So SNAKE            

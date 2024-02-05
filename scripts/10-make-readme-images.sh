@@ -55,6 +55,14 @@ __help() {
   echo "  -y, --yes    Write artifacts without user confirmation."
 }
 __holms() {
+    if command -v gnome-terminal 2>/dev/null && [[ -z $ES7S_X11_SHELL ]] ; then
+      local srcpath=$(realpath "${BASH_SOURCE[0]}")
+      ES7S_X11_SHELL=$$ es7s exec open-terminal . -- \
+          --window --full-screen -- \
+          bash -i "$srcpath" "$@"
+      return
+    fi
+
     local OPT_ALL=
     local OPT_YES=
 
@@ -77,28 +85,39 @@ __holms() {
     # shellcheck disable=SC2086
     function invoke() {
       # args: opts [file] [input] [precmd preopts...]
-      local opts="-csb $1" file="${2:--}" input="${3:-}"
-      local hopts=" $1${1:+ }-s"
-      local hstart="holms"
+      local opts="-b $1" file="${2:--}" input="${3:-}"
+      local hopts=" $1${1:+ }"
+      local hcmd="run"
 
       local hfile="$file"
       [[ $file =~ ^/ ]] && hfile="$(basename "$file")"
+
+      [[ $hopts =~ -.*L ]] && opts="" && hopts="" && hcmd="legend" && hfile= && file=
+      [[ $hopts =~ -.*F ]] && opts="" && hopts="" && hcmd="format" && hfile= && file=
+      hopts="${hopts/-u /}"
+      local hstart="holms $hcmd"
       local hend=" $hfile"
 
-      [[ $hopts =~ -.*L ]] && hopts=" -L" && hend=""
-      hopts="${hopts/-u /}"
-
       if [[ -n $input ]] ; then
-        hopts+=" -u" ; hend+=$'\n'"$input"
+        hopts+=" -u"
+#        hend+=$'\n'"$input"
+        hend+=" <<<'$input'"$'\n '
       elif [[ -n "$4" ]] ; then
-        hprecmd=("${@:4}")
-        hstart="$(sed <<< "${hprecmd[@]@Q}" -Ee "s/'([^ !\\]*)'/\1/g; s|\.?/[^ ]+/([^/ ]+)|\1|g") |"$'\n'"  $hstart"
+          if [[ -z "$ES7S_PADBOX_HEADER" ]] ; then
+            hprecmd=("${@:4}")
+            hstart="$(sed <<< "${hprecmd[@]@Q}" -Ee "s/'([^ !\\]*)'/\1/g; s|\.?/[^ ]+/([^/ ]+)|\1|g") |"$'\n'"  $hstart"
+          else
+            hstart="$ES7S_PADBOX_HEADER |"$'\n'"  $hstart"
+          fi
+          hend+=$'\n '
       else
         hend+=$'\n '
       fi
-
+#      echo "${@:4}" | kolombos -d
       { [[ -n $input ]] && printf %s $input || "${@:4}" ; } |
-        ES7S_PADBOX_HEADER="${hstart}${hopts}${hend}" padbox "${execpath:-holms}" "$file" -cbs $opts
+        ES7S_PADBOX_BG_COLOR='' \
+        ES7S_PADBOX_HEADER="${hstart}${hopts}${hend}" \
+          padbox "${execpath:-holms}" -c $hcmd $file $opts
     }
     function invoke_simple() { invoke "" "" "${1:?}" ; }
     function invoke_cut() {
@@ -118,14 +137,21 @@ __holms() {
     function p4() { invoke_simple '🌯👄🤡🎈🐳🐍' ; }
     function p5() { invoke_limit -m ~/phpstan.txt ; }
     function p6() { invoke "" "" "" sed ./tests/data/confusables.txt -Ee 's/^.|\t//g' -e 3620!d ; }
-    function p7() { invoke --format=char "" "" sed ./tests/data/chars.txt -nEe '1,12p' ; }
+    function p7() { invoke "--format=char" "" "" sed ./tests/data/chars.txt -nEe '1,12p' ; }
     function p8() { invoke_limit -g ./tests/data/confusables.txt ; }
     function p11() { invoke_limit -gg ./tests/data/confusables.txt ; }
     function p12() { invoke_limit -ggg ./tests/data/confusables.txt ; }
-    function p9() { invoke_cut 36 "" -L  ; }
-    function p10() { invoke_cut 20 33 -L  ; }
-    function p13() { _p13 printf '\x80\x90\x9f' ; _p13 python -c 'print("\x80\x90\x9f", end="")' ; }
-    function _p13() { invoke "-u --format=raw,number,char,type,name" "" "" "$@" ; }
+    function p9() { invoke_cut 23 "" -L  ; }
+    function p10() { ES7S_PADBOX_PAD_X=0 invoke_cut 22 "" -F  ; }
+    function p13() {
+      local data="\x80\x90\x9f"
+      echo "$(cat <<EOF
+printf "$data" && python3 -c 'print("$data", end="")'
+EOF
+)" > /tmp/p13
+    ES7S_PADBOX_HEADER="$(cat /tmp/p13)" _p13 bash /tmp/p13
+    }
+    function _p13() { invoke "--names --decimal --all" "" "" "$@" | sed -Ee '6s/$/\n/' ; }
     function p14() { invoke ""  ./tests/data/specials ; }
     function p15() { invoke_limit -fchar ./tests/data/broken-utf8.txt ; }
 
@@ -143,24 +169,29 @@ __holms() {
     }
 
     function get_extra_strokes() {
-        local fnum="${1:?}"
-        [[ $fnum == 13 ]] && echo 2 5 7
-        echo 2
+        :
+#        local fnum="${1:?}"
+#        [[ $fnum == 13 ]] && echo 2 5
+#        echo 2
+    }
+    function get_extra_strokes_px() {
+        for h in $(get_extra_strokes "$@") ; do
+          echo $(( h * CHAR_H_PX ))
+        done
     }
 
     # shellcheck disable=SC2054,SC2206
     function pp() {
-        # args: imgin imgout [header_hch...]
+        # args: imgin imgout [header_hpx...]
 
         local -a cmds=()
         for h in ${*:3} ; do
-          local -i header_hpx=$(( h * CHAR_H_PX + 1 ))
-          cmds+=(polygon 2,0,$header_hpx,100%,$header_hpx,1,66)
+          cmds+=(polygon 2,0,$h,100%,$h,1,0xaaaaaaaa,100)
         done
 
         cmds+=(
           to_rgba
-          fx_frame 0,100,0,100,0,0,255,255,255,255,1,100,100,100,255
+          #fx_frame 0,100,0,100,0,0,255,255,255,255,1,100,100,100,255
           expand_x 15,0
           expand_y 15,0
           crop 0,15,100%,100%,0
@@ -204,10 +235,11 @@ __holms() {
         "p$fn" |& tee $tmpout
 
         sleep 0.5
-        scrot -o "$tmpimg" -a "$(measure "$tmpout")"  #-e 'xdg-open $f'
+        local dimensions=$(measure "$tmpout")
+        scrot -o "$tmpimg" -a "$dimensions"  #-e 'xdg-open $f'
 
         # shellcheck disable=SC2046,SC2086
-        pp "$tmpimg" "$tmpimgpp" $(get_extra_strokes $fn)
+        pp "$tmpimg" "$tmpimgpp" $(get_extra_strokes_px $fn)
 
         if [[ ! $OPT_YES ]] ; then
           read -r -n1 -p"$prompt$promptyn" yn ; echo
@@ -218,6 +250,8 @@ __holms() {
             fstat "$imgout" "$txtout"
         fi
     done
+
+    [[ -n "$ES7S_X11_SHELL" ]] && read -rn1 -p "Done. Press any key to exit"
 }
 
 checkdep holms
