@@ -6,5 +6,10 @@
 from .cli import entrypoint_fn
 
 
-if __name__ == "__main__":
+# bind in pyproject
+def main():
     entrypoint_fn()
+
+
+if __name__ == "__main__":
+    main()

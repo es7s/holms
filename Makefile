@@ -164,10 +164,12 @@ _freeze = (	echo "${BSEP}\e[34mFreezing \e[1;94m$1\e[22;34m:\e[m\n${BSEP}"; \
 				fgrep -e $(PACKAGE_NAME) -v | \
 				tee requirements-$1.txt | \
 				sed --unbuffered -E -e 's/^([a-zA-Z0-9_-]+)/\x1b[32m\1\x1b[m/' \
-									-e 's/([0-9.]+|@[a-zA-Z0-9_-]+)$$/\x1b[33m\1\x1b[m/'; \
+									-e 's/([0-9.]+|@[a-zA-Z0-9_-]+)$$/\x1b[33m\1\x1b[m/' ; \
+			if [ $1 = default ] ; then mv requirements-default.txt requirements.txt ;  fi ; \
 			echo)
 
 freeze:  ## Update requirements-*.txt   <hatch>
+	@$(call _freeze,default)
 	@$(call _freeze,test)
 	@$(call _freeze,build)
 	@$(call _freeze,dev)
@@ -178,3 +180,10 @@ demolish-build:  ## Delete build output folders  <hatch>
 build: ## Build a package   <hatch>
 build: demolish-build
 	hatch -e build build
+
+publish:  ## Upload package to pipy
+	@hatch publish && return 0
+	echo "Note that first publish requires explicit auth setup with command "
+	echo "options (or environment vars HATCH_INDEX_USER, HATCH_INDEX_AUTH):"
+	echo
+	echo "  hatch publish -u ${BLUE}__token__${RESET} -a ${BLUE}${BOLD}<APIKEY>${RESET}"

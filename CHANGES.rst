@@ -47,3 +47,7 @@ Version list
 ---------------
 - 🌱 NEW: `--oneline` option
 - 💥 REWORK: complete rewrite of CLI entrypoint, splitting one command into 5 separate ones
+
+1.3.1 (Feb 24)
+---------------
+- 🐞 FIX: main entrypoint

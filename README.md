@@ -28,7 +28,11 @@ Unicode code points.
 
 Installation
 ---------------------------
+### With `pipx` (recommended)
     pipx install holms
+
+### From git repository
+    curl -sS https://github.com/es7s/holms/blob/master/install.sh | sh
 
 
 Basic usage
