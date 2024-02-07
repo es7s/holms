@@ -71,6 +71,9 @@ path = "holms/_version.py"
 
 ###
 
+[tool.hatch.envs.default]
+extra-dependencies = []
+
 [tool.hatch.envs.default.scripts]
 version = "python -m holms --version"
 
