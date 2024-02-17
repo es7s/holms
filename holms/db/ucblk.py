@@ -367,3 +367,11 @@ def find_block(number: int) -> UnicodeBlock:
     if idx:
         block = _BLOCKS[idx - 1]
         return block
+
+
+def get_max_block_name_length() -> int:
+    return max(len(b.name) for b in _BLOCKS)
+
+
+def get_blocks() -> list[UnicodeBlock]:
+    return _BLOCKS

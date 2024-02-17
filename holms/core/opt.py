@@ -53,12 +53,11 @@ class Options:
     def _columns_default(self) -> Iterable[Attribute]:
         last = []
         for f in _FORMAT_ALL:
-            if not self.all_columns and f in _FORMAT_DEFAULT_EXCLUDED:
-                continue
-            if self.names and f in _ATTR_EXPANDABLE:
+            if f in _ATTR_EXPANDABLE and self.names:
                 last.append(f)
                 continue
-            yield f
+            if self.all_columns or f not in _FORMAT_DEFAULT_EXCLUDED:
+                yield f
         yield from last
 
     @cached_property

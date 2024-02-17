@@ -8,3 +8,4 @@ coverage.json
 !/scripts/autoupdate_ucblk.py
 *.old
 *.tmp
+*.log
