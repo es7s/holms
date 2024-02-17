@@ -118,7 +118,6 @@ class Char(t.Generic[_CT]):
             self.is_control_or_format
             or self.is_surrogate
             or self.is_invalid
-            or self.is_unassigned
             or self.value.isspace()
         )
 

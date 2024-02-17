@@ -57,7 +57,7 @@ def resolve_category(abbr: str) -> UnicodeCategory:
     raise LookupError(f"Invalid category: {abbr}")
 
 
-def get_longest_name_length() -> int:
+def get_max_cat_name_length() -> int:
     return max(len(cat.name) for cat in _CATEGORY_LIST)
 
 

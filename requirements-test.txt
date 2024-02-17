@@ -4,13 +4,13 @@ click==8.1.7
 coverage==6.5.0
 coveralls==3.3.1
 docopt==0.6.2
-es7s.commons==1.4.0
+es7s.commons==1.6.0
 exceptiongroup==1.2.0
 idna==3.6
 iniconfig==2.0.0
 packaging==23.2
 pluggy==1.4.0
-pytermor==2.114.0.dev0
+pytermor==2.118.0.dev0
 pytest==7.4.4
 pytest-cov==4.1.0
 requests==2.31.0

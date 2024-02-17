@@ -49,13 +49,19 @@ class Scale(pt.Text):
 
 @lru_cache(maxsize=128)
 def format_ratio(ratio: float):
-    ratio_str = pt.format_auto_float(100 * ratio, 3)
+    perc = 100 * ratio
+    if ratio >= 1:
+        ratio_str = "{:3.0f}".format(perc)
+    elif ratio > 1e-1:
+        ratio_str = "{:3.1f}".format(perc)
+    else:
+        ratio_str = pt.format_auto_float(perc, 3)
     if ratio_str == "0.0":
         ratio_str = "e-2"
     if "e" in ratio_str:
         base, exp, power = ratio_str.partition("e")
         ratio_str = base + "10" + to_superscript(power)
-    return f"{ratio_str:>3s}%"
+    return f"{ratio_str:>4s}%"
 
 
 def get_partial_hblock(val: float) -> str:  # @REFACTOR ME

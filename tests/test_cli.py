@@ -16,7 +16,14 @@ from holms.cli.entrypoint import entrypoint__, CliCommand
 from holms.db.uccat import get_categories
 
 
-def assert_streq(str1: str | Iterable[str] | re.Pattern, str2: str | Iterable[str] | re.Pattern, sort=False, ignore_ws=False):
+def assert_streq(
+    str1: str | Iterable[str] | re.Pattern,
+    str2: str | Iterable[str] | re.Pattern,
+    sort=False,
+    ignore_ws=False,
+):
+    __remove_ws = lambda ss: re.sub(r"\s+", "", ss)
+
     def __norm(ss: str | Iterable[str]) -> Iterable[str]:
         if not pt.isiterable(ss):
             ss = ss.splitlines()
@@ -24,15 +31,17 @@ def assert_streq(str1: str | Iterable[str] | re.Pattern, str2: str | Iterable[st
             ss = sorted(ss)
         for line in ss:
             if ignore_ws:
-                yield re.sub(r"\s+", "", line)
+                yield __remove_ws(line)
             else:
                 yield line.strip()
 
     def __search(ss: str | Iterable[str], pat: re.Pattern):
-        ss = '\n'.join(__norm(ss))
+        ss = "\n".join(__norm(ss))
+        if ignore_ws:
+            pat = re.compile(__remove_ws(pat.pattern), pat.flags)
         if pat.search(ss):
             return
-        raise AssertionError(f"{pat.pattern} doesnt match {ss!r}")
+        raise AssertionError(f"{pat.pattern!r} doesnt match {ss!r}")
 
     if isinstance(str1, re.Pattern):
         __search(str2, str1)
@@ -43,7 +52,7 @@ def assert_streq(str1: str | Iterable[str] | re.Pattern, str2: str | Iterable[st
 
     norm1 = [*__norm(str1)]
     norm2 = [*__norm(str2)]
-    for n1, n2 in zip(norm1 , norm2):
+    for n1, n2 in zip(norm1, norm2):
         assert n1 == n2
     if len(norm1) != len(norm2):
         raise AssertionError(f"Actual/expected lines count mismatch: {len(norm1)} != {len(norm2)}")
@@ -215,7 +224,7 @@ class TestRunCommand:
         assert rs.exit_code == 0
         assert not rs.stderr
         assert_streq(
-            rs.stdout, ["BaL70%███16×U+61", "BaL26%█▏6×U+21", "Cyr4.3%▏1×U+429"], ignore_ws=True
+            rs.stdout, ["BaL69.6%███16×U+61", "BaL26.1%█▏6×U+21", "Cyr4.3%▏1×U+429"], ignore_ws=True
         )
 
     def test_group_cat(self, crun: CliRunner, ep: CliCommand):
@@ -228,8 +237,8 @@ class TestRunCommand:
         assert_streq(
             rs.stdout,
             [
-                "70%██████████16×Lowercase_Letter",
-                "26%███▊6×Other_Punctuation",
+                "69.6%██████████16×Lowercase_Letter",
+                "26.1%███▊6×Other_Punctuation",
                 "4.3%▋1×Uppercase_Letter",
             ],
             ignore_ws=True,
@@ -242,7 +251,9 @@ class TestRunCommand:
         assert rs.exit_code == 0
         assert not rs.stderr
 
-        assert_streq(rs.stdout, ["74%██████████17×Letter", "26%███▌6×Punctuation"], ignore_ws=True)
+        assert_streq(
+            rs.stdout, ["73.9%██████████17×Letter", "26.1%███▌6×Punctuation"], ignore_ws=True
+        )
 
     @pytest.mark.parametrize(
         "opts, exp_out",

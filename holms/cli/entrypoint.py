@@ -8,7 +8,7 @@ import click
 import pytermor as pt
 
 from holms import APP_NAME
-from holms.cmd import invoke_run, invoke_version, invoke_legend, invoke_format, invoke_path
+from holms.cmd import invoke_run, invoke_version, LegendCommand, invoke_format, invoke_path
 from holms.core import Attribute
 from .common import MultiChoice, HiddenIntRange, Context, CliGroup, CliCommand
 from holms.shared import logger
@@ -142,7 +142,7 @@ def run(**kwargs):
 @click.command(cls=CliCommand, short_help="show code point category chromacoding details")
 def legend(**kwargs):
     """Show details on code point category chromacoding."""
-    invoke_legend(**kwargs)
+    LegendCommand(**kwargs)
 
 
 @click.command(cls=CliCommand, short_help="show column names and format details")

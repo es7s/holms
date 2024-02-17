@@ -78,16 +78,21 @@ class TestFormat:
     @pytest.mark.opt(group_level=1, _columns=[Attribute.COUNT, Attribute.CHAR])
     def test_group(self, opt, capsys):
         CliWriter(opt, buffered=True).write(Char.parse("aaabaabbbc123333a"))
-        expected_regex = Regex(R"^ 35% 6× a 24% 4× b 24% 4× 3 59% 1× c 59% 1× 1 59% 1× 2\s*$")
+        expected_regex = Regex(R"^ 353% 6× a 235% 4× b 235% 4× 3 59% 1× c 59% 1× 1 59% 1× 2\s*$")
         sub_regex = Regex(R"([ \n]+)|([^\d%abc×]+)", dotall=True)
         outraw = getout(capsys)
         out = sub_regex.sub(lambda m: ["", " "][bool(m.group(1))], outraw)
-        assert expected_regex.match(out)
+        assert_streq(out, expected_regex, ignore_ws=True)
 
     @pytest.mark.opt(decimal_offset=True)
     def test_decimal_offset(self, opt, buffered, capsys):
         CliWriter(opt, buffered).write(Char.parse("a"))
         assert getout(capsys).startswith("⏨")
+
+    @pytest.mark.opt(group_level=1)
+    def test_count_sci_notation(self, opt, buffered, capsys):
+        CliWriter(opt, buffered).write(Char.parse("a"*10000+"b"))
+        # assert_streq(capsys.)
 
     # fmt: off
     @pytest.mark.parametrize("rigid, buffered, expected_str", [

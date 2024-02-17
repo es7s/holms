@@ -7,14 +7,11 @@ from __future__ import annotations
 import abc
 from abc import abstractmethod
 from logging import shutdown
-
 import pytermor as pt
-
-from holms.shared import CacheInfo, logger
+from holms.shared import CacheInfo
 from .attr import Attribute
 from .char import Groups
 from .opt import Options
-from .writer import Column, Row
 
 
 class _ViewRegistry:
@@ -53,6 +50,9 @@ class _ViewMeta(abc.ABCMeta):
         return cls
 
 
+from .writer import Column, Row
+
+
 class IView(metaclass=_ViewMeta):
     def __new__(cls, attr: Attribute):
         inst = super().__new__(cls)
@@ -64,6 +64,9 @@ class IView(metaclass=_ViewMeta):
     def __init__(self, *args):
         super().__init__()
         self._cache_stats: dict[str, CacheInfo] = {}
+        self._default_align = pt.Align.LEFT
+        self._default_sep_before = False
+        self._default_sep_after = False
 
     @staticmethod
     @abstractmethod
@@ -95,8 +98,32 @@ class IView(metaclass=_ViewMeta):
         return None
 
     @abstractmethod
-    def render(self, opt: Options, row: Row, column: Column = None, grp: Groups = None) -> str:
+    def render(self, opt: Options, row: Row, column: Column = None, grp: Groups = None, first=True) -> str:
         ...
+
+    def get_align(self, column: Column = None) -> pt.Align:
+        if column.align_override is not None:
+            return column.align_override
+        return self._default_align
+
+    def get_sep_before(self, column: Column = None, default: str = '') -> bool|str:
+        prop_value = self._default_sep_before
+        if column.sep_before_override is not None:
+            prop_value = column.sep_before_override
+        return self._get_sep_value(prop_value, default)
+
+    def get_sep_after(self, column: Column = None, default: str = '') -> bool|str:
+        prop_value = self._default_sep_after
+        if column.sep_after_override is not None:
+            prop_value = column.sep_after_override
+        return self._get_sep_value(prop_value, default)
+
+    def _get_sep_value(self, prop_value: str|bool, default: str) -> str:
+        if prop_value is True:
+            return default
+        if isinstance(prop_value, str):
+            return prop_value
+        return ''
 
 
 def get_view(attr: Attribute) -> IView:
