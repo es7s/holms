@@ -1,5 +1,5 @@
 click==8.1.7
-es7s.commons==1.6.0
+es7s.commons==1.7.0
 pydeps==1.12.18
 pytermor==2.118.0.dev0
 stdlib-list==0.10.0

@@ -31,7 +31,7 @@ classifiers = [
 ]
 dependencies = [
     "click==8.1.7",
-    "es7s-commons~=1.6.0",
+    "es7s-commons~=1.7.0",
     "pytermor~=2.118.0.dev0",
 ]
 

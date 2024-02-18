@@ -51,3 +51,12 @@ Version list
 1.3.1 (Feb 24)
 ---------------
 - 🐞 FIX: main entrypoint
+
+1.4.0 (Feb 24)
+---------------
+- 🌱 NEW: `legend` now includes unicode blocks table
+- 💎 REFACTOR: `View` align and paddings
+
+1.4.1 (Feb 24)
+---------------
+- ⏫ UPGRADE: `es7s.commons`
