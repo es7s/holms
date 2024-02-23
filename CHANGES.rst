@@ -60,3 +60,7 @@ Version list
 1.4.1 (Feb 24)
 ---------------
 - ⏫ UPGRADE: `es7s.commons`
+
+1.4.2 (Feb 24)
+---------------
+- 🐞 FIX: dependencies constraints
