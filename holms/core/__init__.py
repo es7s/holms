@@ -8,4 +8,4 @@ from .attr import Attribute
 from .opt import Options
 from .cats import OVERRIDE_CHARS
 from .cats import CharOverride
-from .cats import CategoryStyles
+from .cats import resolve_cat_style

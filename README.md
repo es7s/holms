@@ -44,10 +44,10 @@ Basic usage
       separate Unicode code points. Use '-' as INPUT to read from stdin instead.
 
 <div align="center">
-  <img alt="example001" width="49%" src="https://github.com/es7s/holms/assets/50381946/c3046efa-7192-4318-9fd9-056848bfaf82">
-  <img alt="example004" width="49%" src="https://github.com/es7s/holms/assets/50381946/4acb7cb3-e97b-4c27-829e-c78907787cb2">
-  <img alt="example002" width="49%" src="https://github.com/es7s/holms/assets/50381946/6ce86749-b628-4313-8e81-713f44f40650">
-  <img alt="example003" width="49%" src="https://github.com/es7s/holms/assets/50381946/b33abedb-6d4a-47b6-93b5-e54e5a385ae7">
+  <img alt="example001" width="49%" src="https://github.com/es7s/holms/assets/50381946/a9c9bcdd-42d5-4038-a23a-22b91bb7cc7d">
+  <img alt="example004" width="49%" src="https://github.com/es7s/holms/assets/50381946/fd1b4bc3-aacc-42af-8442-2db3c3984a13">
+  <img alt="example002" width="49%" src="https://github.com/es7s/holms/assets/50381946/0a126747-3b29-44da-9d94-ab5f01a63d68">
+  <img alt="example003" width="49%" src="https://github.com/es7s/holms/assets/50381946/8e217ae3-325c-4629-8cda-389882667aa4">
 </div>
 
 <details>
@@ -158,8 +158,6 @@ Configuration / Advanced usage
                             grouping by code point category instead, while doing
                             it thrice ('-ggg') makes the app group the input by
                             super categories.
-      -o, --oneline         Remove all newline characters (0x0a LINE FEED) from
-                            the output.
       -f, --format          Comma-separated list of columns to show (order is
                             preserved). Run 'holms format' to see the details.
       -n, --names           Display names instead of abbreviations. Affects `cat`
@@ -174,6 +172,15 @@ Configuration / Advanced usage
                             shrinking (but they still will be expanded when
                             needed).
       --decimal             Use decimal byte offsets instead of hexadecimal.
+      --oneline             Discard all newline characters (0x0a LINE FEED) from
+                            the input.
+      --no-table            Do not format results as a table, just apply the
+                            colors to characters (equivalent to '-f char', implies
+                            '-b'). Compatible with '-merge', '--format' and even '
+                            --group'.
+      --no-override         Do not replace control/whitespace code point markers
+                            with distinguishable characters ('▯' to '↵', '␣' etc).
+                            Run 'holms legend' to see the details.
       -?, --help            Show this message and exit.
 
 [//]: # (@sub)
@@ -191,7 +198,7 @@ currently available columns.
   <summary><b>Column availability depending on operating mode</b></summary>
 
   <div align="center">
-    <img alt="example010" src="https://github.com/es7s/holms/assets/50381946/99248798-aecc-4a23-8703-fb412367beaa">
+    <img alt="example010" src="https://github.com/es7s/holms/assets/50381946/62a6f354-1f30-4ee8-a8fc-533b1a980e03">
   </div>
 </details>
 
@@ -199,7 +206,7 @@ Also `-m`/`--merge` option is demonstrated, which tells the app to collapse
 repetitive characters into one line of the output while counting them:
 
 <div align="center">
-  <img alt="example005" src="https://github.com/es7s/holms/assets/50381946/fbb5817e-92ff-47be-a249-c70e0aa10c71">
+  <img alt="example005" src="https://github.com/es7s/holms/assets/50381946/6da31546-0e50-4fa0-af69-0b7a8ed5d4c3">
 </div>
 
 <details>
@@ -232,7 +239,7 @@ and feed the result to the application. The result demonstrates various Unicode
 dot/bullet code points:
 
 <div align="center">
-    <img alt="example006" src="https://github.com/es7s/holms/assets/50381946/2e4882fb-ce04-4548-87e6-01ede829e350">
+    <img alt="example006" src="https://github.com/es7s/holms/assets/50381946/78a90c45-d331-46d9-998e-20c6c9a97f12">
 </div>
 
 <details>
@@ -263,7 +270,7 @@ dot/bullet code points:
 the occurrence rate of each one:
 
 <div align="center">
-  <img alt="example008" src="https://github.com/es7s/holms/assets/50381946/f6e79865-a365-4e75-93d6-8390d5d82495">
+  <img alt="example008" src="https://github.com/es7s/holms/assets/50381946/f89be555-cf7e-4766-90b2-61a02140c54e">
 </div>
 
 <details>
@@ -272,16 +279,16 @@ the occurrence rate of each one:
 
       > holms run -g  ./tests/data/confusables.txt
     
-     U+  20 ▕ ␣ ▏ Zs   13% ███ 62732× SPACE
-     U+   9 ▕ ⇥ ▏ Cc  7.3% █▊  36745× ASCII C0 [HT] HORIZONTAL TABULATION
-     U+  41 ▕ A ▏ Lu  6.1% █▍  30555× LATIN CAPITAL LETTER A
-     U+  49 ▕ I ▏ Lu  5.2% █▏  26063× LATIN CAPITAL LETTER I
-     U+  45 ▕ E ▏ Lu  5.0% █▏  24992× LATIN CAPITAL LETTER E
-     U+  54 ▕ T ▏ Lu  3.7% ▉   18776× LATIN CAPITAL LETTER T
-     U+  4C ▕ L ▏ Lu  3.7% ▉   18763× LATIN CAPITAL LETTER L
-     U+200E ▕ ▯ ▏ Cf  3.7% ▉   18494× LEFT-TO-RIGHT MARK
-     U+   A ▕ ↵ ▏ Cc  2.9% ▋   14609× ASCII C0 [LF] LINE FEED
-     U+  43 ▕ C ▏ Lu  2.9% ▋   14450× LATIN CAPITAL LETTER C
+     U+  20 ▕ ␣ ▏ Zs  12.5% ███ 62732× SPACE
+     U+   9 ▕ ⇥ ▏ Cc   7.3% █▊  36745× ASCII C0 [HT] HORIZONTAL TABULATION
+     U+  41 ▕ A ▏ Lu   6.1% █▍  30555× LATIN CAPITAL LETTER A
+     U+  49 ▕ I ▏ Lu   5.2% █▏  26063× LATIN CAPITAL LETTER I
+     U+  45 ▕ E ▏ Lu   5.0% █▏  24992× LATIN CAPITAL LETTER E
+     U+  54 ▕ T ▏ Lu   3.7% ▉   18776× LATIN CAPITAL LETTER T
+     U+  4C ▕ L ▏ Lu   3.7% ▉   18763× LATIN CAPITAL LETTER L
+     U+200E ▕ ▯ ▏ Cf   3.7% ▉   18494× LEFT-TO-RIGHT MARK
+     U+   A ▕ ↵ ▏ Cc   2.9% ▋   14609× ASCII C0 [LF] LINE FEED
+     U+  43 ▕ C ▏ Lu   2.9% ▋   14450× LATIN CAPITAL LETTER C
      ...
 
    <!-- @sub -->
@@ -292,8 +299,8 @@ code point category or code point super category, respectively, which can be use
 e.g. for frequency domain analysis:
 
 <div align="center">
-  <img alt="example011" src="https://github.com/es7s/holms/assets/50381946/fa816966-dbd7-4e2b-9be4-3b10b6883672">
-  <img alt="example012" src="https://github.com/es7s/holms/assets/50381946/873c2406-c1cd-4587-91b3-003bc3684c7c">
+  <img alt="example011" src="https://github.com/es7s/holms/assets/50381946/18018b0c-7978-48aa-b3be-4923167bb425">
+  <img alt="example012" src="https://github.com/es7s/holms/assets/50381946/1128d864-aad9-4203-ae9c-af2ea0f3ad9f">
 </div>
 
 <details>
@@ -302,16 +309,16 @@ e.g. for frequency domain analysis:
 
       > holms run -gg  ./tests/data/confusables.txt
     
-       53% ██████████ 266233× Uppercase_Letter
-       13% ██▎         62748× Space_Separator
-       10% █▉          51356× Control
-      8.5% █▌          42511× Decimal_Number
-      3.7% ▋           18497× Format
-      3.0% ▌           14832× Other_Letter
-      2.0% ▎            9778× Math_Symbol
-      1.8% ▎            9261× Close_Punctuation
-      1.8% ▎            9259× Open_Punctuation
-      1.5% ▎            7525× Other_Punctuation
+      53.1% ██████████ 266233×  Uppercase_Letter
+      12.5% ██▎         62748×  Space_Separator
+      10.2% █▉          51356×  Control
+       8.5% █▌          42511×  Decimal_Number
+       3.7% ▋           18497×  Format
+       3.0% ▌           14832×  Other_Letter
+       2.0% ▎            9778×  Math_Symbol
+       1.8% ▎            9261×  Close_Punctuation
+       1.8% ▎            9259×  Open_Punctuation
+       1.5% ▎            7525×  Other_Punctuation
      ...
 
    <!-- @sub -->
@@ -319,13 +326,13 @@ e.g. for frequency domain analysis:
 
       > holms run -ggg  ./tests/data/confusables.txt
     
-       57% ██████████ 284074× Letter
-       14% ██▍         69853× Other
-       13% ██▏         62750× Separator
-      8.5% █▌          42796× Number
-      5.9% █           29571× Punctuation
-      2.2% ▍           11072× Symbol
-      0.2% ▏             965× Mark
+      56.7% ██████████ 284074×  Letter
+      13.9% ██▍         69853×  Other(C)
+      12.5% ██▏         62750×  Separator(Z)
+       8.5% █▌          42796×  Number
+       5.9% █           29571×  Punctuation
+       2.2% ▍           11072×  Symbol
+       0.2% ▏             965×  Mark
 
    <!-- @sub -->
 </details>
@@ -341,7 +348,7 @@ category.
 untouched and invisible.
 
 <div align="center">
-  <img alt="example007" src="https://github.com/es7s/holms/assets/50381946/788df0cd-9681-41dd-82fd-d6f477e8c4ac">
+  <img alt="example007" src="https://github.com/es7s/holms/assets/50381946/78ca318c-e295-41ff-b37d-d45d95842295">
 </div>
 
 <details>
@@ -380,7 +387,7 @@ encoded code points, but the result differs from the origin and is completely
 unreadable nevertheless.
 
 <div align="center">
-  <img alt="example015" src="https://github.com/es7s/holms/assets/50381946/6cead36b-f026-49cc-8ba7-49bb25dd1456">
+  <img alt="example015" src="https://github.com/es7s/holms/assets/50381946/738b5bbe-291f-4ade-bf97-66c1e8368281">
 </div>
 
 
@@ -418,7 +425,7 @@ Python's full transparent Unicode support, we don't even need to bother much
 about the encodings and such):
 
 <div align="center">
-  <img alt="example013" src="https://github.com/es7s/holms/assets/50381946/b2045a2d-a544-4989-b8bd-a32c9d2a6e7a">
+  <img alt="example013" src="https://github.com/es7s/holms/assets/50381946/884d3269-6323-41f1-9eab-6dccd83c5d6d">
 </div>
 
 <details>
@@ -446,7 +453,7 @@ The image below illustrates the color scheme developed for the app specifically,
 to simplify distinguishing code points of one category from others.
 
 <div align="center">
-  <img alt="example009" src="https://github.com/es7s/holms/assets/50381946/6f66a7cd-a74c-4eef-9827-cad6535f0ff0">
+  <img alt="example009" src="https://github.com/es7s/holms/assets/50381946/f9cac3b0-adab-45a3-a324-174ad7f06d44">
 </div>
 
 Most frequently encountering control codes also have a unique character
@@ -454,10 +461,15 @@ replacements, which allows to recognize them without reading the label or
 memorizing code point identifiers:
 
 <div align="center">
-  <img alt="example014" src="https://github.com/es7s/holms/assets/50381946/efad7252-9628-4ff8-9c37-177cd7ec26f1">
+  <img alt="example014" src="https://github.com/es7s/holms/assets/50381946/2b77d06a-5e3d-4837-973c-78454e687113">
 </div>
 
-@TODO Blocks
+<details>
+<summary><b>Unicode Blocks</b></summary>
+    <div align="center">
+            <img alt="blocks" src="https://github.com/es7s/holms/assets/50381946/8244553b-fc2d-419e-8b11-388ed0738bad"/>
+    </div>
+</details>
 
 Changelog
 ------------------

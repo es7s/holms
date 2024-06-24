@@ -4,7 +4,7 @@
 # ------------------------------------------------------------------------------
 
 from bisect import bisect_right
-from functools import lru_cache
+from functools import lru_cache, cache
 from operator import attrgetter
 from typing import TypeVar
 
@@ -361,6 +361,10 @@ _BLOCKS: list[UnicodeBlock] = [
 # fmt: on
 
 
+def get_blocks() -> list[UnicodeBlock]:
+    return _BLOCKS
+
+
 @lru_cache(maxsize=256)
 def find_block(number: int) -> UnicodeBlock:
     idx = bisect_right(_BLOCKS, number, key=attrgetter("start"))
@@ -369,9 +373,11 @@ def find_block(number: int) -> UnicodeBlock:
         return block
 
 
+@cache
+def get_max_block_abbr_length() -> int:
+    return max(len(b.abbr) for b in _BLOCKS)
+
+
+@cache
 def get_max_block_name_length() -> int:
     return max(len(b.name) for b in _BLOCKS)
-
-
-def get_blocks() -> list[UnicodeBlock]:
-    return _BLOCKS

@@ -1,9 +1,9 @@
   > holms run -ggg  ./tests/data/confusables.txt
    
-   57% ██████████ 284074× Letter      
-   14% ██▍         69853× Other       
-   13% ██▏         62750× Separator   
-  8.5% █▌          42796× Number      
-  5.9% █           29571× Punctuation 
-  2.2% ▍           11072× Symbol      
-  0.2% ▏             965× Mark        
+  56.7% ██████████ 284074×  Letter       
+  13.9% ██▍         69853×  Other(C)     
+  12.5% ██▏         62750×  Separator(Z) 
+   8.5% █▌          42796×  Number       
+   5.9% █           29571×  Punctuation  
+   2.2% ▍           11072×  Symbol       
+   0.2% ▏             965×  Mark         

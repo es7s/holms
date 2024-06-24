@@ -9,6 +9,8 @@ import typing
 from codecs import BufferedIncrementalDecoder
 from collections.abc import Iterable
 
+from .opt import Options
+
 
 class SurrogateAwareDecoder(BufferedIncrementalDecoder):
     def __init__(self):
@@ -27,7 +29,8 @@ class SurrogateAwareDecoder(BufferedIncrementalDecoder):
 class CliReader:
     _BUF_SIZE = 4
 
-    def __init__(self, io_: io.TextIOWrapper = sys.stdin):
+    def __init__(self, opt: Options, io_: io.TextIOWrapper = sys.stdin):
+        self._opt = opt
         self._io = io_
 
     def read(self) -> Iterable[typing.AnyStr]:
@@ -35,8 +38,10 @@ class CliReader:
 
         while buf.getstate()[0] or not self._io.closed:
             if self._io.closed:
-                yield from buf.decode(b"", True)
+                yield from buf.decode(b'', True)
             elif b := self._io.buffer.read(self._BUF_SIZE):
+                # if self._opt.ignore_lf:
+                #     b = b.replace(b'\n', b'')
                 yield from buf.decode(b)
             else:
                 self._io.close()

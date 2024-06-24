@@ -1,13 +1,13 @@
   > holms run -gg  ./tests/data/confusables.txt
    
-   53% ██████████ 266233× Uppercase_Letter      
-   13% ██▎         62748× Space_Separator       
-   10% █▉          51356× Control               
-  8.5% █▌          42511× Decimal_Number        
-  3.7% ▋           18497× Format                
-  3.0% ▌           14832× Other_Letter          
-  2.0% ▎            9778× Math_Symbol           
-  1.8% ▎            9261× Close_Punctuation     
-  1.8% ▎            9259× Open_Punctuation      
-  1.5% ▎            7525× Other_Punctuation     
+  53.1% ██████████ 266233×  Uppercase_Letter      
+  12.5% ██▎         62748×  Space_Separator       
+  10.2% █▉          51356×  Control               
+   8.5% █▌          42511×  Decimal_Number        
+   3.7% ▋           18497×  Format                
+   3.0% ▌           14832×  Other_Letter          
+   2.0% ▎            9778×  Math_Symbol           
+   1.8% ▎            9261×  Close_Punctuation     
+   1.8% ▎            9259×  Open_Punctuation      
+   1.5% ▎            7525×  Other_Punctuation     
  ...

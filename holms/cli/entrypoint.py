@@ -49,7 +49,8 @@ def _destroy_io():
     "\b\bBuffering"
     "\n\n"
     "The application works in two modes: buffered (default if INPUT is a file) and unbuffered (default when "
-    "reading from stdin). Options '-b'/'-u' explicitly override output mode regardless of the default setting."
+    "reading from stdin). Options '-b'/'-u' explicitly override output mode regardless of the default/implicitly "
+    "set values from other options."
     "\n\n"
     "In buffered mode the result begins to appear only after EOF is encountered (i.e., the WHOLE file has been read "
     "to the buffer). This is suitable for short and predictable inputs and produces the most compact output with fixed "
@@ -93,12 +94,6 @@ def _destroy_io():
     "group the input by super categories.",
 )
 @click.option(
-    "-o",
-    "--oneline",
-    is_flag=True,
-    help="Remove all newline characters (0x0a LINE FEED) from the output.",
-)
-@click.option(
     "-f",
     "--format",
     "_columns",
@@ -134,6 +129,24 @@ def _destroy_io():
     "decimal_offset",
     is_flag=True,
     help="Use decimal byte offsets instead of hexadecimal.",
+)
+@click.option(
+    "--oneline",
+    is_flag=True,
+    help="Discard all newline characters (0x0a LINE FEED) from the input.",
+)
+@click.option(
+    "--no-table",
+    "_no_table",
+    is_flag=True,
+    help="Do not format results as a table, just apply the colors to characters (equivalent to '-f char', implies "
+    "'-b'). Compatible with '-merge', '--format' and even '--group'. ",
+)
+@click.option(
+    "--no-override",
+    is_flag=True,
+    help="Do not replace control/whitespace code point markers with distinguishable characters ('▯' to '↵', '␣' etc). "
+         "Run 'holms legend' to see the details.",
 )
 def run(**kwargs):
     invoke_run(**kwargs)

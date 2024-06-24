@@ -130,6 +130,14 @@ __holms() {
 
       invoke "${@:3}" | sed -nEe 1,2p "${expr[@]}"
     }
+    function invoke_cut_seamless() {
+      # shellcheck disable=SC2054
+      local -a expr=(-e 1,2p)
+      readarray -t params < <(cat)
+      for param in "${params[@]}" ; do expr+=(-e "${param}"p) ; done
+#      while IFS= read -r line; do expr+=(-e "${line}"p) ; done < <(cat)
+      invoke "${@}" | sed -nE "${expr[@]}"
+    }
     function invoke_limit() { ES7S_PADBOX_LINE_LIMIT=10 invoke "$@" ; }
     function p1() { invoke_simple '1₂³⅘↉⏨' ; }
     function p2() { invoke_simple 'aаͣāãâȧäåₐᵃａ' ; }
@@ -139,10 +147,14 @@ __holms() {
     function p6() { invoke "" "" "" sed ./tests/data/confusables.txt -Ee 's/^.|\t//g' -e 3620!d ; }
     function p7() { invoke "--format=char" "" "" sed ./tests/data/chars.txt -nEe '1,12p' ; }
     function p8() { invoke_limit -g ./tests/data/confusables.txt ; }
+    function p9() { invoke_cut_seamless <<<337,368 -L ; }
+#    function p9() {
+      # 4,35 35,65 65,95 95,125 125,155 155,185 185,215 215,245 245,275 275,305 305,333
+#      invoke_cut_seamless -L <<<4,35
+#    }
+    function p10() { ES7S_PADBOX_PAD_X=0 invoke_cut 22 "" -F  ; }
     function p11() { invoke_limit -gg ./tests/data/confusables.txt ; }
     function p12() { invoke_limit -ggg ./tests/data/confusables.txt ; }
-    function p9() { invoke_cut 23 "" -L  ; }
-    function p10() { ES7S_PADBOX_PAD_X=0 invoke_cut 22 "" -F  ; }
     function p13() {
       local data="\x80\x90\x9f"
       echo "$(cat <<EOF
@@ -152,7 +164,8 @@ EOF
     ES7S_PADBOX_HEADER="$(cat /tmp/p13)" _p13 bash /tmp/p13
     }
     function _p13() { invoke "--names --decimal --all" "" "" "$@" | sed -Ee '6s/$/\n/' ; }
-    function p14() { invoke ""  ./tests/data/specials ; }
+#    function p14() { invoke ""  ./tests/data/specials ; }
+    function p14() { invoke_cut_seamless <<<371,\$ -L ; }
     function p15() { invoke_limit -fchar ./tests/data/broken-utf8.txt ; }
 
     function measure() {

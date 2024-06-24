@@ -55,18 +55,18 @@ class Char(t.Generic[_CT]):
     @cached_property
     def name(self) -> str:
         if self.is_surrogate:
-            return "UTF-16 SURROGATE"
+            return "(UTF-16 SURROGATE)"
         if self.is_private_use:
-            return "PRIVATE USE"
+            return "(PRIVATE USE)"
         if self.is_unassigned:
-            return "UNASSIGNED"
+            return "(UNASSIGNED)"
         if self.is_ascii_cc:
             cc = resolve_ascii_cc(self.cpnum)
-            ccpg = "01"[bool(self.is_ascii_c1)]
+            ccpg = "01"[self.is_ascii_c1]
             return f"ASCII C{ccpg} [{cc.abbr}] {cc.name}"
         if self.is_invalid:
-            # printf '\x80'   0x 80         --  NON UTF-8 BYTE 0x80
-            # printf '\u80'   0x C2 80    U+80  ASCII C1 BYTE 0x80
+            # printf '\x80' : "0x 80         --  NON UTF-8 BYTE 0x80"
+            # printf '\u80' : "0x C2 80    U+80  ASCII C1 BYTE 0x80"
             return f"NON UTF-8 BYTE 0x{ord(self._value):X}"
         try:
             return unicodedata.name(self._value)

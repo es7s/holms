@@ -26,6 +26,8 @@ def invoke_run(
             buffered = input.fileno() != STDIN_FILENO
         except UnsupportedOperation:
             pass  # looks like input is not a fp => its probably testing environment
+        if kwargs.get('no_table', None):
+            buffered = False
 
     opt = Options(**kwargs)
     if opt.group:
@@ -34,7 +36,7 @@ def invoke_run(
     from holms.core.reader import CliReader
     from holms.core.writer import CliWriter
 
-    r = CliReader(io.TextIOWrapper(input))
+    r = CliReader(opt, io.TextIOWrapper(input))
     w = CliWriter(opt, buffered, output)
 
     chars = Char.parse(r.read())
