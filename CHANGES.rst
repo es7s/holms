@@ -64,3 +64,8 @@ Version list
 1.4.2 (Feb 24)
 ---------------
 - 🐞 FIX: dependencies constraints
+
+1.5.0 (Jun 24)
+---------------
+- 🌱 NEW: `--no-table` and `--no-override` options
+- 💎 REFACTOR: `legend` page

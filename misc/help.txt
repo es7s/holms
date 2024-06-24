@@ -14,8 +14,6 @@ Options:
                         grouping by code point category instead, while doing
                         it thrice ('-ggg') makes the app group the input by
                         super categories.
-  -o, --oneline         Remove all newline characters (0x0a LINE FEED) from
-                        the output.
   -f, --format          Comma-separated list of columns to show (order is
                         preserved). Run 'holms format' to see the details.
   -n, --names           Display names instead of abbreviations. Affects `cat`
@@ -30,4 +28,13 @@ Options:
                         shrinking (but they still will be expanded when
                         needed).
   --decimal             Use decimal byte offsets instead of hexadecimal.
+  --oneline             Discard all newline characters (0x0a LINE FEED) from
+                        the input.
+  --no-table            Do not format results as a table, just apply the
+                        colors to characters (equivalent to '-f char', implies
+                        '-b'). Compatible with '-merge', '--format' and even '
+                        --group'.
+  --no-override         Do not replace control/whitespace code point markers
+                        with distinguishable characters ('▯' to '↵', '␣' etc).
+                        Run 'holms legend' to see the details.
   -?, --help            Show this message and exit.

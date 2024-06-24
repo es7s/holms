@@ -29,6 +29,7 @@ class CategoryStyles(dict[str, dict[str, pt.FrozenStyle]]):
         ("M*", pt.FrozenStyle(BASE, fg=pt.cv.HI_YELLOW)),
         ("-*", pt.FrozenStyle(BASE, fg=pt.cv.MAGENTA)),  # non-utf8
         ("C*", C_DEFAULT),
+        ("L*", pt.NOOP_STYLE),
     ]
 
     def __init__(self):
@@ -40,16 +41,16 @@ class CategoryStyles(dict[str, dict[str, pt.FrozenStyle]]):
                 self.update({k1: subdict})
             subdict.update({k2: st})
 
-    def get(self, cat: str, default: pt.Style = pt.NOOP_STYLE) -> pt.Style:
+    def get(self, cat: str, default: pt.Style = None) -> pt.FrozenStyle|None:
         k1, k2 = self._category_to_key(cat)
         if k1 not in self.keys():
-            return default
+            return None
         subdict = super().get(k1)
         if k2 in subdict.keys():
             return subdict.get(k2)
         if "*" in subdict.keys():
             return subdict.get("*")
-        return default
+        return None
 
     @classmethod
     def _category_to_key(cls, cat: str) -> tuple[str, str]:
@@ -61,6 +62,11 @@ class CategoryStyles(dict[str, dict[str, pt.FrozenStyle]]):
 
 
 _cc_styles = CategoryStyles()
+
+def resolve_cat_style(cat: str) -> pt.FrozenStyle:
+    return _cc_styles.get(cat, CategoryStyles.BASE)
+
+
 OVERRIDE_CHARS = dict[int, CharOverride](
     {
         0x00: CharOverride("Ø", CategoryStyles.C_CUSTOM),

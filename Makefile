@@ -131,7 +131,7 @@ show-version: ## Show current package version
 	@hatch version | sed -Ee "s/.+/Current: ${CYAN}&${RESET}/"
 
 tag-version: ## Tag current git branch HEAD with the current version
-	@git tag $(shell hatch version | cut -f1,2  -d\.) && git log -1
+	@git tag $(shell hatch version | cut -f1-3  -d\.) && git log -1
 
 _set_next_version = (hatch version $1 | \
 						tr -d '\n' | \

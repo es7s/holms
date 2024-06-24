@@ -5,12 +5,12 @@
 #-------------------------------------------------------------------------------
 # shellcheck disable=SC2128,SC2059
 
-FILE=all-cats.bin
+FILE=./all-cats.bin
 data=(
       1  # Cc ▕ ▯ ▏U+     1 ASCII C0 [SOH] START OF HEADING
    200D  # Cf ▕ ▯ ▏U+  200D ZERO WIDTH JOINER
    E0B0  # Co ▕  ▏U+  E0B0 PRIVATE USE
- 10FFFE  # Cn ▕􏿾  ▏U+10FFFE UNASSIGNED
+ 10FFFE  # Cn ▕􏿾  ▏U+10FFFE (UNASSIGNED)
    D800  # Cs ▕ ▯ ▏U+  D800 UTF-16 SURROGATE
      61  # Ll ▕ a ▏U+    61 LATIN SMALL LETTER A
    1D43  # Lm ▕ ᵃ ▏U+  1D43 MODIFIER LETTER SMALL A
@@ -38,8 +38,12 @@ data=(
    2029  # Zp ▕ ▯ ▏U+  2029 PARAGRAPH SEPARATOR
    2006  # Zs ▕ ▯ ▏U+  2006 SIX-PER-E4M SPACE
 )
+extras=(
+  $'\xff' # -- ▕ ▯ ▏      --  NON UTF-8 BYTE 0xFF
+)
 
 truncate --size 0 $FILE
-for i in ${data[*]} ; do
-  printf "\U$(printf %8s $i | tr ' ' 0)" >>$FILE
-done
+{
+  for i in ${data[*]}   ; do printf "\U$(printf %8s $i | tr ' ' 0)" ; done
+  for b in ${extras[*]} ; do printf "$b"                            ; done
+} >>$FILE

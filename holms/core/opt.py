@@ -42,10 +42,14 @@ class Options:
     _rigid: bool = False
     oneline: bool = False
     _names: bool = False
+    no_override: bool = False
+    _no_table: bool = False
 
     @cached_property
     def columns(self) -> list[Attribute]:
         if not self._columns:
+            if self._no_table:
+                return [Attribute.CHAR]
             return [*self._columns_default]
         return self._columns
 
@@ -77,8 +81,8 @@ class Options:
         return self.group_level >= 3
 
     @cached_property
-    def highlight_only_mode(self) -> bool:
-        return len(self.columns) == 1 and self.columns[0] == Attribute.CHAR
+    def no_table(self) -> bool:
+        return self._no_table or self.columns == [Attribute.CHAR]
 
     @cached_property
     def names(self) -> bool:

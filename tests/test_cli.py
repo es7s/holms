@@ -159,36 +159,36 @@ class TestRunCommand:
             [
                 "-ur",
                 (
-                    " 0000  #   0   0x       00 U+     0 ▕ Ø ▏\u200e BaL Cc ASCII C0 [NUL] NULL \n"
-                    " 0001  #   1   0x    c2 a1 U+    A1 ▕ ¡ ▏\u200e La1ˢPo INVERTED EXCLAMATION MARK \n"
-                    " 0003  #   2   0x e2 80 9d U+  201D ▕ ” ▏\u200e GeP Pf RIGHT DOUBLE QUOTATION MARK \n"
+                    " 0000  #   0   0x       00 U+     0 ▕ Ø ▏\u200e BaL  Cc ASCII C0 [NUL] NULL \n"
+                    " 0001  #   1   0x    c2 a1 U+    A1 ▕ ¡ ▏\u200e La1ˢ Po INVERTED EXCLAMATION MARK \n"
+                    " 0003  #   2   0x e2 80 9d U+  201D ▕ ” ▏\u200e GeP  Pf RIGHT DOUBLE QUOTATION MARK \n"
                 ),
                 False,
             ],
             [
                 "-u",
                 (
-                    " 0000  #   0   0x    00 U+   0 ▕ Ø ▏\u200e BaL Cc ASCII C0 [NUL] NULL \n"
-                    " 0001  #   1   0x c2 a1 U+  A1 ▕ ¡ ▏\u200e La1ˢPo INVERTED EXCLAMATION MARK \n"
-                    " 0003  #   2   e2 80 9d U+201D ▕ ” ▏\u200e GeP Pf RIGHT DOUBLE QUOTATION MARK \n"
+                    " 0000  #   0   0x    00 U+   0 ▕ Ø ▏\u200e BaL  Cc ASCII C0 [NUL] NULL \n"
+                    " 0001  #   1   0x c2 a1 U+  A1 ▕ ¡ ▏\u200e La1ˢ Po INVERTED EXCLAMATION MARK \n"
+                    " 0003  #   2   e2 80 9d U+201D ▕ ” ▏\u200e GeP  Pf RIGHT DOUBLE QUOTATION MARK \n"
                 ),
                 False,
             ],
             [
                 "-br",
                 (
-                    " 0  #0   0x       00 U+   0 ▕ Ø ▏\u200e BaL Cc ASCII C0 [NUL] NULL         \n"
-                    " 1  #1   0x    c2 a1 U+  A1 ▕ ¡ ▏\u200e La1ˢPo INVERTED EXCLAMATION MARK   \n"
-                    " 3  #2   0x e2 80 9d U+201D ▕ ” ▏\u200e GeP Pf RIGHT DOUBLE QUOTATION MARK \n"
+                    " 0  #0   0x       00 U+   0 ▕ Ø ▏\u200e BaL  Cc ASCII C0 [NUL] NULL         \n"
+                    " 1  #1   0x    c2 a1 U+  A1 ▕ ¡ ▏\u200e La1ˢ Po INVERTED EXCLAMATION MARK   \n"
+                    " 3  #2   0x e2 80 9d U+201D ▕ ” ▏\u200e GeP  Pf RIGHT DOUBLE QUOTATION MARK \n"
                 ),
                 True,
             ],
             [
                 "-b",
                 (
-                    " 0  #0   0x    00 U+   0 ▕ Ø ▏\u200e BaL Cc ASCII C0 [NUL] NULL         \n"
-                    " 1  #1   0x c2 a1 U+  A1 ▕ ¡ ▏\u200e La1ˢPo INVERTED EXCLAMATION MARK   \n"
-                    " 3  #2   e2 80 9d U+201D ▕ ” ▏\u200e GeP Pf RIGHT DOUBLE QUOTATION MARK \n"
+                    " 0  #0   0x    00 U+   0 ▕ Ø ▏\u200e BaL  Cc ASCII C0 [NUL] NULL         \n"
+                    " 1  #1   0x c2 a1 U+  A1 ▕ ¡ ▏\u200e La1ˢ Po INVERTED EXCLAMATION MARK   \n"
+                    " 3  #2   e2 80 9d U+201D ▕ ” ▏\u200e GeP  Pf RIGHT DOUBLE QUOTATION MARK \n"
                 ),
                 True,
             ],
@@ -295,7 +295,7 @@ class TestRunCommand:
         "opts, exp_out",
         [
             [
-                [],
+                ["-f", "name"],
                 [
                     "LATIN CAPITAL LETTER A",
                     "ASCII C0 [LF] LINE FEED",
@@ -307,7 +307,7 @@ class TestRunCommand:
                 ],
             ],
             [
-                ["--oneline"],
+                ["-f", "name", "--oneline"],
                 [
                     "LATIN CAPITAL LETTER A",
                     "LATIN CAPITAL LETTER B",
@@ -315,10 +315,18 @@ class TestRunCommand:
                     "LATIN CAPITAL LETTER D",
                 ],
             ],
+            [
+                ["--no-table"],
+                ["A", "BC", "", "D"],
+            ],
+            [
+                ["--no-table", "--oneline"],
+                ["ABCD"],
+            ],
         ],
     )
     def test_oneline(self, crun: CliRunner, ep: CliCommand, opts: list[str], exp_out: str):
-        rs = crun.invoke(ep, ["run", "-f", "name", *opts], input="A\nBC\n\nD")
+        rs = crun.invoke(ep, ["run", *opts], input="A\nBC\n\nD")
         assert rs.exit_code == 0
         assert not rs.stderr
         assert_streq(rs.stdout, exp_out)

@@ -1,35 +1,34 @@
   > holms legend
    
-...
-   Control               ▕ ▯ ▏ U+     1 ASCII C0 [SOH] START OF HEADING 
-   Format                ▕ ▯ ▏ U+  200D ZERO WIDTH JOINER 
-   Surrogate             ▕ ▯ ▏ U+  D800 UTF-16 SURROGATE 
-   Private_Use           ▕  ▏ U+  E0B0 PRIVATE USE 
-   Uppercase_Letter      ▕ A ▏ U+    41 LATIN CAPITAL LETTER A 
-   Lowercase_Letter      ▕ a ▏ U+    61 LATIN SMALL LETTER A 
-   Titlecase_Letter      ▕ ǲ ▏ U+   1F2 LATIN CAPITAL LETTER D WITH SMALL LETTER Z 
-   Other_Letter          ▕怍 ▏ U+  600D CJK UNIFIED IDEOGRAPH-600D 
-   Modifier_Letter       ▕ ᵃ ▏ U+  1D43 MODIFIER LETTER SMALL A 
-   Decimal_Number        ▕ 0 ▏ U+    30 DIGIT ZERO 
-   Letter_Number         ▕ Ⅶ ▏ U+  2166 ROMAN NUMERAL SEVEN 
-   Other_Number          ▕ ² ▏ U+    B2 SUPERSCRIPT TWO 
-   Nonspacing_Mark       ▕  ̀ ▏ U+   300 COMBINING GRAVE ACCENT 
-   Spacing_Mark          ▕ ऻ ▏ U+   93B DEVANAGARI VOWEL SIGN OOE 
-   Enclosing_Mark        ▕  ҈ ▏ U+   488 COMBINING CYRILLIC HUNDRED THOUSANDS SIGN 
-   Connector_Punctuation ▕ _ ▏ U+    5F LOW LINE 
-   Dash_Punctuation      ▕ — ▏ U+  2014 EM DASH 
-   Open_Punctuation      ▕ ( ▏ U+    28 LEFT PARENTHESIS 
-   Close_Punctuation     ▕ ) ▏ U+    29 RIGHT PARENTHESIS 
-   Initial_Punctuation   ▕ « ▏ U+    AB LEFT-POINTING DOUBLE ANGLE QUOTATION MARK 
-   Final_Punctuation     ▕ » ▏ U+    BB RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK 
-   Other_Punctuation     ▕ ! ▏ U+    21 EXCLAMATION MARK 
-   Math_Symbol           ▕ + ▏ U+    2B PLUS SIGN 
-   Currency_Symbol       ▕ $ ▏ U+    24 DOLLAR SIGN 
-   Modifier_Symbol       ▕ ^ ▏ U+    5E CIRCUMFLEX ACCENT 
-   Other_Symbol          ▕ ¦ ▏ U+    A6 BROKEN BAR 
-   Space_Separator       ▕ ▯ ▏ U+  2006 SIX-PER-EM SPACE 
-   Line_Separator        ▕ ▯ ▏ U+  2028 LINE SEPARATOR 
-   Paragraph_Separator   ▕ ▯ ▏ U+  2029 PARAGRAPH SEPARATOR 
-   Unassigned            ▕ ▯ ▏ U+10FFFE UNASSIGNED 
-   Binary                ▕ ▯ ▏      --  NON UTF-8 BYTE 0xA6                        
-
+   Control               Cc ▕ ▯ ▏ U+     1 ASCII C0 [SOH] START OF HEADING 
+   Format                Cf ▕ ▯ ▏ U+  200D ZERO WIDTH JOINER 
+   Private_Use           Co ▕  ▏ U+  E0B0 (PRIVATE USE) 
+   Unassigned            Cn ▕􏿾 ▏ U+10FFFE (UNASSIGNED) 
+   Surrogate             Cs ▕ ▯ ▏ U+  D800 (UTF-16 SURROGATE) 
+   Lowercase_Letter      Ll ▕ a ▏ U+    61 LATIN SMALL LETTER A 
+   Modifier_Letter       Lm ▕ ᵃ ▏ U+  1D43 MODIFIER LETTER SMALL A 
+   Other_Letter          Lo ▕怍 ▏ U+  600D CJK UNIFIED IDEOGRAPH-600D 
+   Titlecase_Letter      Lt ▕ ǲ ▏ U+   1F2 LATIN CAPITAL LETTER D WITH SMALL LETTER Z 
+   Uppercase_Letter      Lu ▕ A ▏ U+    41 LATIN CAPITAL LETTER A 
+   Spacing_Mark          Mc ▕ ऻ ▏ U+   93B DEVANAGARI VOWEL SIGN OOE 
+   Enclosing_Mark        Me ▕  ҈ ▏ U+   488 COMBINING CYRILLIC HUNDRED THOUSANDS SIGN 
+   Nonspacing_Mark       Mn ▕  ̀ ▏ U+   300 COMBINING GRAVE ACCENT 
+   Decimal_Number        Nd ▕ 0 ▏ U+    30 DIGIT ZERO 
+   Letter_Number         Nl ▕ Ⅶ ▏ U+  2166 ROMAN NUMERAL SEVEN 
+   Other_Number          No ▕ ² ▏ U+    B2 SUPERSCRIPT TWO 
+   Connector_Punctuation Pc ▕ _ ▏ U+    5F LOW LINE 
+   Dash_Punctuation      Pd ▕ — ▏ U+  2014 EM DASH 
+   Close_Punctuation     Pe ▕ ) ▏ U+    29 RIGHT PARENTHESIS 
+   Final_Punctuation     Pf ▕ » ▏ U+    BB RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK 
+   Initial_Punctuation   Pi ▕ « ▏ U+    AB LEFT-POINTING DOUBLE ANGLE QUOTATION MARK 
+   Other_Punctuation     Po ▕ ! ▏ U+    21 EXCLAMATION MARK 
+   Open_Punctuation      Ps ▕ ( ▏ U+    28 LEFT PARENTHESIS 
+   Currency_Symbol       Sc ▕ $ ▏ U+    24 DOLLAR SIGN 
+   Modifier_Symbol       Sk ▕ ^ ▏ U+    5E CIRCUMFLEX ACCENT 
+   Math_Symbol           Sm ▕ + ▏ U+    2B PLUS SIGN 
+   Other_Symbol          So ▕ ¦ ▏ U+    A6 BROKEN BAR 
+   Line_Separator        Zl ▕ ▯ ▏ U+  2028 LINE SEPARATOR 
+   Paragraph_Separator   Zp ▕ ▯ ▏ U+  2029 PARAGRAPH SEPARATOR 
+   Space_Separator       Zs ▕ ▯ ▏ U+  2006 SIX-PER-EM SPACE 
+   Binary                -- ▕ ▯ ▏      --  NON UTF-8 BYTE 0xFF                        
+    

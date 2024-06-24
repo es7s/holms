@@ -69,25 +69,21 @@ include = [
 [tool.hatch.version]
 path = "holms/_version.py"
 
-###
+[tool.hatch.env]
+requires = ["hatch-pip-compile"]
 
 [tool.hatch.envs.default]
+type = "pip-compile"
 extra-dependencies = []
 
 [tool.hatch.envs.default.scripts]
 version = "python -m holms --version"
 
-###
-
 [tool.hatch.envs.test]
-features = [
-    'test',
-]
+features = ['test']
 
 [tool.hatch.envs.test.scripts]
 test = "pytest"
-
-###
 
 [tool.hatch.envs.build]
 detached = true
@@ -96,11 +92,10 @@ extra-dependencies = [
     "twine~=4.0",
 ]
 
-###
-
 [tool.hatch.envs.dev]
 extra-dependencies = [
     "pydeps~=1.10",
+    "pillow~=9.1",
 ]
 
 # ---------------------------------------------------------
