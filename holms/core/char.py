@@ -61,9 +61,7 @@ class Char(t.Generic[_CT]):
         if self.is_unassigned:
             return "(UNASSIGNED)"
         if self.is_ascii_cc:
-            cc = resolve_ascii_cc(self.cpnum)
-            ccpg = "01"[self.is_ascii_c1]
-            return f"ASCII C{ccpg} [{cc.abbr}] {cc.name}"
+            return resolve_ascii_cc(self.cpnum).name
         if self.is_invalid:
             # printf '\x80' : "0x 80         --  NON UTF-8 BYTE 0x80"
             # printf '\u80' : "0x C2 80    U+80  ASCII C1 BYTE 0x80"
@@ -114,12 +112,7 @@ class Char(t.Generic[_CT]):
 
     @cached_property
     def should_print_placeholder(self) -> bool:
-        return (
-            self.is_control_or_format
-            or self.is_surrogate
-            or self.is_invalid
-            or self.value.isspace()
-        )
+        return self.is_control_or_format or self.is_surrogate or self.is_invalid or self.value.isspace()
 
     @cached_property
     def is_control_or_format(self) -> bool:

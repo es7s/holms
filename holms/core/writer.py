@@ -16,7 +16,7 @@ from functools import lru_cache
 
 import pytermor as pt
 
-from holms.db import resolve_category, UnicodeBlock, find_block
+from holms.db import resolve_category, UnicodeBlock, find_block, resolve_ascii_cc
 from holms.shared import CacheInfo
 from holms.shared.scale import format_ratio, Scale
 from .attr import Attribute
@@ -292,9 +292,7 @@ class OffsetView(IView, RendersAddress):
         fill = ["0", ""][opt.decimal_offset]
         return f"{val:{fill}{col.max_width}{fmt}}"
 
-    def render(
-        self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True
-    ) -> str:
+    def render(self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True) -> str:
         if opt.group:
             return ""
         pfx = [" ", "⏨"][opt.decimal_offset]
@@ -312,9 +310,7 @@ class IndexView(IView, RendersAddress):
         max_width = col.max_width if col else 0
         return f"{val:{max_width}d}"
 
-    def render(
-        self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True
-    ) -> str:
+    def render(self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True) -> str:
         if opt.group:
             return ""
         address_parts = self._format_address(row, "#", self.format(opt, row, col))
@@ -338,9 +334,7 @@ class RawView(IView):
         sep = ["", " "][len(raw_bytes) < 4 or rigid]
         return f"{sep.join(str_bytes):>{max_width}s}"
 
-    def render(
-        self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True
-    ) -> str:
+    def render(self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True) -> str:
         if opt.group_cats:
             return ""
         formatted = self.format(opt, row, col).strip()
@@ -375,9 +369,7 @@ class CpNumberView(IView):
         max_width = max(max_width, 2)
         return f"{char.cpnum:>{max_width}X}"
 
-    def render(
-        self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True
-    ) -> str:
+    def render(self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True) -> str:
         if opt.group_cats:
             return ""
         max_width = col.max_width if col else 0
@@ -417,9 +409,7 @@ class CountView(IView):
             return result
         return pt.fit(result, max(len(result), col.max_width), ">")
 
-    def render(
-        self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True
-    ) -> str:
+    def render(self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True) -> str:
         if not opt.merge:
             return ""
         val_str = self.format(opt, row, col)
@@ -427,9 +417,7 @@ class CountView(IView):
         result = self._render_count(opt.group, val_str, suffix)
 
         if row and opt.group and row.char:
-            scale_str = self._render_scale(
-                opt.group_cats, row.char.cat, row.dup_count, grp.max, grp.sum
-            )
+            scale_str = self._render_scale(opt.group_cats, row.char.cat, row.dup_count, grp.max, grp.sum)
             result = scale_str + result
         return result
 
@@ -469,9 +457,7 @@ class CharView(IView):
     def attr() -> Attribute:
         return Attribute.CHAR
 
-    def render(
-        self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True
-    ) -> str:
+    def render(self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True) -> str:
         if opt.group_cats:
             return ""
 
@@ -533,16 +519,20 @@ class NameView(IView):
     def format(self, opt: Options, row: Row, col: Column = None) -> str:
         if not row or not row.char:
             return ""
-        return self._format_name(row.char.name, col.max_width if col else 0)
+        full_name = row.char.name
+        if row.char.is_ascii_cc:
+            cc = resolve_ascii_cc(row.char.cpnum)
+            ccpg = "01"[row.char.is_ascii_c1]
+            notation = cc.alt if opt.alt_cc else cc.abbr
+            full_name = f"ASCII C{ccpg} [{notation}] {full_name}"
+        return self._format_name(full_name, col.max_width if col else 0)
 
     @lru_cache(maxsize=256)
     def _format_name(self, name: str, max_width=0):
         max_width = max(max_width, 16)
         return f"{name:{max_width}s}"
 
-    def render(
-        self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True
-    ) -> str:
+    def render(self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True) -> str:
         if opt.group_cats or not row.char:
             return ""
         formatted = self.format(opt, row, col)
@@ -578,9 +568,7 @@ class CatView(IView, Expands):
             cat_name = "Binary"
         return f"{cat_name:{max_width}s}"
 
-    def render(
-        self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True
-    ) -> str:
+    def render(self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True) -> str:
         if not row.char:
             return ""
         cat = CliWriter.get_effective_category(opt, row.char)
@@ -601,7 +589,7 @@ class CatView(IView, Expands):
     def _render_cat(self, _rigid: bool, formatted: str, cat: str):
         st = resolve_cat_style(cat)
         if not _rigid:
-            formatted = pt.fit(formatted.strip(), 16)
+            formatted = pt.fit(formatted.strip(), 16, align=self._default_align)
         return pt.render(formatted, st)
 
 
@@ -623,19 +611,15 @@ class BlockView(IView, Expands):
     @lru_cache(maxsize=256)
     def _format_block(self, block_name: str | None, max_width=0) -> str:
         max_width = max(max_width, 2)
-        return f"{(block_name or Char.NO_VALUE):<{max_width}s}"
+        return f"{(block_name or Char.NO_VALUE):{self.get_align()}{max_width}s}"
 
-    def render(
-        self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True
-    ) -> str:
+    def render(self, opt: Options, row: Row, col: Column = None, grp: Groups = None, first=True) -> str:
         if opt.group_cats or not row.char:
             return ""
         if not self._use_long_form(opt, first):
             return self._render_block_abbr(row.char.block)
         formatted = self.format(opt, row, col)
-        return self._render_block(
-            opt._rigid, formatted, row.char.block is not None, self.get_align(col)
-        )
+        return self._render_block(opt._rigid, formatted, row.char.block is not None, self.get_align(col))
 
     @lru_cache(maxsize=256)
     def _render_block_abbr(self, block: UnicodeBlock | None) -> str:

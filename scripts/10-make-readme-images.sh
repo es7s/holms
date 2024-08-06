@@ -19,7 +19,7 @@ declare -ir PADDING_X_CH=1
 #  WINDOW SIZE  fullscreen 1080p
 # -----------------------------------------
 
-function fstat() { stat -Lc $'%10s  %n' "$@" | es7s exec hilight - ; }
+function fstat() { stat -Lc $'%10s  %n' "$@" | es7s exec hilight-num - ; }
 function min() { [[ $(( ${1:?} )) -lt $(( ${2:?} )) ]] && echo $1 || echo $2 ; }
 function max() { [[ $(( ${1:?} )) -gt $(( ${2:?} )) ]] && echo $1 || echo $2 ; }
 function dcu() { sed -Ee 's/\x1b\[[0-9;:]*[A-Za-z]//g; s/\xe2\x80\x8e//g'; }

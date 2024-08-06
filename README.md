@@ -172,6 +172,8 @@ Configuration / Advanced usage
                             shrinking (but they still will be expanded when
                             needed).
       --decimal             Use decimal byte offsets instead of hexadecimal.
+      --alt                 Use alternative notation for control characters: caret
+                            notation for ASCII C0, octal notation for ASCII C1.
       --oneline             Discard all newline characters (0x0a LINE FEED) from
                             the input.
       --no-table            Do not format results as a table, just apply the

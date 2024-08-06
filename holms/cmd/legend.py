@@ -16,9 +16,9 @@ from click import pass_context
 from es7s_commons import GROUP_SEPARATOR as SECTION_SEP
 
 from holms import APP_NAME
-from holms.core import Attribute, OVERRIDE_CHARS, Options, Char, resolve_cat_style
-from holms.core.writer import Row, Column, Styles
-from holms.db import get_max_block_abbr_length, get_max_block_name_length
+from holms.core import Attribute, OVERRIDE_CHARS, Options, resolve_cat_style
+from holms.core.writer import Styles
+from holms.db import get_max_block_abbr_length, get_max_block_name_length, UnicodeBlock
 
 
 @pass_context
@@ -97,7 +97,7 @@ class LegendCommand:
             self._echo(pt.Text(*row))
 
     @classmethod
-    def _render_block(cls, block, has_assigned: bool):
+    def _render_block(cls, block: UnicodeBlock, has_assigned: bool):
         st = [Styles.INVALID, Styles.PLAIN][has_assigned]
 
         yield pt.Fragment(pt.fit(block.abbr, get_max_block_abbr_length()), st)
@@ -105,7 +105,7 @@ class LegendCommand:
         yield pt.Fragment(pt.fit(block.name, get_max_block_name_length()), st)
 
     @classmethod
-    def _format_number(cls, block, has_assigned: bool) -> Iterable[pt.RT]:
+    def _format_number(cls, block: UnicodeBlock, has_assigned: bool) -> Iterable[pt.RT]:
         st = [Styles.INVALID, pt.NOOP_STYLE][has_assigned]
         yield pt.Fragment(f"{block.start:>6X}", st)
         yield pt.Fragment("-", Styles.CPNUM_PREFIX)
