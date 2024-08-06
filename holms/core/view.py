@@ -42,9 +42,7 @@ class _ViewRegistry:
 
 class _ViewMeta(abc.ABCMeta):
     def __new__(__mcls: type[_ViewMeta], __name, __bases, __namespace, **kwargs):
-        cls: _ViewMeta | type[IView] = super().__new__(
-            __mcls, __name, __bases, __namespace, **kwargs
-        )
+        cls: _ViewMeta | type[IView] = super().__new__(__mcls, __name, __bases, __namespace, **kwargs)
         if len(__bases):
             cls(cls.attr())  # <- instantiate
         return cls
@@ -82,7 +80,7 @@ class IView(metaclass=_ViewMeta):
                 cur_info_fn = getattr(a, "cache_info")
                 clear_fn = getattr(a, "cache_clear")
                 if not (cum := self._cache_stats.get(m)):
-                    self._cache_stats.update({m:  (cum := CacheInfo())})
+                    self._cache_stats.update({m: (cum := CacheInfo())})
                 cum.upd_from_tuple(cur_info_fn())
                 clear_fn()
 
@@ -102,28 +100,28 @@ class IView(metaclass=_ViewMeta):
         ...
 
     def get_align(self, column: Column = None) -> pt.Align:
-        if column.align_override is not None:
+        if column and column.align_override is not None:
             return column.align_override
         return self._default_align
 
-    def get_sep_before(self, column: Column = None, default: str = '') -> bool|str:
+    def get_sep_before(self, column: Column = None, default: str = "") -> bool | str:
         prop_value = self._default_sep_before
         if column.sep_before_override is not None:
             prop_value = column.sep_before_override
         return self._get_sep_value(prop_value, default)
 
-    def get_sep_after(self, column: Column = None, default: str = '') -> bool|str:
+    def get_sep_after(self, column: Column = None, default: str = "") -> bool | str:
         prop_value = self._default_sep_after
         if column.sep_after_override is not None:
             prop_value = column.sep_after_override
         return self._get_sep_value(prop_value, default)
 
-    def _get_sep_value(self, prop_value: str|bool, default: str) -> str:
+    def _get_sep_value(self, prop_value: str | bool, default: str) -> str:
         if prop_value is True:
             return default
         if isinstance(prop_value, str):
             return prop_value
-        return ''
+        return ""
 
 
 def get_view(attr: Attribute) -> IView:

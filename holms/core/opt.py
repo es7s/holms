@@ -20,10 +20,13 @@ _FORMAT_ALL = [
     Attribute.NAME,
 ]
 
-_FORMAT_DEFAULT_EXCLUDED = [
-    Attribute.INDEX,
-    Attribute.RAW,
-    Attribute.BLOCK,
+_FORMAT_DEFAULT = [
+    Attribute.OFFSET,
+    Attribute.NUMBER,
+    Attribute.CHAR,
+    Attribute.CAT,
+    Attribute.COUNT,
+    Attribute.NAME,
 ]
 
 _ATTR_EXPANDABLE = [
@@ -38,6 +41,7 @@ class Options:
     all_columns: bool = False
     _merge: bool = False
     group_level: int = 0
+    alt_cc: bool = False
     decimal_offset: bool = False
     _rigid: bool = False
     oneline: bool = False
@@ -56,12 +60,11 @@ class Options:
     @cached_property
     def _columns_default(self) -> Iterable[Attribute]:
         last = []
-        for f in _FORMAT_ALL:
+        for f in [_FORMAT_DEFAULT, _FORMAT_ALL][self.all_columns]:
             if f in _ATTR_EXPANDABLE and self.names:
                 last.append(f)
                 continue
-            if self.all_columns or f not in _FORMAT_DEFAULT_EXCLUDED:
-                yield f
+            yield f
         yield from last
 
     @cached_property

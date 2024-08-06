@@ -41,7 +41,7 @@ class CategoryStyles(dict[str, dict[str, pt.FrozenStyle]]):
                 self.update({k1: subdict})
             subdict.update({k2: st})
 
-    def get(self, cat: str, default: pt.Style = None) -> pt.FrozenStyle|None:
+    def get(self, cat: str, default: pt.Style = None) -> pt.FrozenStyle | None:
         k1, k2 = self._category_to_key(cat)
         if k1 not in self.keys():
             return None
@@ -62,6 +62,7 @@ class CategoryStyles(dict[str, dict[str, pt.FrozenStyle]]):
 
 
 _cc_styles = CategoryStyles()
+
 
 def resolve_cat_style(cat: str) -> pt.FrozenStyle:
     return _cc_styles.get(cat, CategoryStyles.BASE)

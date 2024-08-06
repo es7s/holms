@@ -106,8 +106,8 @@ def _destroy_io():
     "_names",
     is_flag=True,
     help="Display names instead of abbreviations. Affects `cat` and `block` columns, but only if "
-         "column in question is already present on the screen. Note that these columns can still "
-         "display only the beginning of the attribute, unless '-r' is provided.",
+    "column in question is already present on the screen. Note that these columns can still "
+    "display only the beginning of the attribute, unless '-r' is provided.",
 )
 @click.option(
     "-a",
@@ -122,13 +122,20 @@ def _destroy_io():
     "_rigid",
     is_flag=True,
     help="By default some columns can be compressed beyond the nominal width, if all current values fit and there "
-         "is still space left. This option disables column shrinking (but they still will be expanded when needed).",
+    "is still space left. This option disables column shrinking (but they still will be expanded when needed).",
 )
 @click.option(
     "--decimal",
     "decimal_offset",
     is_flag=True,
     help="Use decimal byte offsets instead of hexadecimal.",
+)
+@click.option(
+    "--alt",
+    "alt_cc",
+    is_flag=True,
+    help="Use alternative notation for control characters: caret notation for ASCII C0, octal "
+    "notation for ASCII C1.",
 )
 @click.option(
     "--oneline",
@@ -146,7 +153,7 @@ def _destroy_io():
     "--no-override",
     is_flag=True,
     help="Do not replace control/whitespace code point markers with distinguishable characters ('▯' to '↵', '␣' etc). "
-         "Run 'holms legend' to see the details.",
+    "Run 'holms legend' to see the details.",
 )
 def run(**kwargs):
     invoke_run(**kwargs)

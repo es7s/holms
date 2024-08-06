@@ -55,7 +55,12 @@ def assert_streq(
     for n1, n2 in zip(norm1, norm2):
         assert n1 == n2
     if len(norm1) != len(norm2):
-        raise AssertionError(f"Actual/expected lines count mismatch: {len(norm1)} != {len(norm2)}")
+        mismatch_idx = min(len(norm1), len(norm2))
+        mismatch_value = [norm1, norm2][len(norm2) > len(norm1)][mismatch_idx]
+        raise AssertionError(
+            f"Actual/expected lines count mismatch: {len(norm1)} != {len(norm2)}, "
+            f"index {mismatch_idx}: {mismatch_value!r}"
+        )
 
 
 class CliRunner(BaseCliRunner):
@@ -325,8 +330,43 @@ class TestRunCommand:
             ],
         ],
     )
-    def test_oneline(self, crun: CliRunner, ep: CliCommand, opts: list[str], exp_out: str):
+    def test_oneline_and_notable(
+        self, crun: CliRunner, ep: CliCommand, opts: list[str], exp_out: str
+    ):
         rs = crun.invoke(ep, ["run", *opts], input="A\nBC\n\nD")
+        assert rs.exit_code == 0
+        assert not rs.stderr
+        assert_streq(rs.stdout, exp_out)
+
+    @pytest.mark.parametrize(
+        "opts, exp_out",
+        [
+            [
+                ["-f", "name"],
+                [
+                    "ASCII C0 [NUL] NULL",
+                    "ASCII C0 [ESC] ESCAPE",
+                    "ASCII C0 [US] UNIT SEPARATOR",
+                    "ASCII C0 [DEL] DELETE",
+                    "ASCII C1 [SSA] START OF SELECTED AREA",
+                    "ASCII C1 [APC] APPLICATION PROGRAM COMMAND",
+                ],
+            ],
+            [
+                ["-f", "name", "--alt"],
+                [
+                    "ASCII C0 [^@] NULL",
+                    "ASCII C0 [^[] ESCAPE",
+                    "ASCII C0 [^_] UNIT SEPARATOR",
+                    "ASCII C0 [^?] DELETE",
+                    r"ASCII C1 [\206] START OF SELECTED AREA",
+                    r"ASCII C1 [\237] APPLICATION PROGRAM COMMAND",
+                ],
+            ],
+        ],
+    )
+    def test_alt_cc(self, crun: CliRunner, ep: CliCommand, opts: list[str], exp_out: str):
+        rs = crun.invoke(ep, ["run", *opts], input="\u0000\u001b\u001f\u007f\u0086\u009f")
         assert rs.exit_code == 0
         assert not rs.stderr
         assert_streq(rs.stdout, exp_out)
